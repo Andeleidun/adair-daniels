@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import App from './App';
+import Home from './Home';
 
-describe('App', () => {
+describe('Home', () => {
   it('should render correctly', () => {
-    const component = render(<App />);
+    const component = render(<Home />);
   });
 });
