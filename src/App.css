@@ -7,10 +7,10 @@
 .app-with-menu {
   display: grid;
   grid-template-areas:
-    'header header header header'
-    'menu main main main';
-  grid-template-columns: auto auto auto auto;
-  grid-template-rows: 10vh 90vh;
+    'header header'
+    'menu main';
+  grid-template-columns: 15vw 85vw;
+  grid-template-rows: 15vh 85vh;
   grid-gap: 0;
 }
 
@@ -20,7 +20,7 @@
     'header'
     'main';
   grid-template-columns: auto;
-  grid-template-rows: 10vh 90vh;
+  grid-template-rows: 15vh 85vh;
   grid-gap: 0;
 }
 
@@ -35,15 +35,24 @@
   color: white;
 }
 
+.app-header .MuiAppBar-root {
+  height: 100%;
+}
+
+.app-header h1 {
+  margin: 25px auto;
+}
+
 .app-header button {
   position: absolute;
   left: 5vw; 
-  padding: 10px 20px;
-  font-weight: bold;
-  background-color:cornflowerblue;
-  color:black;
+  padding: 20px 20px;
   border: 0;
-  box-shadow: 1px 1px 1px black;
+}
+
+.app-header button i {
+  color: white;
+  font-size: calc(10px + 3vmin);
 }
 
 .app-main {
@@ -57,7 +66,6 @@
 .app-link {
   color: #61dafb;
 }
-
 
 .loading-logo {
   height: 40vmin;
