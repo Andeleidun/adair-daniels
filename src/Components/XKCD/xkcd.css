@@ -1,14 +1,3 @@
-.xkcd-header {
-  background-color: #96A8C8;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: black;
-}
-
 .xkcd .loading-logo {
   height: 65vh;
 }
@@ -18,6 +7,10 @@
   justify-content: space-evenly;
   grid-template-columns: 32% 32% 32%;
   height: 65vh;
+}
+
+.panel-card {
+  height: 60vh;
 }
 
 .slideshow img {

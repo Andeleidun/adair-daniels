@@ -4,10 +4,12 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Fab from '@material-ui/core/Fab';
 
 interface Props {
     pages: any[];
-    onClick: any;
+    navClick: any;
+    closeClick: any;
 };
 
 class NavBar extends React.Component <Props> {
@@ -18,7 +20,7 @@ class NavBar extends React.Component <Props> {
                 <ListItem 
                     button 
                     key={page.text}
-                    onClick={() => this.props.onClick(page)}
+                    onClick={() => this.props.navClick(page)}
                 >
                     <ListItemIcon>
                         <i className="material-icons">
@@ -37,6 +39,14 @@ class NavBar extends React.Component <Props> {
                 <List>
                     {this.populatePages()}
                 </List>
+                <Fab 
+                    onClick={() => this.props.closeClick()}
+                    className="close-menu-fab"
+                >
+                    <i className="material-icons">
+                        close
+                    </i>
+                </Fab>
             </nav>
         );
     }

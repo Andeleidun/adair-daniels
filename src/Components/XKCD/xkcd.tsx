@@ -1,12 +1,15 @@
 import React from 'react';
 import './xkcd.css';
-import logo from '../Primary/reactLogo.svg';
+import logo from '../Library/reactLogo.svg';
+
+import CardTemplate from '../Library/Card';
 
 interface Props {
   img?: any;
   onClick?: any;
   className?: any;
 };
+
 interface State {
   images?: any;
   index: number;
@@ -16,16 +19,26 @@ interface State {
 };
 
 class Panel extends React.Component <Props> {
+  panelTitle = this.props.img.title;
+  panelSrc = this.props.img.img;
+  panelAlt = this.props.img.alt;
+  panelFigure = (
+    <figure>
+      <img 
+      src={this.panelSrc} 
+      alt={this.panelAlt}
+      />
+  </figure>
+  );
+
   render() {
     return (
       <div>
-        <h2>{this.props.img.title}</h2>
-        <figure>
-          <img 
-          src={this.props.img.img} 
-          alt={this.props.img.alt}
-          />
-        </figure>
+         <CardTemplate 
+          title={this.panelTitle}
+          content={this.panelFigure}
+          classGiven="panel-card"
+         />
       </div>
     );
   }
@@ -71,9 +84,9 @@ class XKCD extends React.Component <Props, State> {
       loading: true,
     };
   }
+
   async retrieveImages(index: any) {
     {/* Retrieves images from XKCD using open cors-anywhere proxy */}
-    console.log(index);
     this.setState({ loading: true });
     this.setState({ images: Array(3).fill('')});
     const proxyUrl = 'https://cors-anywhere.herokuapp.com';
@@ -116,6 +129,7 @@ class XKCD extends React.Component <Props, State> {
     this.setState({ images: dataArray});
     this.setState({ loading: false });
   }
+  
   renderPanels(i: number) {
     return (
       <Panel
@@ -124,6 +138,7 @@ class XKCD extends React.Component <Props, State> {
       />
     );
   }
+
   navigate(input: string) {
     let step = 3;
     let newState = 1;
@@ -152,9 +167,11 @@ class XKCD extends React.Component <Props, State> {
     this.retrieveImages(newState);
     this.setState({ index: newState});
   }
+
   componentDidMount() {
     this.retrieveImages(this.state.index);
   }
+
   render() {
     return (
       <div className="xkcd">

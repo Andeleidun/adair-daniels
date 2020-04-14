@@ -6,7 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 
 interface Props {
   onClick: any;
-  title: string;
+  currentPage: any;
+  classGiven?: any;
 };
 
 class Header extends React.Component <Props> {
@@ -21,7 +22,7 @@ class Header extends React.Component <Props> {
               </i>
             </IconButton>
             <h1>
-              {this.props.title}
+              {this.props.currentPage.title}
             </h1>
           </Toolbar>
         </AppBar>

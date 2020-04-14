@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
 
-import Header from './Components/Primary/Header';
-import NavBar from './Components/Primary/NavBar';
-import LoadScreen from './Components/Primary/LoadScreen';
+import Header from './Components/Library/Header';
+import NavBar from './Components/Library/NavBar';
+import LoadScreen from './Components/Library/LoadScreen';
 
 import Home from './Components/Home/Home';
 import XKCD from './Components/XKCD/xkcd';
@@ -41,11 +41,11 @@ class App extends React.Component <Props, State> {
   toggleNav() {
     if (this.state.navShow) {
       this.setState({
-        navShowClass: 'app app-without-menu'
+        navShowClass: 'app app-without-menu '
       });
     } else {
       this.setState({
-        navShowClass: 'app app-with-menu'
+        navShowClass: 'app app-with-menu '
       });
     }
     this.setState({
@@ -70,13 +70,14 @@ class App extends React.Component <Props, State> {
       <div className={this.state.navShowClass}>
         <Header
           onClick={() => this.toggleNav()}
-          title={this.state.currentPage.title}
+          currentPage={this.state.currentPage}
          />
         {this.state.navShow &&
           <div className="app-menu">
             <NavBar
               pages={this.pages}
-              onClick={(page: any) => this.navigate(page)}
+              navClick={(page: any) => this.navigate(page)}
+              closeClick={() => this.toggleNav()}
             />
           </div>
         }

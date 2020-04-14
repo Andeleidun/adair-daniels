@@ -1,0 +1,82 @@
+.app-home {
+    display: grid;
+    grid-template-areas: 
+        'bio highlights'
+        'experience experience';
+    grid-template-columns: 48% 48%;
+    justify-content: space-around;
+}
+
+.app-home .home-card {
+    margin: 10px 5px;
+    padding: 5px;
+}
+
+.app-home .home-card h2,
+.app-home .home-card h3,
+.app-home .home-card .card-button {
+    color: #039be5;
+}
+
+.app-home .bio-card {
+    grid-area: bio;
+}
+
+.app-home .bio-card .media-area {
+    height: 200px;
+    width: 200px;
+    margin: 0 auto;
+    border-radius: 50%;
+    box-shadow: inset 0 1.5px 3px 1px rgba(0,0,0,.25), 0 1.5px 3px 2px rgba(0,0,0,.25);
+}
+
+.app-home .bio-card .card-buttons {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.app-home .highlights-card {
+    grid-area: highlights;
+}
+
+.app-home .highlights-card ul {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.app-home .highlights-card ul a {
+    text-decoration: none;
+}
+
+.app-home .highlights-card ul .MuiListItem-root.MuiListItem-gutters {
+    display: none;
+}
+
+.app-home .highlights-card ul .MuiListItem-root.MuiListItem-gutters.linkset {
+    display: block;
+    text-align: center;
+}
+
+.app-home .highlights-card .linkset img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: inset 0 1.5px 3px 1px rgba(0,0,0,.25), 0 1.5px 3px 2px rgba(0,0,0,.25);
+}
+
+.app-home .experience-card {
+    grid-area: experience;
+}
+
+.app-home .experience-card h3 {
+    text-align: left;
+}
+
+.app-home .experience-card li {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.app-home .experience-card li span {
+    line-height: 1.4;
+}
