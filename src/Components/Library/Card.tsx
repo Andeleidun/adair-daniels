@@ -35,7 +35,7 @@ class CardTemplate extends React.Component <Props, State> {
       for (let link of this.props.links) {
         generatedLinks.push(
           <a href={link.url} target="_blank">
-            <Button className="card-button">
+            <Button className="card-button" fullWidth>
                 {link.text}
             </Button>
           </a>

@@ -52,35 +52,431 @@
             ],
             "links": "",
             "classes": "home-card highlights-card"
+        },
+        "skills": {
+            "title": "Top Skills",
+            "media": "",
+            "content": [
+                {
+                    "skillset": {
+                        "title": "Angular",
+                        "value": 5,
+                        "text": "Expert"
+                    }
+                },
+                {
+                    "skillset": {
+                        "title": "React",
+                        "value": 4,
+                        "text": "Advanced"
+                    }
+                },
+                {
+                    "skillset": {
+                        "title": "JavaScript/TypeScript",
+                        "value": 5,
+                        "text": "Expert"
+                    }
+                },
+                {
+                    "skillset": {
+                        "title": "UX Design",
+                        "value": 5,
+                        "text": "Expert"
+                    }
+                }
+            ],
+            "links": "",
+            "classes": "home-card skills-card"
 		},
 		"experience": {
             "title": "Experience",
             "media": "",
             "content": [
                 {
-                    "title": "Adair Futures"
-                },
-                {
-                    "text": "Develop and launch the Keto Mate suite of apps full stack utilizing Angular, Ionic, and NodeJS, and grow its user base – currently over 20k users with a 4* rating on Google Play."
-                },
-                {
-                    "text": "Consult on frontend framework technologies for web apps, guiding on design direction, adherence to UX and accessibility standards, and establishing unit testing using Angular, React, Vue, Jest, Mocha, Chai, and JavaScript/TypeScript."
-                },
-                {
-                    "text": "Guide clients on and assist with deployment of cloud based infrastructure using AWS, setting up templates for and launching EC2 instances and S3 allocations, as well as managing and securing with AWS Management Console."
-                },
-                {
-                    "text": "Collaborate with client UX designers on wireframes and mockups using Axure, advising on design documents and guiding towards UX best practices and mindfulness of accessibility standards."
-                },
-                {
-                    "text": "Create and manage fluid eCommerce sites and web presences for clients using WordPress, WooCommerce, Genesis Framework, HTML5, CSS3, PHP, and JavaScript."
-                },
-                {
-                    "text": "Research and report on the future development of industries and technologies, and present findings in Qualitative Futures Squares form."
+                    "groupSet": [
+                        {
+                            "group": [
+                                {
+                                    "classes": "group adair-futures-group"
+                                },
+                                {
+                                    "title": "Adair Futures"
+                                },
+                                {
+                                    "dates": "June 2015 - Present"
+                                },
+                                {
+                                    "description": "Adair Futures is a small business consulting firm founded by Adair to provide user experience development, quality IT services, and futures forecasts to small businesses; and to function as the umbrella for independent projects by Adair."
+                                },
+                                {
+                                    "jobTitle": "Lead Developer"
+                                },
+                                {
+                                    "text": "Develop and launch the Keto Mate suite of apps full stack utilizing Angular, Ionic, and NodeJS, and grow its user base – currently over 20k users with a 4* rating on Google Play."
+                                },
+                                {
+                                    "text": "Consult on frontend framework technologies for web apps, guiding on design direction, adherence to UX and accessibility standards, and establishing unit testing using Angular, React, Vue, Jest, Mocha, Chai, and JavaScript/TypeScript."
+                                },
+                                {
+                                    "text": "Guide clients on and assist with deployment of cloud based infrastructure using AWS, setting up templates for and launching EC2 instances and S3 allocations, as well as managing and securing with AWS Management Console."
+                                },
+                                {
+                                    "text": "Collaborate with client UX designers on wireframes and mockups using Axure, advising on design documents and guiding towards UX best practices and mindfulness of accessibility standards."
+                                },
+                                {
+                                    "text": "Create and manage fluid eCommerce sites and web presences for clients using WordPress, WooCommerce, Genesis Framework, HTML5, CSS3, PHP, and JavaScript."
+                                },
+                                {
+                                    "text": "Research and report on the future development of industries and technologies, and present findings in Qualitative Futures Squares form."
+                                },
+                                {
+                                    "skills": [
+                                        "Angular", 
+                                        "Ionic", 
+                                        "React", 
+                                        "Vue", 
+                                        "Mocha", 
+                                        "Chai", 
+                                        "Jest", 
+                                        "AWS", 
+                                        "EC2", 
+                                        "CSS3", 
+                                        "SASS", 
+                                        "Redux", 
+                                        "Axure", 
+                                        "Android Studio", 
+                                        "PHP", 
+                                        "JavaScript", 
+                                        "TypeScript", 
+                                        "GIT", 
+                                        "Photoshop", 
+                                        "Qualitative Futures Squares", 
+                                        "LaTeX", 
+                                        "WordPress", 
+                                        "Genesis", 
+                                        "HTML5"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "group": [
+                                {
+                                    "classes": "group hp-group"
+                                },
+                                {
+                                    "title": "HP"
+                                },
+                                {
+                                    "dates": "February 2019 - September 2019"
+                                },
+                                {
+                                    "description": "HP is a consistent member of the top 100 of the Fortune 500, founded under its original name Hewlett-Packard in 1939. HP manages the personal computer and printer divisions of the former Hewlett-Packard Company. Softtek is a talent agency."
+                                },
+                                {
+                                    "jobTitle": "Sr. Frontend Developer"
+                                },
+                                {
+                                    "text": "Created the client building and floor layout levels of data management with reusable components, frontend views and services for the Transition Management Center (TMC) internal tool using Angular, TypeScript, CSS3, and HTML5."
+                                },
+                                {
+                                    "text": "Developed backend services, API endpoints, setup database queries, and managed database schema for TMC using Javascript, Sequelize, NodeJS, and PostgreSQL."
+                                },
+                                {
+                                    "text": "Optimized frontend workflow using UX principles, updated technologies, and experimented with new technologies to increase speed of user tasks."
+                                },
+                                {
+                                    "text": "Ensured quality of codebase and integrity of data through bug fixes, typing, user stories, and other QA techniques." 
+                                },
+                                {
+                                    "text": "Coordinated with other team members across the globe to keep projects moving on time through JIRA, team GIT repositories, Scrum meetings, Skype, and Zoom."
+                                },
+                                {
+                                    "text": "Conducted code reviews every sprint of code developed by team members."
+                                },
+                                {
+                                    "skills": [
+                                        "Angular", 
+                                        "Sequelize", 
+                                        "PostgreSQL", 
+                                        "GraphQL", 
+                                        "NodeJS", 
+                                        "JavaScript", 
+                                        "TypeScript", 
+                                        "GIT", 
+                                        "HTML5", 
+                                        "CSS3", 
+                                        "SASS", 
+                                        "AWS", 
+                                        "Agile", 
+                                        "JIRA"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "group": [
+                                {
+                                    "classes": "group hall-labs-group"
+                                },
+                                {
+                                    "title": "Hall Labs"
+                                },
+                                {
+                                    "dates": "May 2017 - February 2019"
+                                },
+                                {
+                                    "description": "Tracy Hall LLC is a modern Edison Labs whose mission is to spin off successful companies and create great jobs for great people. Tracy Hall LLC is built on the legacy of H.Tracy Hall consulting that was founded February 15 of 1955."
+                                },
+                                {
+                                    "jobTitle": "UX Developer"
+                                },
+                                {
+                                    "text": "Developed PayZoom payroll Android app using NodeJS, Angular, and Ionic, leading a team of 4 developers/designers."
+                                },
+                                {
+                                    "text": "Created real-time data charts that pulled live information from Azure hosted databases using PowerBI to present to client business owners."
+                                },
+                                {
+                                    "text": "Established EC2 templates and launched new instances for eCommerce platforms and web presences for client businesses using AWS, WordPress, WooCommerce, HTML5, and CSS3."
+                                },
+                                {
+                                    "text": "Reported team progress on development in Agile/Scrum meetings, worked together with the Chief Technical Officer (CTO) to ensure satisfactory progress and results."
+                                },
+                                {
+                                    "text": "Performed code reviews of code developed by team members, helped manage team GIT repository."
+                                },
+                                {
+                                    "skills": [
+                                        "NodeJS", 
+                                        "Angular", 
+                                        "Ionic", 
+                                        "JavaScript", 
+                                        "Typescript", 
+                                        "GIT", 
+                                        "HTML5", 
+                                        "CSS3", 
+                                        "SASS", 
+                                        "Agile", 
+                                        "PowerBI", 
+                                        "WordPress", 
+                                        "Azure", 
+                                        "AWS", 
+                                        "Android Studio"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "group": [
+                                {
+                                    "classes": "group server-sky-group"
+                                },
+                                {
+                                    "title": "Server Sky"
+                                },
+                                {
+                                    "dates": "September 2015 - June 2016"
+                                },
+                                {
+                                    "description": "Server Sky is a small space firm looking to develop the research necessary to, and then implement a space based swam cloud server capable of providing datacenter level computing across the globe."
+                                },
+                                {
+                                    "jobTitle": "Physics Researcher"
+                                },
+                                {
+                                    "text": "Developed a quantitative predictive model for Server Sky Rutherford scattering of relativistic radiation present in our magnetosphere from the Inner Van Allen Belt."
+                                },
+                                {
+                                    "text": "Researched the radiation environment of the Inner Van Allen Belt, particularly around the L2 shell."
+                                },
+                                {
+                                    "text": "Delivered talks about research at academic and industry conferences."
+                                },
+                                {
+                                    "skills": [
+                                        "Differential Equations", 
+                                        "Calculus", 
+                                        "Relativistic Physics", 
+                                        "LaTeX", 
+                                        "TeX"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "group": [
+                                {
+                                    "classes": "group mt-hood-work-group"
+                                },
+                                {
+                                    "title": "Mount Hood Community College"
+                                },
+                                {
+                                    "dates": "October 2013 - June 2016"
+                                },
+                                {
+                                    "description": "Mount Hood Community College is a school aiming to help create the next generation of leaders for tomorrow."
+                                },
+                                {
+                                    "jobTitle": "Lab Assistant/Web Support"
+                                },
+                                {
+                                    "text": "Collaborated with Lab Coordinators to prepare and setup labs."
+                                },
+                                {
+                                    "text": "Provided IT support for professors and instructors."
+                                },
+                                {
+                                    "text": "Developed college web presences for classes and extracurriculars."
+                                },
+                                {
+                                    "skills": [
+                                        "HTML", 
+                                        "CSS", 
+                                        "JavaScript", 
+                                        "WordPress"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 }
             ],
             "links": "",
             "classes": "home-card experience-card"
+        },
+        "education": {
+            "title": "Education",
+            "media": "",
+            "content": [
+                {
+                    "groupSet": [
+                        {
+                            "group": [
+                                {
+                                    "classes": "group portland-state-group"
+                                },
+                                {
+                                    "title": "Portland State University"
+                                },
+                                {
+                                    "dates": "September 2014 - June 2016"
+                                },
+                                {
+                                    "text": "GPA: 3.26"
+                                },
+                                {
+                                    "text": "Currently On Hold - Finished Junior Year"
+                                },
+                                {
+                                    "text": "Major: Physics"
+                                },
+                                {
+                                    "text": "Extracurriculars: Physics Society Officer"
+                                },
+                                {
+                                    "text": "Assisted Professor Guang-jiong Ni with research on mass aquisition for massless fermions via vacuum phase transition using an effective Hamiltonian."
+                                },
+                                {
+                                    "text": "Established Futures Studies course as part of the Chiron Studies program."
+                                },
+                                {
+                                    "skills": [
+                                        "Quantum Mechanics",
+                                        "Relativistic Physics", 
+                                        "Classical Physics", 
+                                        "Derivative Calculus", 
+                                        "Integral Calculus", 
+                                        "Multivariate Calculus", 
+                                        "Linear Algebra",
+                                        "Differential Equations"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "group": [
+                                {
+                                    "classes": "group mt-hood-ed-group"
+                                },
+                                {
+                                    "title": "Mount Hood Community College"
+                                },
+                                {
+                                    "dates": "September 2013 - June 2015"
+                                },
+                                {
+                                    "text": "GPA: 3.18"
+                                },
+                                {
+                                    "text": "Graduated with an Associate of Science"
+                                },
+                                {
+                                    "text": "Major: Physics"
+                                },
+                                {
+                                    "text": "Extracurriculars: PTK Honors Society Officer" 
+                                },
+                                {
+                                    "skills": [
+                                        "German", 
+                                        "Chemistry", 
+                                        "Web Development"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "group": [
+                                {
+                                    "classes": "group independent-study-group"
+                                },
+                                {
+                                    "title": "Continued Learning"
+                                },
+                                {
+                                    "dates": "June 2016 - Present"
+                                },
+                                {
+                                    "text": "Utiilized courses from schools like Harvard, MIT, and Yale from providers like EdX, Udacity, and Coursera."
+                                },
+                                {
+                                    "text": "Other learning through sites such as Codeacademy, Lynda.com, Pluralsight, and Youtube."
+                                },
+                                {
+                                    "skills": [
+                                        "React", 
+                                        "Angular", 
+                                        "Ionic", 
+                                        "UX Design",
+                                        "User Centric Design Principles",
+                                        "WCAG Accessibility Guidelines",
+                                        "JavaScript", 
+                                        "Typescript", 
+                                        "GIT", 
+                                        "HTML5", 
+                                        "CSS3", 
+                                        "SASS", 
+                                        "Mocha",
+                                        "Chai",
+                                        "Enzyme", 
+                                        "PHP",
+                                        "PowerBI", 
+                                        "WordPress", 
+                                        "Azure", 
+                                        "AWS", 
+                                        "Android Studio"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "links": "",
+            "classes": "home-card education-card"
 		}
 	}
 }
