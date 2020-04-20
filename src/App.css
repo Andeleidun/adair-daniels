@@ -52,16 +52,33 @@
   margin: 25px auto;
 }
 
-.app-header button {
+.app-header .menu-button {
   position: absolute;
-  left: 5vw; 
+  left: 5vw;
+  top: 3.5vh;
   padding: 20px 20px;
   border: 0;
+  z-index: 999;
 }
 
-.app-header button i {
+.app-header .menu-button i {
   color: white;
   font-size: calc(10px + 3vmin);
+}
+
+.app-header .title-bar {
+  top: 2vh;
+}
+
+.app-header .code-view-bar {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  height: 45px;
+}
+
+.app-header .code-view-bar button {
+  color: white;
+  font-size: 20px;
 }
 
 .app-main {
@@ -93,6 +110,10 @@
 .loading-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.card {
+  display: grid;
 }
 
 @media (prefers-reduced-motion: no-preference) {

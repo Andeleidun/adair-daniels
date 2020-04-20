@@ -31,10 +31,10 @@ class CardTemplate extends React.Component <Props, State> {
 
   generateLinks() {
     if (this.props.links) {
-      let generatedLinks = [];
+      let generatedLinks:any[] = [];
       for (let link of this.props.links) {
         generatedLinks.push(
-          <a href={link.url} target="_blank">
+          <a href={link.url} target="_blank" rel="noopener noreferrer">
             <Button className="card-button" fullWidth>
                 {link.text}
             </Button>
@@ -62,7 +62,7 @@ class CardTemplate extends React.Component <Props, State> {
   }
 
   generateContent() {
-    let content = [];
+    let content:any[] = [];
     if (this.props.title) {
       content.push(
         <h2>

@@ -14,13 +14,13 @@ interface Props {
 
 class NavBar extends React.Component <Props> {
     populatePages() {
-        let populatedPages = [];
+        let populatedPages:any[] = [];
         for (let page of this.props.pages) {
             populatedPages.push(
                 <ListItem 
                     button 
                     key={page.text}
-                    onClick={() => this.props.navClick(page)}
+                    onClick={() => this.props.navClick(page, false)}
                 >
                     <ListItemIcon>
                         <i className="material-icons">

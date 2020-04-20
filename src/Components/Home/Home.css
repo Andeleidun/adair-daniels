@@ -26,6 +26,7 @@
 
 .app-home .bio-card {
     grid-area: bio;
+    padding-top: 10px;
 }
 
 .app-home .bio-card .media-area {

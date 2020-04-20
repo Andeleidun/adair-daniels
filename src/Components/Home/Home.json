@@ -27,7 +27,7 @@
 					"text": "GitHub"
 				}
             ],
-            "classes": "home-card bio-card"
+            "classes": "card home-card bio-card"
 		},
 		"highlights": {
             "title": "Highlights",
@@ -51,7 +51,7 @@
                 }
             ],
             "links": "",
-            "classes": "home-card highlights-card"
+            "classes": "card home-card highlights-card"
         },
         "skills": {
             "title": "Top Skills",
@@ -87,7 +87,7 @@
                 }
             ],
             "links": "",
-            "classes": "home-card skills-card"
+            "classes": "card home-card skills-card"
 		},
 		"experience": {
             "title": "Experience",
@@ -345,7 +345,7 @@
                 }
             ],
             "links": "",
-            "classes": "home-card experience-card"
+            "classes": "card home-card experience-card"
         },
         "education": {
             "title": "Education",
@@ -476,7 +476,7 @@
                 }
             ],
             "links": "",
-            "classes": "home-card education-card"
+            "classes": "card home-card education-card"
 		}
 	}
 }

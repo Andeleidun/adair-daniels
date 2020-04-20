@@ -6,7 +6,9 @@ import NavBar from './Components/Library/NavBar';
 import LoadScreen from './Components/Library/LoadScreen';
 
 import Home from './Components/Home/Home';
+import HomeCodeView from './Components/Home/Home.codeview';
 import XKCD from './Components/XKCD/xkcd';
+import XKCDViewer from './Components/XKCD/xkcd.codeview';
 
 interface Props {};
 
@@ -15,6 +17,7 @@ interface State {
   navShow: boolean;
   navShowClass: string;
   currentPage: any;
+  codeView: boolean;
 };
 
 interface PageInterface {
@@ -22,20 +25,22 @@ interface PageInterface {
   title: string;
   icon: string;
   component: any;
+  codeView?: any;
 }
 
 class App extends React.Component <Props, State> {
 
   pages: PageInterface[] = [
-    {text: 'Home', title: 'Adair Daniels', icon: 'home', component: <Home />},
-    {text: 'XKCD Slideshow', title: 'XKCD Slideshow', icon: 'burst_mode', component: <XKCD />}
+    {text: 'Home', title: 'Adair Daniels', icon: 'home', component: <Home />, codeView: <HomeCodeView />},
+    {text: 'XKCD Slideshow', title: 'XKCD Slideshow', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />}
   ];
 
   state: State = {
     loading: true,
     navShow: false,
     navShowClass: 'app app-without-menu',
-    currentPage: this.pages[0]
+    currentPage: this.pages[0],
+    codeView: false
   };
 
   toggleNav() {
@@ -53,10 +58,19 @@ class App extends React.Component <Props, State> {
     });
   }
 
-  navigate(page: any) {
+  navigate(page: any, codeView: boolean) {
     this.setState({
-      currentPage: page
+      currentPage: page,
+      codeView
     });
+  }
+
+  generateComponent() {
+    if (this.state.codeView) {
+      return (this.state.currentPage.codeView);
+    } else {
+      return (this.state.currentPage.component);
+    }
   }
 
   componentDidMount() {
@@ -70,13 +84,14 @@ class App extends React.Component <Props, State> {
       <div className={this.state.navShowClass}>
         <Header
           onClick={() => this.toggleNav()}
+          navClick={(page: any, codeView:boolean) => this.navigate(page, codeView)}
           currentPage={this.state.currentPage}
          />
         {this.state.navShow &&
           <div className="app-menu">
             <NavBar
               pages={this.pages}
-              navClick={(page: any) => this.navigate(page)}
+              navClick={(page: any, codeView:boolean) => this.navigate(page, codeView)}
               closeClick={() => this.toggleNav()}
             />
           </div>
@@ -86,7 +101,7 @@ class App extends React.Component <Props, State> {
             <LoadScreen />
           ) : (
             <div className="app-content">
-              {this.state.currentPage.component}
+              {this.generateComponent()}
             </div>
           )}
         </div>
