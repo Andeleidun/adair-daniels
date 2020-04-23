@@ -1,5 +1,5 @@
 import React from 'react';
-import loadingLogo from './reactLogo.svg';
+import {reactLogo} from '../../Resources/images/index';
 
 interface Props {};
 
@@ -7,7 +7,7 @@ class LoadScreen extends React.Component <Props> {
     render() {
       return (
         <figure>
-          <img src={loadingLogo} className="loading-logo" alt="Loading Logo" />
+          <img src={reactLogo} className="loading-logo" alt="Loading Logo" />
         </figure>
       );
     }

@@ -1,16 +1,17 @@
 .xkcd .loading-logo {
-  height: 65vh;
+  height: 70vh;
 }
 
 .slideshow {
   display: grid;
   justify-content: space-evenly;
   grid-template-columns: 32% 32% 32%;
-  height: 65vh;
+  height: 74vh;
+  margin: 0 5px;
 }
 
 .panel-card {
-  height: 60vh;
+  height: 70vh;
 }
 
 .slideshow img {

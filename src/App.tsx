@@ -1,14 +1,20 @@
+"use strict";
+
 import React from 'react';
-import './App.css';
+import './App.scss';
 
 import Header from './Components/Library/Header';
 import NavBar from './Components/Library/NavBar';
 import LoadScreen from './Components/Library/LoadScreen';
 
 import Home from './Components/Home/Home';
-import HomeCodeView from './Components/Home/Home.codeview';
+import HomeViewer from './Components/Home/Home.codeview';
 import XKCD from './Components/XKCD/xkcd';
 import XKCDViewer from './Components/XKCD/xkcd.codeview';
+import Portfolio from './Components/Portfolio/Portfolio';
+import PortfolioViewer from './Components/Portfolio/Portfolio.codeview';
+
+import Slide from '@material-ui/core/Slide';
 
 interface Props {};
 
@@ -31,8 +37,9 @@ interface PageInterface {
 class App extends React.Component <Props, State> {
 
   pages: PageInterface[] = [
-    {text: 'Home', title: 'Adair Daniels', icon: 'home', component: <Home />, codeView: <HomeCodeView />},
-    {text: 'XKCD Slideshow', title: 'XKCD Slideshow', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />}
+    {text: 'Home', title: 'Adair Daniels', icon: 'home', component: <Home />, codeView: <HomeViewer />},
+    {text: 'XKCD Slideshow', title: 'XKCD Slideshow', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />},
+    {text: 'Portfolio', title: 'Portfolio', icon: 'compare', component: <Portfolio />, codeView: <PortfolioViewer />},
   ];
 
   state: State = {
@@ -87,7 +94,7 @@ class App extends React.Component <Props, State> {
           navClick={(page: any, codeView:boolean) => this.navigate(page, codeView)}
           currentPage={this.state.currentPage}
          />
-        {this.state.navShow &&
+        <Slide direction="right" in={this.state.navShow} mountOnEnter unmountOnExit>
           <div className="app-menu">
             <NavBar
               pages={this.pages}
@@ -95,7 +102,7 @@ class App extends React.Component <Props, State> {
               closeClick={() => this.toggleNav()}
             />
           </div>
-        }
+        </Slide>
         <div className="app-main">
           {this.state.loading ? (
             <LoadScreen />

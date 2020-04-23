@@ -1,6 +1,6 @@
 import React from 'react';
 import './xkcd.css';
-import logo from '../Library/reactLogo.svg';
+import {reactLogo} from '../../Resources/images/index';
 
 import CardTemplate from '../Library/Card';
 
@@ -37,7 +37,7 @@ class Panel extends React.Component <Props> {
          <CardTemplate 
           title={this.panelTitle}
           content={this.panelFigure}
-          classGiven="panel-card"
+          classGiven="card panel-card"
          />
       </div>
     );
@@ -178,7 +178,7 @@ class XKCD extends React.Component <Props, State> {
     return (
       <div className="xkcd">
         {this.state.loading ? (
-          <img src={logo} className="loading-logo" alt="logo" />
+          <img src={reactLogo} className="loading-logo" alt="logo" />
         ) : (
           <main className="slideshow">
             {this.renderPanels(0)}

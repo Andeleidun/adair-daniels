@@ -3,7 +3,7 @@
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: #90a4ae;
+  color: #596267;
 }
 .token.punctuation {
   color: #9e9e9e;
@@ -60,6 +60,6 @@
 }
 
 .app-code-viewer {
-  width: 50%;
+  width: 60%;
   margin: 0 auto;
 }

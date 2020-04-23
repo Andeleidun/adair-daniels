@@ -19,13 +19,21 @@ interface State {
 };
 
 const code = `
+/*
+  This page demonstrates React's strong capacity for generating content from provided data. 
+  Aside from a singular primary 'main' component, no static content exists on this page.
+  Instead, all content is generated based upon the information in Home.json.
+  I used this strategy at HP, combined with retriving said data from an API (demonstrated in the XKCD page),
+  to progressively load and submit information for their B2B Printer Sales Contract System.
+  The kind of strong typing displayed in this page is extremely important for an enterprise platform.
+*/
+"use strict";
+
 import React from 'react';
-import './Home.css';
+import './Home.scss';
 
 import CardTemplate from '../Library/Card';
-import headshot from '../../Resources/images/self/headshot.jpg';
-import ketomate from '../../Resources/images/logos/ketomate.png';
-import hp from '../../Resources/images/logos/hp.png';
+import {headshot, ketomate, hp} from '../../Resources/images/index';
 import HomeData from './Home.json';
 
 import List from '@material-ui/core/List';
@@ -42,7 +50,69 @@ interface Props {};
 interface State {
   experienceIndex: number;
   educationIndex: number;
+  loading: boolean;
 };
+
+interface Links {
+  url: string;
+  text: string;
+}
+
+interface LinkSet {
+  url: string;
+  title: string;
+  img: string;
+  text: string;
+}
+
+interface SkillSet {
+  title: string;
+  value: number;
+  text: string;
+}
+
+interface Group {
+  classes?: string;
+  title?: string;
+  dates?: string;
+  description?: string;
+  jobTitle?: string;
+  text?: string;
+  skills?: string[];
+}
+
+interface GroupSet {
+  group: Group[];
+}
+
+interface Content {
+  text?: string;
+  linkset?: LinkSet;
+  skillset?: SkillSet;
+  groupSet?: GroupSet[];
+}
+
+interface CardContent {
+  title: string;
+  media: string;
+  content: Content[];
+  links?: string | Links[];
+  classes: string;
+}
+
+/* 
+  This interface is the combination of all types above, checking for specifically
+  known data to be present, as well as requring that any unknown data follow
+  the CardContent format.
+*/
+interface DataSet {
+  career: CardContent;
+  highlights: CardContent;
+  skills: CardContent;
+  experience: CardContent;
+  education: CardContent;
+  [paramName: string]: CardContent;
+}
 
 class Home extends React.Component <Props, State> {
   constructor(props: any) {
@@ -50,18 +120,74 @@ class Home extends React.Component <Props, State> {
     this.state = {
       experienceIndex: 0,
       educationIndex: 0,
+      loading: true,
     };
   }
-  homeData = HomeData.homeData;
+  homeData:DataSet = HomeData.homeData;
   experienceLength:number = 0;
   educationLength:number = 0;
 
-  generateGroupSet(groupSet:any[]) {
+  /* 
+    This function demonstrates handling multiple navigable elements for a single
+    view with a single function.
+  */
+  navigate(input: string, title: string) {
+    const step:number = 1;
+    const baseIndex:number = 0;
+    let newState:number = 1;
+    let operation:string = input+title;
+    
+    switch(operation) {
+      case 'previousExperience':
+        newState = this.state.experienceIndex - step;
+        if ( newState < baseIndex ) {
+          newState = this.experienceLength;
+        }
+        this.setState({
+          experienceIndex: newState
+        });
+        break;
+      case 'previousEducation':
+        newState = this.state.educationIndex - step;
+        if ( newState < baseIndex ) {
+          newState = this.educationLength;
+        }
+        this.setState({
+          educationIndex: newState
+        });
+        break;
+      case 'nextExperience':
+        newState = this.state.experienceIndex + step;
+        if ( newState > this.experienceLength ) {
+          newState = baseIndex;
+        }
+        this.setState({
+          experienceIndex: newState
+        });
+        break;
+      case 'nextEducation':
+        newState = this.state.educationIndex + step;
+        if ( newState > this.educationLength ) {
+          newState = baseIndex;
+        }
+        this.setState({
+          educationIndex: newState
+        });
+        break;
+      default:
+        console.log("Navigation error.");
+    }
+  }
+
+  /* 
+    This function generates content for specifically an array of type GroupSet.
+    This is a good example of factoring out a function for a specific task.
+  */
+  generateGroupSet(groupSet:GroupSet[]) {
     let groupSetContent:any[] = [];
     for (let group of groupSet) {
       let groupContent:any[] = [];
       let groupClass:string = '';
-      console.log(group);
       for (let item of group.group) {
         if (item.title) {
           groupContent.push(
@@ -133,57 +259,11 @@ class Home extends React.Component <Props, State> {
     return(groupSetContent);
   }
 
-  navigate(input: string, title: string) {
-    const step:number = 1;
-    const baseIndex:number = 0;
-    let newState:number = 1;
-    let operation:string = input+title;
-
-    console.log(operation, input, title);
-    
-    switch(operation) {
-      case 'previousExperience':
-        newState = this.state.experienceIndex - step;
-        if ( newState < baseIndex ) {
-          newState = this.experienceLength;
-        }
-        this.setState({
-          experienceIndex: newState
-        });
-        break;
-      case 'previousEducation':
-        newState = this.state.educationIndex - step;
-        if ( newState < baseIndex ) {
-          newState = this.educationLength;
-        }
-        this.setState({
-          educationIndex: newState
-        });
-        break;
-      case 'nextExperience':
-        newState = this.state.experienceIndex + step;
-        if ( newState > this.experienceLength ) {
-          newState = baseIndex;
-        }
-        this.setState({
-          experienceIndex: newState
-        });
-        break;
-      case 'nextEducation':
-        newState = this.state.educationIndex + step;
-        if ( newState > this.educationLength ) {
-          newState = baseIndex;
-        }
-        this.setState({
-          educationIndex: newState
-        });
-        break;
-      default:
-        console.log("Navigation error.");
-    }
-  }
-
-  formatContent(contentSet:any) {
+  /* 
+    This function handles specifically the generation of content for the inside
+    of the cards within the page.
+  */
+  formatContent(contentSet:CardContent) {
     let formattedContent:any[] = [];
     let title:string = contentSet.title;
     let contentGroup:any[] = contentSet.content;
@@ -208,9 +288,9 @@ class Home extends React.Component <Props, State> {
         }
         formattedContent.push( 
           <ListItem key={content.linkset.title} className="linkset">
-            <a href={content.linkset.url} target="_blank">
+            <a href={content.linkset.url} target="_blank" rel="noopener noreferrer">
               <div>
-                <img src={image} />
+                <img src={image} alt={content.linkset.title} />
                 <h3>{content.linkset.title}</h3>
               </div>
             </a>
@@ -254,6 +334,7 @@ class Home extends React.Component <Props, State> {
         formattedContent.push(
           <div className="group-set">
             <div className="group-set-content">
+              
               {groupSetContent}
             </div>
             <div className="group-set-nav">
@@ -294,6 +375,12 @@ class Home extends React.Component <Props, State> {
     );
   }
 
+  /* 
+    This function handles the generation of cards on this page, as well as
+    through factored out functions the generation of all content inside
+    the cards, leaving it the sole function called to create content
+    on an otherwise empty page.
+  */
   generateContent() {
     let contentArray:any[] = [];
     let formattedArray:any[] = [];
@@ -321,6 +408,12 @@ class Home extends React.Component <Props, State> {
       );
     }
     return (formattedArray);
+  }
+
+  componentDidMount() {
+    this.setState( {
+      loading: false
+    })
   }
 
   render() {
