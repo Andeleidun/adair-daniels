@@ -2,7 +2,7 @@
   "name": "adairdaniels",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://andeleidun.github.io/adair-daniels/",
+  "homepage": "http://adairdaniels.com",
   "dependencies": {
     "@material-ui/core": "^4.9.10",
     "@material-ui/lab": "^4.0.0-alpha.49",
