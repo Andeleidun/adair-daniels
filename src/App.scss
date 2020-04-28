@@ -83,12 +83,17 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
 }
 
 .app-header .code-view-bar {
-    display: grid;
-    grid-template-columns: 15% 15%;
-    justify-content: space-evenly;
     position: absolute;
-    width: 100vw;
-    top: 5vh;
+    top: 3vh;
+    right: 5vw;
+}
+
+.code-view-bar .MuiSwitch-colorSecondary.Mui-checked {
+    color: $primary;
+}
+
+.code-view-bar .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
+    background-color: $primary;
 }
 
 .app-header .code-view-bar button {
@@ -103,6 +108,12 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
     position: fixed;
     height: 90vh;
     top: 10vh;
+    z-index: 999;
+    background-color: white;
+}
+
+.app-menu .code-view-bar {
+    display: none;
 }
 
 // Main
@@ -143,12 +154,50 @@ h3,
     color: white;
 }
 
+// Media Queries
+
+@media only screen and (max-width: 960px) {
+    .app-with-menu {
+        grid-template-areas:
+            'header'
+            'main';
+        grid-template-columns: 100vw;
+    }
+
+    .app-header .menu-button {
+        position: absolute;
+        left: 2vw;
+        top: 2vh;
+        padding: 10px 10px;
+    }
+    
+    .app-header .title-bar {
+        top: 1vh;
+    }
+    
+    .app-header .code-view-bar {
+        display: none;
+    }
+
+    .app-menu .code-view-bar {
+        display: flex;
+    }
+
+    .card .MuiCardContent-root {
+        padding: 10px;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+
+}
+
 // Animations
 
 @media (prefers-reduced-motion: no-preference) {
-.loading-logo {
-    animation: loading-logo-spin infinite 20s linear;
-}
+    .loading-logo {
+        animation: loading-logo-spin infinite 20s linear;
+    }
 }
 
 @keyframes loading-logo-spin {

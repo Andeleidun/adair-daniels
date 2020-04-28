@@ -63,3 +63,15 @@
   width: 60%;
   margin: 0 auto;
 }
+
+@media only screen and (max-width: 960px) {
+  .app-code-viewer {
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .app-code-viewer {
+    width: 95%;
+  }
+}

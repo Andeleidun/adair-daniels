@@ -65,10 +65,15 @@ class App extends React.Component <Props, State> {
     });
   }
 
-  navigate(page: any, codeView: boolean) {
+  toggleCodeView() {
     this.setState({
-      currentPage: page,
-      codeView
+      codeView: !this.state.codeView
+    });
+  }
+
+  navigate(page: any) {
+    this.setState({
+      currentPage: page
     });
   }
 
@@ -91,15 +96,17 @@ class App extends React.Component <Props, State> {
       <div className={this.state.navShowClass}>
         <Header
           onClick={() => this.toggleNav()}
-          navClick={(page: any, codeView:boolean) => this.navigate(page, codeView)}
           currentPage={this.state.currentPage}
+          codeView={this.state.codeView}
+          toggleCodeView={() => this.toggleCodeView()}
          />
         <Slide direction="right" in={this.state.navShow} mountOnEnter unmountOnExit>
           <div className="app-menu">
             <NavBar
               pages={this.pages}
-              navClick={(page: any, codeView:boolean) => this.navigate(page, codeView)}
-              closeClick={() => this.toggleNav()}
+              navClick={(page: any) => this.navigate(page)}
+              codeView={this.state.codeView}
+              toggleCodeView={() => this.toggleCodeView()}
             />
           </div>
         </Slide>

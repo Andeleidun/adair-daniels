@@ -3,24 +3,41 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 interface Props {
   onClick: any;
-  navClick: any;
   currentPage: any;
   classGiven?: any;
+  codeView: boolean;
+  toggleCodeView: any;
 };
 
 class Header extends React.Component <Props> {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange() {
+    this.props.toggleCodeView();
+  }
 
   generateCodeView() {
     if (this.props.currentPage.codeView) {
-      let currentPage = this.props.currentPage;
       let codeViewBar:any = (
         <div className="code-view-bar">
-          <Button onClick={() => this.props.navClick(currentPage, false)}>{this.props.currentPage.text}</Button>
-          <Button onClick={() => this.props.navClick(currentPage, true)}>Code View</Button>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={this.props.codeView}
+                onChange={this.handleChange}
+                name="codeView"
+              />
+            }
+            label="Code View"
+          />
         </div>
       );
       return (codeViewBar);

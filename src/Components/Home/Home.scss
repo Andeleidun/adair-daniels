@@ -155,8 +155,8 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
     grid-column-end: 3;
 }
 
-.app-home .experience-card .group-set-content {
-    height: 50vh;
+.app-home .home-card .group-set-content {
+    padding-bottom: 10px;
 }
 
 .app-home .home-card .group-set-nav {
@@ -181,11 +181,6 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
     align-content: center;
 }
 
-.app-home .education-card .group .group-text {
-    grid-column-start: 1;
-    grid-column-end: 3;
-}
-
 .app-home .education-card .group .skills {
     grid-column-start: 3;
     grid-column-end: 4;
@@ -193,6 +188,55 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
     grid-row-end: 7;
 }
 
-.app-home .education-card .group-set-content {
-    height: 30vh;
+.app-home .education-card .group .group-text {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+// Media Queries
+
+@media only screen and (max-width: 960px) {
+    .app-home {
+        grid-template-areas: 
+            'bio'
+            'highlights'
+            'skills'
+            'experience'
+            'education';
+        grid-template-columns: 100%;
+    }
+
+    .app-home .skills-card ul {
+        grid-template-columns: 50% 50%;
+    }
+
+    .app-home .experience-card .group .skills {
+        grid-column-start: 1;
+        grid-column-end: 4;
+        grid-row-start: 10;
+        grid-row-end: 10;
+    }
+
+    .app-home .experience-card .group .group-text {
+        grid-column-start: 1;
+        grid-column-end: 4;
+    }
+    
+    .app-home .education-card .group .skills {
+        grid-column-start: 1;
+        grid-column-end: 4;
+        grid-row-start: 8;
+        grid-row-end: 8;
+    }
+
+    .app-home .education-card .group .group-text {
+        grid-column-start: 1;
+        grid-column-end: 4;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .app-home .highlights-card ul {
+        grid-template-columns: 100%;
+    }
 }
