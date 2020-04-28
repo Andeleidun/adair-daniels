@@ -188,7 +188,6 @@ class Portfolio extends React.Component <Props, State> {
                     index={this.state.activeSlide}
                     onChangeIndex={handleSlideChange}
                     interval={10000}
-                    autoplay={false}
                 >
                 {this.portfolioSlides.map((slide) => (
                     <div key={slide.label} className='slide'>

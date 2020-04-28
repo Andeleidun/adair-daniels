@@ -19,7 +19,7 @@ $primary: #039be5;
     display: flex;
     flex-flow: wrap;
     max-height: 650px;
-    overflow: hidden;
+    overflow-x: hidden;
     width: 100%;
     justify-content: center;
 }
@@ -66,9 +66,8 @@ $primary: #039be5;
 }
 
 @media only screen and (max-width: 450px) {
-    .app-portfolio .MuiMobileStepper-dot {
-        height: 4px;
-        width: 4px;
+    .app-portfolio .MuiMobileStepper-dots {
+        display: none;
     }
 }
 

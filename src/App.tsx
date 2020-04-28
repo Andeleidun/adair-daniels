@@ -77,6 +77,12 @@ class App extends React.Component <Props, State> {
     });
   }
 
+  generateOverlay() {
+    if (this.state.navShow) {
+      return (<div className="app-overlay-mobile" onClick={() => this.toggleNav()} />)
+    }
+  }
+
   generateComponent() {
     if (this.state.codeView) {
       return (this.state.currentPage.codeView);
@@ -110,6 +116,7 @@ class App extends React.Component <Props, State> {
             />
           </div>
         </Slide>
+        {this.generateOverlay()}
         <div className="app-main">
           {this.state.loading ? (
             <LoadScreen />

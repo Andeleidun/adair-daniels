@@ -47,6 +47,10 @@
 }
 
 @media only screen and (max-width: 960px) {
+  .xkcd .loading-logo {
+    height: 50vh;
+  }
+
   .slideshow {
     grid-template-columns: 100%;
     height: auto;
@@ -64,5 +68,7 @@
 }
 
 @media only screen and (max-width: 450px) {
-
+  .xkcd .loading-logo {
+    height: 30vh;
+  }
 }

@@ -243,4 +243,8 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
     .app-home .highlights-card ul {
         grid-template-columns: 100%;
     }
+
+    .app-home .skills-card ul fieldset {
+        padding: 0;
+    }
 }

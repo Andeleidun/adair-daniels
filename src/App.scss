@@ -112,7 +112,15 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
     background-color: white;
 }
 
+.app-menu ul {
+    z-index: 999;
+}
+
 .app-menu .code-view-bar {
+    display: none;
+}
+
+.app-overlay-mobile {
     display: none;
 }
 
@@ -165,8 +173,6 @@ h3,
     }
 
     .app-header .menu-button {
-        position: absolute;
-        left: 2vw;
         top: 2vh;
         padding: 10px 10px;
     }
@@ -183,13 +189,24 @@ h3,
         display: flex;
     }
 
+    .app-overlay-mobile {
+        display: block;
+        z-index: 1;
+        height: 90vh;
+        position: absolute;
+        top: 10vh;
+        width: 100vw;
+    }
+
     .card .MuiCardContent-root {
         padding: 10px;
     }
 }
 
 @media only screen and (max-width: 450px) {
-
+    .card .MuiCardContent-root {
+        padding: 5px;
+    }
 }
 
 // Animations
