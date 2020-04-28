@@ -75,7 +75,7 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
     height: 150px;
     border-radius: 50%;
     box-shadow: inset 0 1.5px 3px 1px rgba(0,0,0,.25), 0 1.5px 3px 2px rgba(0,0,0,.25);
-    margin-bottom: 5px 0;
+    margin-bottom: 10px;
 }
 
 .app-home .skills-card {
@@ -85,6 +85,10 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
 .app-home .skills-card ul {
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
+}
+
+.app-home .skills-card h3 {
+    padding-bottom: 15px;
 }
 
 .app-home .experience-card {

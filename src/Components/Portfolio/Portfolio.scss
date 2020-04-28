@@ -16,22 +16,18 @@ $primary: #039be5;
 }
 
 .portfolio-display .slide {
-    display: grid;
+    display: flex;
+    flex-flow: wrap;
+    max-height: 650px;
+    overflow: hidden;
+    width: 100%;
     justify-content: center;
-    align-content: center;
-    height: 650px;
 }
 
 .portfolio-display .slide img {
     max-height: 600px;
     box-shadow: $greyBoxShadow;
     margin-bottom: 5px;
-}
-
-.portfolio-display .slide .image-set {
-    display: grid;
-    grid-template-columns: auto auto;
-    width: 68vw;
 }
 
 .portfolio-display button {
@@ -54,6 +50,26 @@ $primary: #039be5;
 
 .app-portfolio .portfolio-display .MuiMobileStepper-dot.MuiMobileStepper-dotActive {
     background-color: blue;
+}
+
+// Media Queries
+
+@media only screen and (max-width: 960px) {
+    .portfolio-display button {
+        width: 120px;
+    }
+
+    .app-portfolio .MuiMobileStepper-dot {
+        height: 6px;
+        width: 6px;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .app-portfolio .MuiMobileStepper-dot {
+        height: 4px;
+        width: 4px;
+    }
 }
 
 // Animation

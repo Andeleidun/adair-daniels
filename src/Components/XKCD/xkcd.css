@@ -29,7 +29,7 @@
   width: 30%;
   margin: 0 auto;
   text-align: center; 
-  height: 7vh; 
+  padding: 10px 0;
   font-size: 17px;
   font-weight: bold;
   background-color: #6E7B91;
@@ -44,4 +44,25 @@
 .credit {
   padding-top: 20px;
   font-size: 17px;
+}
+
+@media only screen and (max-width: 960px) {
+  .slideshow {
+    grid-template-columns: 100%;
+    height: auto;
+  }
+
+  .xkcd-footer nav {
+    grid-template-columns: 48% 48%;
+    margin: 10px auto;
+  }
+
+  .xkcd-footer nav button {
+    width: 50%; 
+    margin: 10px auto;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+
 }
