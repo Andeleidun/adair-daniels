@@ -1,0 +1,105 @@
+// Declarations
+
+$primary: #039be5;
+$stock: #40576F;
+
+// Content
+
+.app-stocktwits .search {
+    margin: 10px 0 20px;
+}
+
+.app-stocktwits .search .stock-input {
+    margin: 5px;
+    width: 20%;
+    min-width: 220px;
+}
+
+.app-stocktwits .search .search-button {
+    background-color: $stock;
+    color: white;
+    margin: 5px;
+}
+
+.app-stocktwits .chips .MuiBadge-badge {
+    color: $stock;
+}
+
+.app-stocktwits .chips .badge {
+    margin: 10px;
+}
+
+.app-stocktwits .chips .chip {
+    background-color: $stock;
+    color: white;
+    margin: 5px;
+}
+
+.app-stocktwits .chips .chip.active-chip {
+    background-color: $primary;
+}
+
+.app-stocktwits .tweets {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.app-stocktwits .tweets .card {
+    border-radius: 0;
+    text-align: left;
+}
+
+.app-stocktwits .tweets .card .MuiCardContent-root div {
+    display: grid;
+    grid-template-areas: 
+        'picture namearea'
+        'picture text';
+    grid-template-columns: 20% 80%;
+}
+
+.app-stocktwits .tweets .picture {
+    grid-area: picture;
+    display: grid;
+    justify-content: center;
+}
+
+.app-stocktwits .tweets .namearea {
+    grid-area: namearea;
+}
+
+.app-stocktwits .tweets .name {
+    font-weight: bold;
+}
+
+.app-stocktwits .tweets .username {
+    color: rgb(101, 119, 134);
+}
+
+.app-stocktwits .tweets .text {
+    grid-area: text;
+}
+
+
+@media only screen and (max-width: 960px) {
+    .app-stocktwits .tweets {
+        width: 75%;
+    }
+
+    .app-stocktwits .search .stock-input {
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .app-stocktwits .tweets {
+        width: 90%;
+    }
+
+    .app-stocktwits .tweets .picture {
+        justify-content: end;
+    }
+
+    .app-stocktwits .search .stock-input {
+        width: 80%;
+    }
+}
