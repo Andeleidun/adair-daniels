@@ -1,5 +1,9 @@
-"use strict";
-
+/*
+    This page shows the strength available in React's component
+    libraries such as Material UI and React-Swipeable-Views,
+    which carry strong functionality encompassed in a single
+    importable component.
+*/
 import React from 'react';
 import './Portfolio.scss';
 
@@ -191,8 +195,9 @@ class Portfolio extends React.Component <Props, State> {
                 >
                 {this.portfolioSlides.map((slide) => (
                     <div key={slide.label} className='slide'>
-                        <img src={slide.img} alt={slide.label} />
-                        <br />
+                        <div className="slide-image">
+                            <img src={slide.img} alt={slide.label} />
+                        </div>
                         {slide.label}
                     </div>
                  ))}

@@ -24,6 +24,11 @@ $primary: #039be5;
     justify-content: center;
 }
 
+.portfolio-display .slide .slide-image {
+    width: 100%;
+    display: block;
+}
+
 .portfolio-display .slide img {
     max-height: 600px;
     box-shadow: $greyBoxShadow;
