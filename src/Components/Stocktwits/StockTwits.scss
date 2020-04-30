@@ -86,13 +86,13 @@ $stock: #40576F;
     }
 
     .app-stocktwits .search .stock-input {
-        width: 50%;
+        width: 75%;
     }
 }
 
 @media only screen and (max-width: 450px) {
     .app-stocktwits .tweets {
-        width: 90%;
+        width: 85%;
     }
 
     .app-stocktwits .tweets .picture {
@@ -100,6 +100,6 @@ $stock: #40576F;
     }
 
     .app-stocktwits .search .stock-input {
-        width: 80%;
+        width: 85%;
     }
 }
