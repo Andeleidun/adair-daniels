@@ -1,3 +1,10 @@
+/*
+  This page demonstrates React's ability to consume RESTful APIs in real time.
+  Of particular use and note, is that the react page loads, and then sends a 
+  request for content that is able to be live loaded into the page without
+  a refresh. It is also a good example of abstraction in React, where multiple
+  components are defined within this component, segmented by function.
+*/
 import React from 'react';
 import './xkcd.css';
 import {reactLogo} from '../../Resources/images/index';

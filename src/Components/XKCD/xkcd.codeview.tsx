@@ -19,9 +19,16 @@ interface State {
 };
 
 const code = `
+/*
+  This page demonstrates React's ability to consume RESTful APIs in real time.
+  Of particular use and note, is that the react page loads, and then sends a 
+  request for content that is able to be live loaded into the page without
+  a refresh. It is also a good example of abstraction in React, where multiple
+  components are defined within this component, segmented by function.
+*/
 import React from 'react';
 import './xkcd.css';
-import logo from '../Library/reactLogo.svg';
+import {reactLogo} from '../../Resources/images/index';
 
 import CardTemplate from '../Library/Card';
 
@@ -58,7 +65,7 @@ class Panel extends React.Component <Props> {
          <CardTemplate 
           title={this.panelTitle}
           content={this.panelFigure}
-          classGiven="panel-card"
+          classGiven="card panel-card"
          />
       </div>
     );
@@ -199,7 +206,7 @@ class XKCD extends React.Component <Props, State> {
     return (
       <div className="xkcd">
         {this.state.loading ? (
-          <img src={logo} className="loading-logo" alt="logo" />
+          <img src={reactLogo} className="loading-logo" alt="logo" />
         ) : (
           <main className="slideshow">
             {this.renderPanels(0)}
@@ -223,6 +230,7 @@ class XKCD extends React.Component <Props, State> {
 }
 
 export default XKCD;
+
 `
 
 class XKCDViewer extends React.Component <Props, State> {

@@ -6,8 +6,6 @@
   to progressively load and submit information for their B2B Printer Sales Contract System.
   The kind of strong typing displayed in this page is extremely important for an enterprise platform.
 */
-"use strict";
-
 import React from 'react';
 import './Home.scss';
 

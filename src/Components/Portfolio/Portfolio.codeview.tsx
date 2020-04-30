@@ -19,6 +19,12 @@ interface State {
 };
 
 const code = `
+/*
+    This page shows the strength available in React's component
+    libraries such as Material UI and React-Swipeable-Views,
+    which carry strong functionality encompassed in a single
+    importable component.
+*/
 import React from 'react';
 import './Portfolio.scss';
 
@@ -61,8 +67,7 @@ interface State {
 
 interface PortfolioSlides {
     title: string;
-    img?: any;
-    imgSet?: any[];
+    img: any;
     label: string;
 }
 
@@ -77,24 +82,44 @@ class Portfolio extends React.Component <Props, State> {
 
     portfolioSlides:PortfolioSlides[] = [
         {
-            title: 'Keto Mate - Highlights, Angular and Ionic App',
-            imgSet: [kmhome, ketomate10k],
-            label: "Screenshots of Keto Mate's home screen and listing in the Google Play Store. Keto Mate is a diet tool built using Angular and Ionic to create a hybrid mobile app with native functionality."
+            title: 'Keto Mate - Home, Angular and Ionic App',
+            img: kmhome,
+            label: "Screenshot of Keto Mate's home screen. Keto Mate is a diet tool built using Angular and Ionic to create a hybrid mobile app with native functionality."
         },
         {
-            title: 'Keto Main - Main Process',
-            imgSet: [kmactive, kmresults],
-            label: "Screenshots of parts of Keto Mate's inital process, followed through from the home screen."
+            title: 'Keto Mate - Store Listing',
+            img: ketomate10k,
+            label: "Screenshot of Keto Mate's store listing."
         },
         {
-            title: 'Keto Mate - Additional Tools',
-            imgSet: [kmadvanced, kmbodyfat],
-            label: "Screenshots of Keto Mate's additional tools, the advanced calculator which can accept values such as an IDEE from a doctor, as well as the body fat calculator using the US Navy method."
+            title: 'Keto Mate - Active',
+            img: kmactive,
+            label: "Screenshot of Keto Mate's activity selection screen"
         },
         {
-            title: 'Keto Mate - Other',
-            imgSet: [kmfaq, kmintro],
-            label: "Screenshots of Keto Mate's other componenets."
+            title: 'Keto Mate - Results',
+            img: kmresults,
+            label: "Screenshot of Keto Mate's results screen."
+        },
+        {
+            title: 'Keto Mate - Advanced',
+            img: kmadvanced,
+            label: "Screenshot of Keto Mate's advanced calculator, which can accept values such as IDEE from a doctor."
+        },
+        {
+            title: 'Keto Mate - Body Fat',
+            img: kmbodyfat,
+            label: "Screenshot of Keto Mate's body fat calculator, which uses the US Navy method."
+        },
+        {
+            title: 'Keto Mate - FAQ',
+            img: kmfaq,
+            label: "Screenshot of Keto Mate's FAQ, which answers frequently asked questions about the keto diet."
+        },
+        {
+            title: 'Keto Mate - Intro',
+            img: kmintro,
+            label: "Screenshot of Keto Mate's intro to the keto diet."
         },
         {
             title: 'Age Chart - Metric Media, using PowerBI',
@@ -190,16 +215,10 @@ class Portfolio extends React.Component <Props, State> {
                     interval={10000}
                 >
                 {this.portfolioSlides.map((slide) => (
-                    <div key={slide.label} className="slide">
-                        {slide.imgSet ?
-                            <div className="image-set">
-                                <div><img src={slide.imgSet[0]} /></div>
-                                <div><img src={slide.imgSet[1]} /></div>
-                            </div>
-                        :
+                    <div key={slide.label} className='slide'>
+                        <div className="slide-image">
                             <img src={slide.img} alt={slide.label} />
-                        }
-                        <br />
+                        </div>
                         {slide.label}
                     </div>
                  ))}
