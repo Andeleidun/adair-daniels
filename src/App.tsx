@@ -38,7 +38,7 @@ class App extends React.Component <Props, State> {
 
   pages: PageInterface[] = [
     {text: 'Home', title: 'Adair Daniels', icon: 'home', component: <Home />, codeView: <HomeViewer />},
-    {text: 'StockTwits Feed', title: 'StockTwits Live Feed', icon: 'dvr', component: <StockTwits />, codeView: <StockViewer />},
+    {text: 'StockTwits Feed', title: 'StockTwits Feed', icon: 'dvr', component: <StockTwits />, codeView: <StockViewer />},
     {text: 'XKCD Slideshow', title: 'XKCD Slideshow', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />},
     {text: 'Portfolio', title: 'Portfolio', icon: 'compare', component: <Portfolio />, codeView: <PortfolioViewer />},
   ];
