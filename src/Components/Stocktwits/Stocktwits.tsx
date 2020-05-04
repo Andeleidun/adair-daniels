@@ -102,7 +102,7 @@ class StockTwits extends React.Component <Props, State> {
             let message = (
                 <div>
                     <figure className="picture">
-                        <img src={tweet.user.avatar_url} alt={tweet.user.username} />
+                        <img src={tweet.user.avatar_url_ssl} alt={tweet.user.username} />
                     </figure>
                     <p className="namearea">
                         <span className="name">{tweet.user.name}</span> <span className="username">@ {tweet.user.username}</span>
