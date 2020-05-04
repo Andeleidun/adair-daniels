@@ -240,18 +240,18 @@ class StockTwits extends React.Component <Props, State> {
             <section className="search">
             <form>
                 <TextField
-                className="stock-input"
-                id="stock-symbols"
-                label="Input stock symbols (separate with a comma)"
-                value={this.state.input}
-                onChange={this.handleChange}
-                InputProps={{
-                    startAdornment: (
-                    <InputAdornment position="start">
-                        $
-                    </InputAdornment>
-                    ),
-                }}
+                  className="stock-input"
+                  id="stock-symbols"
+                  label="Input stock symbols (separate with a comma)"
+                  value={this.state.input}
+                  onChange={this.handleChange}
+                  InputProps={{
+                      startAdornment: (
+                      <InputAdornment position="start">
+                          $
+                      </InputAdornment>
+                      ),
+                  }}
                 />
                 <br />
                 <Button className="search-button" variant="contained" onClick={this.handleSubmit}>Search</Button>

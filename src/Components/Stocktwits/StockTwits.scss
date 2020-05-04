@@ -5,51 +5,51 @@ $stock: #40576F;
 
 // Content
 
-.app-stocktwits .search {
+ .search {
     margin: 10px 0 20px;
 }
 
-.app-stocktwits .search .stock-input {
-    margin: 5px;
-    width: 20%;
+ .search .stock-input {
+    margin: 5px auto;
+    width: 20vw;
     min-width: 220px;
 }
 
-.app-stocktwits .search .search-button {
+ .search .search-button {
     background-color: $stock;
     color: white;
     margin: 5px;
 }
 
-.app-stocktwits .chips .MuiBadge-badge {
+ .chips .MuiBadge-badge {
     color: $stock;
 }
 
-.app-stocktwits .chips .badge {
+ .chips .badge {
     margin: 10px;
 }
 
-.app-stocktwits .chips .chip {
+ .chips .chip {
     background-color: $stock;
     color: white;
     margin: 5px;
 }
 
-.app-stocktwits .chips .chip.active-chip {
+ .chips .chip.active-chip {
     background-color: $primary;
 }
 
-.app-stocktwits .tweets {
-    width: 60%;
+ .tweets {
+    width: 60vw;
     margin: 0 auto;
 }
 
-.app-stocktwits .tweets .card {
+ .tweets .card {
     border-radius: 0;
     text-align: left;
 }
 
-.app-stocktwits .tweets .card .MuiCardContent-root div {
+ .tweets .card .MuiCardContent-root div {
     display: grid;
     grid-template-areas: 
         'picture namearea'
@@ -57,49 +57,49 @@ $stock: #40576F;
     grid-template-columns: 20% 80%;
 }
 
-.app-stocktwits .tweets .picture {
+ .tweets .picture {
     grid-area: picture;
     display: grid;
     justify-content: center;
 }
 
-.app-stocktwits .tweets .namearea {
+ .tweets .namearea {
     grid-area: namearea;
 }
 
-.app-stocktwits .tweets .name {
+ .tweets .name {
     font-weight: bold;
 }
 
-.app-stocktwits .tweets .username {
+ .tweets .username {
     color: rgb(101, 119, 134);
 }
 
-.app-stocktwits .tweets .text {
+ .tweets .text {
     grid-area: text;
 }
 
 
 @media only screen and (max-width: 960px) {
-    .app-stocktwits .tweets {
-        width: 75%;
+     .tweets {
+        width: 75vw;
     }
 
-    .app-stocktwits .search .stock-input {
-        width: 75%;
+     .search .stock-input {
+        width: 75vw;
     }
 }
 
 @media only screen and (max-width: 450px) {
-    .app-stocktwits .tweets {
-        width: 85%;
+     .tweets {
+        width: 90vw;
     }
 
-    .app-stocktwits .tweets .picture {
-        justify-content: end;
+     .tweets .picture {
+        justify-content: space-around;
     }
 
-    .app-stocktwits .search .stock-input {
-        width: 85%;
+     .search .stock-input {
+        width: 85vw;
     }
 }
