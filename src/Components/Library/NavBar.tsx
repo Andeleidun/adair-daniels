@@ -29,7 +29,10 @@ class NavBar extends React.Component <Props> {
         let populatedPages:any[] = [];
         for (let page of this.props.pages) {
             populatedPages.push(
-                <Link to={page.route}>
+                <Link 
+                    to={page.route}
+                    onClick={() => this.props.navClick(page)}
+                >
                     <ListItem 
                         button 
                         key={page.text}

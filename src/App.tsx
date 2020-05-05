@@ -21,7 +21,8 @@ import PortfolioViewer from './Components/Portfolio/Portfolio.codeview';
 
 import Slide from '@material-ui/core/Slide';
 
-interface Props {};
+interface Props {
+};
 
 interface State {
   loading: boolean;
