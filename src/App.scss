@@ -50,7 +50,7 @@ p {
     position: fixed;
     width: 100vw;
     height: 10vh;
-    z-index: 1;
+    z-index: 9999;
 }
 
 .app-header .MuiAppBar-root {
@@ -120,6 +120,14 @@ p {
 
 .app-menu ul {
     z-index: 999;
+}
+
+.app-menu ul a {
+    text-decoration: none;
+}
+
+.app-menu ul a:visited {
+    color: rgba(0, 0, 0, 0.54);
 }
 
 .app-menu .code-view-bar {
