@@ -1,5 +1,10 @@
 import React from 'react';
 import './App.scss';
+import {
+  BrowserRouter,
+  Switch,
+  Route
+} from "react-router-dom";
 
 import Header from './Components/Library/Header';
 import NavBar from './Components/Library/NavBar';
@@ -29,18 +34,20 @@ interface State {
 interface PageInterface {
   text: string;
   title: string;
+  route: string;
   icon: string;
   component: any;
   codeView?: any;
+  exactRoute?: boolean;
 }
 
 class App extends React.Component <Props, State> {
 
   pages: PageInterface[] = [
-    {text: 'Home', title: 'Adair Daniels', icon: 'home', component: <Home />, codeView: <HomeViewer />},
-    {text: 'StockTwits Feed', title: 'StockTwits Feed', icon: 'dvr', component: <StockTwits />, codeView: <StockViewer />},
-    {text: 'XKCD Slideshow', title: 'XKCD Slideshow', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />},
-    {text: 'Portfolio', title: 'Portfolio', icon: 'compare', component: <Portfolio />, codeView: <PortfolioViewer />},
+    {text: 'Home', title: 'Adair Daniels', route: '/', icon: 'home', component: <Home />, codeView: <HomeViewer />, exactRoute: true},
+    {text: 'StockTwits Feed', title: 'StockTwits Feed', route: '/stock', icon: 'dvr', component: <StockTwits />, codeView: <StockViewer />},
+    {text: 'XKCD Slideshow', title: 'XKCD Slideshow', route: '/xkcd', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />},
+    {text: 'Portfolio', title: 'Portfolio', route: '/portfolio', icon: 'compare', component: <Portfolio />, codeView: <PortfolioViewer />},
   ];
 
   state: State = {
@@ -85,49 +92,67 @@ class App extends React.Component <Props, State> {
   }
 
   generateComponent() {
-    if (this.state.codeView) {
-      return (this.state.currentPage.codeView);
-    } else {
-      return (this.state.currentPage.component);
+    let generatedContent:any[] = [];
+    for (let page of this.pages) {
+      let component: any;
+      if (this.state.codeView) {
+        component = page.codeView;
+      } else {
+        component = page.component;
+      }
+      generatedContent.push(
+        <Route
+          path={page.route}
+          exact={page.exactRoute}
+          children={component}
+        />
+      );
     }
+    return (
+      <Switch>
+        {generatedContent}
+      </Switch>
+    );
   }
 
   componentDidMount() {
     this.setState( {
       loading: false
-    })
+    });
   }
 
   render() {
     return (
-      <div className={this.state.navShowClass}>
-        <Header
-          onClick={() => this.toggleNav()}
-          currentPage={this.state.currentPage}
-          codeView={this.state.codeView}
-          toggleCodeView={() => this.toggleCodeView()}
-         />
-        <Slide direction="right" in={this.state.navShow} mountOnEnter unmountOnExit>
-          <div className="app-menu">
-            <NavBar
-              pages={this.pages}
-              navClick={(page: any) => this.navigate(page)}
-              codeView={this.state.codeView}
-              toggleCodeView={() => this.toggleCodeView()}
-            />
-          </div>
-        </Slide>
-        {this.generateOverlay()}
-        <div className="app-main">
-          {this.state.loading ? (
-            <LoadScreen />
-          ) : (
-            <div className="app-content">
-              {this.generateComponent()}
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <div className={this.state.navShowClass}>
+          <Header
+            onClick={() => this.toggleNav()}
+            currentPage={this.state.currentPage}
+            codeView={this.state.codeView}
+            toggleCodeView={() => this.toggleCodeView()}
+          />
+          <Slide direction="right" in={this.state.navShow} mountOnEnter unmountOnExit>
+            <div className="app-menu">
+              <NavBar
+                pages={this.pages}
+                navClick={(page: any) => this.navigate(page)}
+                codeView={this.state.codeView}
+                toggleCodeView={() => this.toggleCodeView()}
+              />
             </div>
-          )}
+          </Slide>
+          {this.generateOverlay()}
+          <div className="app-main">
+            {this.state.loading ? (
+              <LoadScreen />
+            ) : (
+              <div className="app-content">
+                {this.generateComponent()}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </BrowserRouter>
     );
   }
 }

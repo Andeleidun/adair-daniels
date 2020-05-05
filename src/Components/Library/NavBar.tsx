@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -28,18 +29,19 @@ class NavBar extends React.Component <Props> {
         let populatedPages:any[] = [];
         for (let page of this.props.pages) {
             populatedPages.push(
-                <ListItem 
-                    button 
-                    key={page.text}
-                    onClick={() => this.props.navClick(page)}
-                >
-                    <ListItemIcon>
-                        <i className="material-icons">
-                            {page.icon}
-                        </i>
-                    </ListItemIcon>
-                    <ListItemText primary={page.text} />
-                </ListItem>
+                <Link to={page.route}>
+                    <ListItem 
+                        button 
+                        key={page.text}
+                    >
+                        <ListItemIcon>
+                            <i className="material-icons">
+                                {page.icon}
+                            </i>
+                        </ListItemIcon>
+                        <ListItemText primary={page.text} />
+                    </ListItem>
+                </Link>
             )
         }
         return (populatedPages);
