@@ -1,3 +1,4 @@
+const NavBarCode = `
 import React from 'react';
 import {Link} from 'react-router-dom';
 
@@ -7,6 +8,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+
+interface Props {
+    pages: any[];
+    navClick: any;
+    codeView: boolean;
+    toggleCodeView: any;
+};
 
 const NavBar = (props) => {
     const handleChange = () => {
@@ -69,3 +77,6 @@ const NavBar = (props) => {
 }
 
 export default NavBar;
+`
+
+export default NavBarCode;

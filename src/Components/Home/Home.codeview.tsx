@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import Viewer from 'react-code-viewer';
 import { highlight, languages } from 'prismjs/components/prism-core';
@@ -11,13 +11,6 @@ import CardTemplate from '../Library/Card';
 
 require('prismjs/components/prism-jsx');
 
-interface Props {};
-
-interface State {
-    code: string,
-    readonly: boolean
-};
-
 const code = `
 /*
   This page demonstrates React's strong capacity for generating content from provided data. 
@@ -27,9 +20,7 @@ const code = `
   to progressively load and submit information for their B2B Printer Sales Contract System.
   The kind of strong typing displayed in this page is extremely important for an enterprise platform.
 */
-"use strict";
-
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Home.scss';
 
 import CardTemplate from '../Library/Card';
@@ -44,14 +35,6 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
-
-interface Props {};
-
-interface State {
-  experienceIndex: number;
-  educationIndex: number;
-  loading: boolean;
-};
 
 interface Links {
   url: string;
@@ -114,76 +97,73 @@ interface DataSet {
   [paramName: string]: CardContent;
 }
 
-class Home extends React.Component <Props, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      experienceIndex: 0,
-      educationIndex: 0,
-      loading: true,
-    };
-  }
-  homeData:DataSet = HomeData.homeData;
-  experienceLength:number = 0;
-  educationLength:number = 0;
+const Home = () => {
+    const [experienceIndex, setExperienceIndex] = useState(0);
+    const [educationIndex, setEducationIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
 
-  /* 
-    This function demonstrates handling multiple navigable elements for a single
-    view with a single function.
-  */
-  navigate(input: string, title: string) {
-    const step:number = 1;
-    const baseIndex:number = 0;
-    let newState:number = 1;
-    let operation:string = input+title;
+    const homeData: DataSet = HomeData.homeData;
+    let experienceLength: number = 0;
+    let educationLength: number = 0;
+
+    useEffect(() => {
+      if (loading) {
+        setLoading(false);
+      }
+    }, [])
     
-    switch(operation) {
-      case 'previousExperience':
-        newState = this.state.experienceIndex - step;
-        if ( newState < baseIndex ) {
-          newState = this.experienceLength;
-        }
-        this.setState({
-          experienceIndex: newState
-        });
-        break;
-      case 'previousEducation':
-        newState = this.state.educationIndex - step;
-        if ( newState < baseIndex ) {
-          newState = this.educationLength;
-        }
-        this.setState({
-          educationIndex: newState
-        });
-        break;
-      case 'nextExperience':
-        newState = this.state.experienceIndex + step;
-        if ( newState > this.experienceLength ) {
-          newState = baseIndex;
-        }
-        this.setState({
-          experienceIndex: newState
-        });
-        break;
-      case 'nextEducation':
-        newState = this.state.educationIndex + step;
-        if ( newState > this.educationLength ) {
-          newState = baseIndex;
-        }
-        this.setState({
-          educationIndex: newState
-        });
-        break;
-      default:
-        console.log("Navigation error.");
-    }
-  }
+    /* 
+      This function demonstrates handling multiple navigable elements for a single
+      view with a single function.
+    */
 
-  /* 
-    This function generates content for specifically an array of type GroupSet.
-    This is a good example of factoring out a function for a specific task.
-  */
-  generateGroupSet(groupSet:GroupSet[]) {
+    const navigate = (input: string, title: string) => {
+      const step: number = 1;
+      const baseIndex: number = 0;
+      let newState: number = 1;
+      let operation: string = input+title;
+
+      switch(operation) {
+        case 'previousExperience':
+          newState = experienceIndex - step;
+          if ( newState < baseIndex ) {
+            newState = experienceLength;
+          }
+          setExperienceIndex(newState);
+          break;
+        case 'previousEducation':
+          newState = educationIndex - step;
+          if ( newState < baseIndex ) {
+            newState = educationLength;
+          }
+          setEducationIndex(newState);
+          break;
+        case 'nextExperience':
+          newState = experienceIndex + step;
+          if ( newState > experienceLength ) {
+            newState = baseIndex;
+          }
+          setExperienceIndex(newState);
+          break;
+        case 'nextEducation':
+          newState = educationIndex + step;
+          if ( newState > educationLength ) {
+            newState = baseIndex;
+          }
+          setEducationIndex(newState);
+          break;
+        default:
+          console.log("Navigation error.");
+      }
+    }
+
+  
+    /* 
+      This function generates content for specifically an array of type GroupSet.
+      This is a good example of factoring out a function for a specific task.
+    */
+
+  const generateGroupSet = (groupSet:GroupSet[]) => {
     let groupSetContent:any[] = [];
     for (let group of groupSet) {
       let groupContent:any[] = [];
@@ -257,13 +237,13 @@ class Home extends React.Component <Props, State> {
       )
     }
     return(groupSetContent);
-  }
+    }
 
-  /* 
-    This function handles specifically the generation of content for the inside
-    of the cards within the page.
-  */
-  formatContent(contentSet:CardContent) {
+    /* 
+      This function handles specifically the generation of content for the inside
+      of the cards within the page.
+    */
+  const formatContent = (contentSet:CardContent) => {
     let formattedContent:any[] = [];
     let title:string = contentSet.title;
     let contentGroup:any[] = contentSet.content;
@@ -321,15 +301,15 @@ class Home extends React.Component <Props, State> {
             navigate_next
           </span>
         );
-        generatedGroupSet = this.generateGroupSet(content.groupSet);
+        generatedGroupSet = generateGroupSet(content.groupSet);
         groupSetLength = generatedGroupSet.length;
         if (title === "Experience") {
-          this.experienceLength = groupSetLength - 1;
-          groupSetContent = generatedGroupSet[this.state.experienceIndex];
+          experienceLength = groupSetLength - 1;
+          groupSetContent = generatedGroupSet[experienceIndex];
         }
         if (title === "Education") {
-          this.educationLength = groupSetLength - 1;
-          groupSetContent = generatedGroupSet[this.state.educationIndex];
+          educationLength = groupSetLength - 1;
+          groupSetContent = generatedGroupSet[educationIndex];
         }
         formattedContent.push(
           <div className="group-set">
@@ -342,7 +322,7 @@ class Home extends React.Component <Props, State> {
                 <Button 
                   variant="contained"
                   startIcon={previousIcon}
-                  onClick={() => this.navigate("previous", title)}
+                  onClick={() => navigate("previous", title)}
                 >
                   Previous
                 </Button>
@@ -351,7 +331,7 @@ class Home extends React.Component <Props, State> {
                 <Button 
                   variant="contained"
                   endIcon={nextIcon}
-                  onClick={() => this.navigate("next", title)}
+                  onClick={() => navigate("next", title)}
                 >
                   Next
                 </Button>
@@ -381,10 +361,10 @@ class Home extends React.Component <Props, State> {
     the cards, leaving it the sole function called to create content
     on an otherwise empty page.
   */
-  generateContent() {
+  const generateContent = () => {
     let contentArray:any[] = [];
     let formattedArray:any[] = [];
-    for (let [key, value] of Object.entries(this.homeData)) {
+    for (let [key, value] of Object.entries(homeData)) {
       contentArray.push(value);
     }
     for (let content of contentArray) {
@@ -401,7 +381,7 @@ class Home extends React.Component <Props, State> {
         <CardTemplate
           title={content.title}
           img={media}
-          content={this.formatContent(content)}
+          content={formatContent(content)}
           classGiven={content.classes}
           links={content.links}
         />
@@ -409,52 +389,39 @@ class Home extends React.Component <Props, State> {
     }
     return (formattedArray);
   }
+  
+  return (
+    <main className="app-home">
+      {generateContent()}
+    </main>
+  );
 
-  componentDidMount() {
-    this.setState( {
-      loading: false
-    })
-  }
-
-  render() {
-    return (
-      <main className="app-home">
-        {this.generateContent()}
-      </main>
-    );
-  }
 }
 
 export default Home;
 `
 
-class HomeViewer extends React.Component <Props, State> {
+const HomeViewer = () => {
+  const [codeState] = useState(code);
 
-    state = {
-        code,
-        readonly: true,
-      };
-
-    render() {
-        let viewer = (
-            <Viewer
-                value={this.state.code}
-                highlight={code => highlight(code, languages.js)}
-                padding={10}
-                style={{
-                fontFamily: '"Fira code", "Fira Mono", monospace',
-                fontSize: 12,
-                }}
-            />);
+  let viewer = (
+    <Viewer 
+      value={codeState}
+      highlight={value => highlight(value, languages.js)}
+      padding={10}
+      style={{
+        fontFamily: '"Fira code", "Fira Mono", monospace',
+        fontSize: 12,
+      }}
+    />);
     return (
-        <main className="app-code-viewer">
-            <CardTemplate
-                content={viewer}
-                classGiven="card"
-            />
-        </main>
-    );
-    }
+      <main className="app-code-viewer">
+          <CardTemplate
+              content={viewer}
+              classGiven="card"
+          />
+      </main>
+  );
 }
 
 export default HomeViewer;

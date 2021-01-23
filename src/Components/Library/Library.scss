@@ -1,0 +1,31 @@
+.library-page {
+    display: grid;
+    grid-template-areas: 
+        'nav'
+        'code';
+    grid-template-columns: 60%;
+    justify-content: space-around;
+    grid-gap: 10px;
+}
+
+.library-page .card {
+    margin: 0 auto;
+    width: 100%;
+}
+
+.library-page .library-card .card-buttons {
+    justify-content: center;
+    grid-gap: 15px;
+}
+  
+@media only screen and (max-width: 960px) {
+    .library-page .library-card {
+        width: 100%;
+    }
+}
+  
+@media only screen and (max-width: 450px) {
+    .library-page {
+      grid-template-columns: 90%;
+    }
+}

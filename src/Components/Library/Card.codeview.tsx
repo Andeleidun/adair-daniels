@@ -1,3 +1,4 @@
+const CardCode = `
 import React from 'react';
 
 import Card from '@material-ui/core/Card';
@@ -77,3 +78,6 @@ const CardTemplate = (props) => {
 }
 
 export default CardTemplate;
+`
+
+export default CardCode;

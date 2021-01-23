@@ -1,3 +1,4 @@
+const AppCode = `
 import React, {useEffect, useState} from 'react';
 import './App.scss';
 import {
@@ -96,9 +97,6 @@ const App = () => {
     return (
       <Switch>
         {generatedContent}
-        <Route
-          path="/" children={pages[0].component} 
-        />
       </Switch>
     );
   }
@@ -139,3 +137,6 @@ const App = () => {
 }
 
 export default App;
+`
+
+export default AppCode;
