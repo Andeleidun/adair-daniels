@@ -41,7 +41,7 @@ const App = () => {
     {text: 'StockTwits Feed', title: 'StockTwits Feed', route: '/stock', icon: 'dvr', component: <StockTwits />, codeView: <StockViewer />},
     {text: 'XKCD Slideshow', title: 'XKCD Slideshow', route: '/xkcd', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />},
     {text: 'Portfolio', title: 'Portfolio', route: '/portfolio', icon: 'compare', component: <Portfolio />, codeView: <PortfolioViewer />},
-    {text: 'Library', title: 'Library', route: '/library', icon: 'compare', component: <Library />, codeView: <LibraryViewer />},
+    {text: 'Library', title: 'Library', route: '/library', icon: 'library_books', component: <Library />, codeView: <LibraryViewer />},
   ];
   const [currentPage, setCurrentPage] = useState(pages[0]);
   const [codeView, setCodeView] = useState(false);

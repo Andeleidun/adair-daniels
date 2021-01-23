@@ -22,10 +22,18 @@
     .library-page .library-card {
         width: 100%;
     }
+
+    .library-page .library-card .card-buttons {
+        grid-gap: 10px;
+    }
 }
   
 @media only screen and (max-width: 450px) {
     .library-page {
       grid-template-columns: 90%;
+    }
+
+    .library-page .library-card .card-buttons {
+        grid-gap: 5px;
     }
 }
