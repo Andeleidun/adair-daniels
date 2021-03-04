@@ -5,7 +5,7 @@
             "media": "headshot",
             "content": [
                 {
-                    "text": "Over 6 years of experience as UI/UX and Frontend Web Developer specializing in the development and design of user interfaces for complex software applications."
+                    "text": "Over 7 years of experience as UI/UX and Frontend Web Developer specializing in the development and design of user interfaces for complex software applications."
                 },
                 {
                     "text": "Expert at developing full stack enterprise level web and Android applications utilizing Angular, React, Ionic, Vue, PostgreSQL, NodeJS, JavaScript, TypeScript, HTML5, and CSS3."
@@ -67,8 +67,8 @@
                 {
                     "skillset": {
                         "title": "React",
-                        "value": 4,
-                        "text": "Advanced"
+                        "value": 5,
+                        "text": "Expert"
                     }
                 },
                 {
@@ -95,6 +95,62 @@
             "content": [
                 {
                     "groupSet": [
+                        {
+                            "group": [
+                                {
+                                    "classes": "group sparrow-software-group"
+                                },
+                                {
+                                    "title": "Sparrow Software / Alluma"
+                                },
+                                {
+                                    "dates": "October 2020 - Present"
+                                },
+                                {
+                                    "description": "Sparrow Software specializes in creating reactive, extensible application software. Alluma is a sister non-profit entity that specializes in providing technological solutions to state, local, and county governments, and community organizations that have been used to connect clients to services from Medicaid and SNAP to EITC to locally-based programs."
+                                },
+                                {
+                                    "jobTitle": "Lead UI Developer"
+                                },
+                                {
+                                    "text": "Leading the development of the React frontend of the One-x-Connection healthcare application system, successfully converting from a class based component system to a React Hooks system, through a successful first launch and continuing with further features."
+                                },
+                                {
+                                    "text": "Creating a new UI Element library, with over 100 elements designed to be highly functional and styled out of the box, with the Lead UX Researcher, using React Hooks and both reactive styling through React and modern CSS architecture such as CSS Variables and Grid."
+                                },
+                                {
+                                    "text": "Developing new features, providers, views, and components using React Hooks, Redux, ES6, JavaScript, lodash, CSS, REST APIs, UX principles and accessibility standards."
+                                },
+                                {
+                                    "text": "Overseeing, coaching, and performing code reviews for the frontend team, including senior and junior developers. Advocated for and began weekly check in and coaching sessions with team members."
+                                },
+                                {
+                                    "text": "Managing code base quality and data integrity using Azure DevOps, unit and integration testing, Git feature branch management, user story management, bug fixes, and coordination with the QA team."
+                                },
+                                {
+                                    "text": "Coordinating with other team leads remotely to keep projects moving on time with design sessions, backlog grooming, sprint planning and retrospectives."
+                                },
+                                {
+                                    "skills": [
+                                        "React", 
+                                        "React Hooks", 
+                                        "ES6", 
+                                        "JavaScript", 
+                                        "Azure", 
+                                        "Redux", 
+                                        "CSS", 
+                                        "GIT", 
+                                        "lodash", 
+                                        "REST", 
+                                        "Leadership", 
+                                        "Coaching", 
+                                        "Unit testing", 
+                                        "Integration testing", 
+                                        "Microsoft SQL Server"
+                                    ]
+                                }
+                            ]
+                        },
                         {
                             "group": [
                                 {
