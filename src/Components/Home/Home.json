@@ -98,25 +98,28 @@
                         {
                             "group": [
                                 {
-                                    "classes": "group sparrow-software-group"
+                                    "classes": "group alluma-group"
                                 },
                                 {
-                                    "title": "Sparrow Software / Alluma"
+                                    "title": "Alluma"
                                 },
                                 {
                                     "dates": "October 2020 - Present"
                                 },
                                 {
-                                    "description": "Sparrow Software specializes in creating reactive, extensible application software. Alluma is a sister non-profit entity that specializes in providing technological solutions to state, local, and county governments, and community organizations that have been used to connect clients to services from Medicaid and SNAP to EITC to locally-based programs."
+                                    "description": "Alluma is a non-profit entity that specializes in providing technological solutions to state, local, and county governments, and community organizations that have been used to connect clients to services from Medicaid and SNAP to EITC to locally-based programs."
                                 },
                                 {
                                     "jobTitle": "Lead UI Developer"
                                 },
                                 {
-                                    "text": "Leading the development of the React frontend of the One-x-Connection healthcare application system, successfully converting from a class based component system to a React Hooks system, through a successful first launch and continuing with further features."
+                                    "text": "Architecting and leading the development of the Carousel Solution Engine, a frontend app engine that utilizes live loaded JSON configuration files to generate data driven frontend applications that are WCAG 2.1 AA validated and unit tested out of the box, using React Hooks and Context."
                                 },
                                 {
-                                    "text": "Creating a new UI Element library, with over 100 elements designed to be highly functional and styled out of the box, with the Lead UX Researcher, using React Hooks and both reactive styling through React and modern CSS architecture such as CSS Variables and Grid."
+                                    "text": "Led the development of the React frontend of the One-x-Connection healthcare application system, successfully converting from a class based component system to a React Hooks system, through a successful first launch and first set of post launch features."
+                                },
+                                {
+                                    "text": "Creating a new UI Element library, with over 100 elements designed to be highly functional and styled out of the box, as well as the publication and maintenance of a private scoped npm package, with the Lead UX Researcher, using React Hooks and both reactive styling through React and modern CSS architecture such as CSS Variables and Grid."
                                 },
                                 {
                                     "text": "Developing new features, providers, views, and components using React Hooks, Redux, ES6, JavaScript, lodash, CSS, REST APIs, UX principles and accessibility standards."
@@ -146,7 +149,8 @@
                                         "Coaching", 
                                         "Unit testing", 
                                         "Integration testing", 
-                                        "Microsoft SQL Server"
+                                        "Microsoft SQL Server",
+                                        "Cypress"
                                     ]
                                 }
                             ]
