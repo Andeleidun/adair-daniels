@@ -113,7 +113,7 @@
                                     "jobTitle": "Lead UI Developer"
                                 },
                                 {
-                                    "text": "Architecting and leading the development of the Carousel Solution Engine, a frontend app engine that utilizes live loaded JSON configuration files to generate data driven frontend applications that are WCAG 2.1 AA validated and unit tested out of the box, using React Hooks and Context."
+                                    "text": "Architecting and leading the development of the Carousel Solution Engine, a frontend app engine that utilizes live loaded JSON configuration files to generate data driven frontend applications that are WCAG 2.1 AA validated, have multilingual support, and are unit tested out of the box, with test case applications being built alongside for assessing benefit eligibility in California and Tennessee, using React Hooks and Context."
                                 },
                                 {
                                     "text": "Led the development of the React frontend of the One-x-Connection healthcare application system, successfully converting from a class based component system to a React Hooks system, through a successful first launch and first set of post launch features."
