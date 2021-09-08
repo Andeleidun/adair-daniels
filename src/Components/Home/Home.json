@@ -1,7 +1,7 @@
 {
 	"homeData": {
 		"career": {
-            "title": "UX Developer",
+            "title": "Lead UI Developer",
             "media": "headshot",
             "content": [
                 {
@@ -9,6 +9,9 @@
                 },
                 {
                     "text": "Expert at developing full stack enterprise level web and Android applications utilizing Angular, React, Ionic, Vue, PostgreSQL, NodeJS, JavaScript, TypeScript, HTML5, and CSS3."
+                },
+                {
+                    "text": "Experienced leader with a successful track record of bringing applications to launch, coaching and mentoring junior developers, and coordinating with other team leads to bring projects to life."
                 },
                 {
                     "text": "Experience in Web and Client/Server applications that includes analysis, design, coding, testing, and implementation of the systems accompanied by strong programming skills in JavaScript."
