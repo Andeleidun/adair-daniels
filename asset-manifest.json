@@ -1,19 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.5dd62599.chunk.css",
-    "main.js": "/static/js/main.85c3ef98.chunk.js",
-    "main.js.map": "/static/js/main.85c3ef98.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.91c2820a.js",
-    "runtime-main.js.map": "/static/js/runtime-main.91c2820a.js.map",
-    "static/js/2.844b366e.chunk.js": "/static/js/2.844b366e.chunk.js",
-    "static/js/2.844b366e.chunk.js.map": "/static/js/2.844b366e.chunk.js.map",
+    "main.css": "/static/css/main.42001814.chunk.css",
+    "main.js": "/static/js/main.b3671f34.chunk.js",
+    "main.js.map": "/static/js/main.b3671f34.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.b57ffdce.js",
+    "runtime-main.js.map": "/static/js/runtime-main.b57ffdce.js.map",
+    "static/js/2.8409ca54.chunk.js": "/static/js/2.8409ca54.chunk.js",
+    "static/js/2.8409ca54.chunk.js.map": "/static/js/2.8409ca54.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.40ac3f15123426e4d7543e87a8e31a71.js": "/precache-manifest.40ac3f15123426e4d7543e87a8e31a71.js",
+    "precache-manifest.b58f92af1910c94c9bde07770ab0b533.js": "/precache-manifest.b58f92af1910c94c9bde07770ab0b533.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/main.5dd62599.chunk.css.map": "/static/css/main.5dd62599.chunk.css.map",
-    "static/js/2.844b366e.chunk.js.LICENSE.txt": "/static/js/2.844b366e.chunk.js.LICENSE.txt",
+    "static/css/main.42001814.chunk.css.map": "/static/css/main.42001814.chunk.css.map",
+    "static/js/2.8409ca54.chunk.js.LICENSE.txt": "/static/js/2.8409ca54.chunk.js.LICENSE.txt",
+    "static/js/main.b3671f34.chunk.js.LICENSE.txt": "/static/js/main.b3671f34.chunk.js.LICENSE.txt",
     "static/media/agechart.jpg": "/static/media/agechart.482ea8fd.jpg",
-    "static/media/clippy.svg": "/static/media/clippy.c6b23471.svg",
+    "static/media/clippy.svg": "/static/media/clippy.d41d8cd9.svg",
     "static/media/experiencechart.jpg": "/static/media/experiencechart.b28bac1c.jpg",
     "static/media/genderchart.jpg": "/static/media/genderchart.756b4563.jpg",
     "static/media/headshot.jpg": "/static/media/headshot.1688149f.jpg",
@@ -37,9 +38,9 @@
     "static/media/vanderhall.jpg": "/static/media/vanderhall.0c9dd0d9.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.91c2820a.js",
-    "static/js/2.844b366e.chunk.js",
-    "static/css/main.5dd62599.chunk.css",
-    "static/js/main.85c3ef98.chunk.js"
+    "static/js/runtime-main.b57ffdce.js",
+    "static/js/2.8409ca54.chunk.js",
+    "static/css/main.42001814.chunk.css",
+    "static/js/main.b3671f34.chunk.js"
   ]
 }
