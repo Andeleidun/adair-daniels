@@ -116,7 +116,7 @@
                                     "jobTitle": "Lead Frontend Developer"
                                 },
                                 {
-                                    "text": "Create frontend user interfaces and services for the rollout of the Korean global launch for the Nike SNKRS Launch enterprise ecommerce platform using React Hooks, Redux, ES6, and AWS."
+                                    "text": "Create frontend user interfaces and services for the rollout of the Korean global launch for the Nike SNKRS Launch enterprise ecommerce platform using React Hooks, Redux, Docker, ES6, and AWS."
                                 },
                                 {
                                     "text": "Develop the analytics, tests, and remote component integration for dual micro frontends utilizing in house tools, JavaScript, New Relic, REST APIs, and Mocha."
@@ -137,6 +137,7 @@
                                     "skills": [
                                         "React", 
                                         "Redux", 
+                                        "Docker",
                                         "Hooks", 
                                         "ES6", 
                                         "AWS", 
