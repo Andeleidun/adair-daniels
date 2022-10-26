@@ -16,6 +16,7 @@ const code = `
   This component uses lazy loading iframes to setup a portal
   for separately hosted micro-frontends. This is implemented 
   with the PokeTable.
+  PokeTable is a filterable and sortable React data table.
   PokeTable code can be found on github -
   https://github.com/Andeleidun/pokeTable
 */

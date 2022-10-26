@@ -44,6 +44,14 @@ const App = () => {
       exactRoute: true,
     },
     {
+      text: 'PokeTable',
+      title: 'PokeTable',
+      route: '/poketable',
+      icon: 'table_view',
+      component: <Portal url="https://andeleidun.github.io/pokeTable/" />,
+      codeView: <PortalViewer />,
+    },
+    {
       text: 'StockTwits Feed',
       title: 'StockTwits Feed',
       route: '/stock',
@@ -74,14 +82,6 @@ const App = () => {
       icon: 'library_books',
       component: <Library />,
       codeView: <LibraryViewer />,
-    },
-    {
-      text: 'PokeTable',
-      title: 'PokeTable',
-      route: '/poketable',
-      icon: 'table_view',
-      component: <Portal url="https://andeleidun.github.io/pokeTable/" />,
-      codeView: <PortalViewer />,
     },
   ];
   const [currentPage, setCurrentPage] = useState(pages[0]);
