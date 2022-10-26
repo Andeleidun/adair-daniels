@@ -1,5 +1,6 @@
 import headshot from './self/headshot.jpg';
 import ketomate from './logos/ketomate.png';
+import nike from './logos/nike.jpg';
 import hp from './logos/hp.png';
 import reactLogo from './logos/reactLogo.svg';
 import agechart from './portfolio/agechart.jpg';
@@ -21,25 +22,28 @@ import phoenixstone from './portfolio/phoenixstone.jpg';
 import phoenixstonespeed from './portfolio/phoenixstone_speed.jpg';
 import vanderhall from './portfolio/vanderhall.jpg';
 
-export {headshot};
-export {ketomate};
-export {hp};
-export {reactLogo};
-export {agechart};
-export {experiencechart};
-export {genderchart};
-export {ketomate10k};
-export {kmactive};
-export {kmadvanced};
-export {kmbodyfat};
-export {kmfaq};
-export {kmhome};
-export {kmintro};
-export {kmmenu};
-export {kmresults};
-export {metricmedia};
-export {metricmediaspeed};
-export {mylifter};
-export {phoenixstone};
-export {phoenixstonespeed};
-export {vanderhall};
+export {
+  headshot,
+  ketomate,
+  nike,
+  hp,
+  reactLogo,
+  agechart,
+  experiencechart,
+  genderchart,
+  ketomate10k,
+  kmactive,
+  kmadvanced,
+  kmbodyfat,
+  kmfaq,
+  kmhome,
+  kmintro,
+  kmmenu,
+  kmresults,
+  metricmedia,
+  metricmediaspeed,
+  mylifter,
+  phoenixstone,
+  phoenixstonespeed,
+  vanderhall,
+};

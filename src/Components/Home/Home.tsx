@@ -10,7 +10,7 @@ import React, { useState, useEffect } from 'react';
 import './Home.scss';
 
 import CardTemplate from '../Library/Card';
-import { headshot, ketomate, hp } from '../../Resources/images/index';
+import { headshot, ketomate, hp, nike } from '../../Resources/images/index';
 import HomeData from './Home.json';
 
 import List from '@material-ui/core/List';
@@ -221,18 +221,12 @@ const Home = () => {
         formattedContent.push(<h3>{title}</h3>);
       }
       if (content.linkset) {
-        let image;
-        switch (content.linkset.img) {
-          case 'ketomate':
-            image = ketomate;
-            break;
-          case 'hp':
-            image = hp;
-            break;
-          default:
-            image = undefined;
-            break;
-        }
+        const imageSet = {
+          ketomate,
+          hp,
+          nike,
+        };
+        const image = imageSet[content.linkset.img];
         formattedContent.push(
           <ListItem key={content.linkset.title} className="linkset">
             <a
