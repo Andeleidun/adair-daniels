@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "162dca12fbea471fd5890f2e87666d22",
+    "revision": "316821339672f2f222e942cc42d8bdd9",
     "url": "/index.html"
   },
   {
-    "revision": "fa9ff1433ab1cf218c8d",
-    "url": "/static/css/main.0e699092.chunk.css"
+    "revision": "4a96796f563b935f3ed3",
+    "url": "/static/css/main.ab1ba8ef.chunk.css"
   },
   {
-    "revision": "2b1cb9e4985d3c8ae52c",
-    "url": "/static/js/2.0c194d94.chunk.js"
+    "revision": "9b35052d9aab9188eb68",
+    "url": "/static/js/2.e0925310.chunk.js"
   },
   {
     "revision": "7515bfc31540a77306912aec7d6b48ee",
-    "url": "/static/js/2.0c194d94.chunk.js.LICENSE.txt"
+    "url": "/static/js/2.e0925310.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "fa9ff1433ab1cf218c8d",
-    "url": "/static/js/main.5cf2b42d.chunk.js"
+    "revision": "4a96796f563b935f3ed3",
+    "url": "/static/js/main.38319f21.chunk.js"
   },
   {
     "revision": "4e0e34f265fae8f33b01b27ae29d9d6f",
-    "url": "/static/js/main.5cf2b42d.chunk.js.LICENSE.txt"
+    "url": "/static/js/main.38319f21.chunk.js.LICENSE.txt"
   },
   {
     "revision": "d579ffbac3ca53ef0d1a",
@@ -44,8 +44,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/media/genderchart.756b4563.jpg"
   },
   {
-    "revision": "1688149f15627b18a47753bb08d57545",
-    "url": "/static/media/headshot.1688149f.jpg"
+    "revision": "6b5fedd27c47c5fa77c018e3178b46ff",
+    "url": "/static/media/headshot.6b5fedd2.jpg"
   },
   {
     "revision": "6c7f5204cbeea9de0ffe04ad7776b9d1",
@@ -102,6 +102,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "8a343d9d12d70eed9931c6daaaf993c9",
     "url": "/static/media/mylifter.8a343d9d.jpg"
+  },
+  {
+    "revision": "7e6650f387237c0fc2948e40e8d3f1b5",
+    "url": "/static/media/nike.7e6650f3.jpg"
   },
   {
     "revision": "1154d83a141e9059a45ecd87b03df127",
