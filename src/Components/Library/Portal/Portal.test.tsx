@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Header from './Header';
+import Portal from './Portal';
 
-describe('Header', () => {
+describe('Portal', () => {
   it('should render correctly', () => {
-    const component = render(<Header />);
+    const component = render(<Portal />);
   });
 });

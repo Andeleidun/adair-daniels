@@ -1,4 +1,3 @@
-const HeaderCode = `
 import React from 'react';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -8,14 +7,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 const Header = (props) => {
-
   const handleChange = () => {
     props.toggleCodeView();
-  }
+  };
 
   const generateCodeView = () => {
     if (props.currentPage.codeView) {
-      let codeViewBar:any = (
+      let codeViewBar: any = (
         <div className="code-view-bar">
           <FormControlLabel
             control={
@@ -29,30 +27,28 @@ const Header = (props) => {
           />
         </div>
       );
-      return (codeViewBar);
+      return codeViewBar;
     }
-  }
+  };
 
   return (
     <header className="app-header">
       <AppBar position="static">
-        <IconButton edge="start" aria-label="menu" className="menu-button" onClick={props.onClick}>
-            <i className="material-icons">
-              menu
-            </i>
+        <IconButton
+          edge="start"
+          aria-label="menu"
+          className="menu-button"
+          onClick={props.onClick}
+        >
+          <i className="material-icons">menu</i>
         </IconButton>
         <Toolbar className="title-bar">
-          <h1>
-            {props.currentPage.title}
-          </h1>
+          <h1>{props.currentPage.title}</h1>
         </Toolbar>
-         {generateCodeView()}
+        {generateCodeView()}
       </AppBar>
     </header>
   );
-}
+};
 
 export default Header;
-`
-
-export default HeaderCode;

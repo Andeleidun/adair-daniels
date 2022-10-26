@@ -7,73 +7,59 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 
 const CardTemplate = (props) => {
-
-  const {img, title, text, content, classGiven, links} = props;
+  const { img, title, text, content, classGiven, links } = props;
 
   const generateLinks = () => {
     if (links) {
-      let generatedLinks:any[] = [];
+      let generatedLinks: any[] = [];
       for (let link of links) {
         generatedLinks.push(
-          <a href={link.url ? link.url : null} onClick={link.onClick ? link.onClick : null} target="_blank" rel="noopener noreferrer">
+          <a
+            href={link.url ? link.url : null}
+            onClick={link.onClick ? link.onClick : null}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button className="card-button" fullWidth>
-                {link.text}
+              {link.text}
             </Button>
           </a>
         );
       }
-      return(
-        <CardActions className="card-buttons">
-          {generatedLinks}
-        </CardActions>
+      return (
+        <CardActions className="card-buttons">{generatedLinks}</CardActions>
       );
     }
-  }
+  };
 
   const generateMedia = () => {
     if (img) {
-      return(
-        <CardMedia
-          className="media-area"
-          image={img}
-          title={title}
-        />
-      );
+      return <CardMedia className="media-area" image={img} title={title} />;
     }
-  }
+  };
 
   const generateContent = () => {
-    let genContent:any[] = [];
+    let genContent: any[] = [];
 
     if (title) {
-      genContent.push(
-        <h2>
-          {title}
-        </h2>
-      );
+      genContent.push(<h2>{title}</h2>);
     }
     if (text) {
-      genContent.push(
-        <p>
-          {text}
-        </p>
-      );
+      genContent.push(<p>{text}</p>);
     }
     if (content) {
       genContent.push(content);
     }
-    return(genContent);
-  }
+    return genContent;
+  };
 
   return (
     <Card className={classGiven}>
       {generateMedia()}
-      <CardContent>
-        {generateContent()}
-      </CardContent>
+      <CardContent>{generateContent()}</CardContent>
       {generateLinks()}
     </Card>
   );
-}
+};
 
 export default CardTemplate;

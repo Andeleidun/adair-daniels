@@ -6,11 +6,11 @@
   to progressively load and submit information for their B2B Printer Sales Contract System.
   The kind of strong typing displayed in this page is extremely important for an enterprise platform.
 */
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.scss';
 
 import CardTemplate from '../Library/Card';
-import {headshot, ketomate, hp} from '../../Resources/images/index';
+import { headshot, ketomate, hp } from '../../Resources/images/index';
 import HomeData from './Home.json';
 
 import List from '@material-ui/core/List';
@@ -84,76 +84,75 @@ interface DataSet {
 }
 
 const Home = () => {
-    const [experienceIndex, setExperienceIndex] = useState(0);
-    const [educationIndex, setEducationIndex] = useState(0);
-    const [loading, setLoading] = useState(true);
+  const [experienceIndex, setExperienceIndex] = useState(0);
+  const [educationIndex, setEducationIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-    const homeData: DataSet = HomeData.homeData;
-    let experienceLength: number = 0;
-    let educationLength: number = 0;
+  const homeData: DataSet = HomeData.homeData;
+  let experienceLength: number = 0;
+  let educationLength: number = 0;
 
-    useEffect(() => {
-      if (loading) {
-        setLoading(false);
-      }
-    }, [])
-    
-    /* 
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, []);
+
+  /* 
       This function demonstrates handling multiple navigable elements for a single
       view with a single function.
     */
 
-    const navigate = (input: string, title: string) => {
-      const step: number = 1;
-      const baseIndex: number = 0;
-      let newState: number = 1;
-      let operation: string = input+title;
+  const navigate = (input: string, title: string) => {
+    const step: number = 1;
+    const baseIndex: number = 0;
+    let newState: number = 1;
+    let operation: string = input + title;
 
-      switch(operation) {
-        case 'previousExperience':
-          newState = experienceIndex - step;
-          if ( newState < baseIndex ) {
-            newState = experienceLength;
-          }
-          setExperienceIndex(newState);
-          break;
-        case 'previousEducation':
-          newState = educationIndex - step;
-          if ( newState < baseIndex ) {
-            newState = educationLength;
-          }
-          setEducationIndex(newState);
-          break;
-        case 'nextExperience':
-          newState = experienceIndex + step;
-          if ( newState > experienceLength ) {
-            newState = baseIndex;
-          }
-          setExperienceIndex(newState);
-          break;
-        case 'nextEducation':
-          newState = educationIndex + step;
-          if ( newState > educationLength ) {
-            newState = baseIndex;
-          }
-          setEducationIndex(newState);
-          break;
-        default:
-          console.log("Navigation error.");
-      }
+    switch (operation) {
+      case 'previousExperience':
+        newState = experienceIndex - step;
+        if (newState < baseIndex) {
+          newState = experienceLength;
+        }
+        setExperienceIndex(newState);
+        break;
+      case 'previousEducation':
+        newState = educationIndex - step;
+        if (newState < baseIndex) {
+          newState = educationLength;
+        }
+        setEducationIndex(newState);
+        break;
+      case 'nextExperience':
+        newState = experienceIndex + step;
+        if (newState > experienceLength) {
+          newState = baseIndex;
+        }
+        setExperienceIndex(newState);
+        break;
+      case 'nextEducation':
+        newState = educationIndex + step;
+        if (newState > educationLength) {
+          newState = baseIndex;
+        }
+        setEducationIndex(newState);
+        break;
+      default:
+        console.log('Navigation error.');
     }
+  };
 
-  
-    /* 
+  /* 
       This function generates content for specifically an array of type GroupSet.
       This is a good example of factoring out a function for a specific task.
     */
 
-  const generateGroupSet = (groupSet:GroupSet[]) => {
-    let groupSetContent:any[] = [];
+  const generateGroupSet = (groupSet: GroupSet[]) => {
+    let groupSetContent: any[] = [];
     for (let group of groupSet) {
-      let groupContent:any[] = [];
-      let groupClass:string = '';
+      let groupContent: any[] = [];
+      let groupClass: string = '';
       for (let item of group.group) {
         if (item.title) {
           groupContent.push(
@@ -190,71 +189,57 @@ const Home = () => {
           groupContent.push(
             <ListItem key={item.text} className="group-text">
               <ListItemIcon>
-                <span className="material-icons">
-                  layers
-                </span>
+                <span className="material-icons">layers</span>
               </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>
           );
         }
         if (item.skills) {
-          let skills:any[] = [];
+          let skills: any[] = [];
           for (let skill of item.skills) {
-            skills.push(
-              <Chip
-                size="small"
-                label={skill}
-                className="skill"
-              />
-            );
+            skills.push(<Chip size="small" label={skill} className="skill" />);
           }
-          groupContent.push(
-            <div className="skills">
-              {skills}
-            </div>
-          );
+          groupContent.push(<div className="skills">{skills}</div>);
         }
       }
-      groupSetContent.push(
-        <div className={groupClass}>
-          {groupContent}
-        </div>
-      )
+      groupSetContent.push(<div className={groupClass}>{groupContent}</div>);
     }
-    return(groupSetContent);
-    }
+    return groupSetContent;
+  };
 
-    /* 
+  /* 
       This function handles specifically the generation of content for the inside
       of the cards within the page.
     */
-  const formatContent = (contentSet:CardContent) => {
-    let formattedContent:any[] = [];
-    let title:string = contentSet.title;
-    let contentGroup:any[] = contentSet.content;
+  const formatContent = (contentSet: CardContent) => {
+    let formattedContent: any[] = [];
+    let title: string = contentSet.title;
+    let contentGroup: any[] = contentSet.content;
     for (let content of contentGroup) {
       if (content.title) {
-        formattedContent.push(
-          <h3>{title}</h3>
-        )
+        formattedContent.push(<h3>{title}</h3>);
       }
       if (content.linkset) {
         let image;
         switch (content.linkset.img) {
-          case "ketomate":
+          case 'ketomate':
             image = ketomate;
             break;
-          case "hp":
+          case 'hp':
             image = hp;
             break;
           default:
             image = undefined;
             break;
         }
-        formattedContent.push( 
+        formattedContent.push(
           <ListItem key={content.linkset.title} className="linkset">
-            <a href={content.linkset.url} target="_blank" rel="noopener noreferrer">
+            <a
+              href={content.linkset.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <div>
                 <img src={image} alt={content.linkset.title} />
                 <h3>{content.linkset.title}</h3>
@@ -262,7 +247,7 @@ const Home = () => {
             </a>
             <p>{content.linkset.text}</p>
           </ListItem>
-        )
+        );
       }
       if (content.skillset) {
         formattedContent.push(
@@ -271,53 +256,44 @@ const Home = () => {
             <Rating name="read-only" value={content.skillset.value} readOnly />
             <p>{content.skillset.text}</p>
           </Box>
-        )
+        );
       }
       if (content.groupSet) {
-        let generatedGroupSet:any[];
-        let groupSetLength:number = 0;
-        let groupSetContent:any;
+        let generatedGroupSet: any[];
+        let groupSetLength: number = 0;
+        let groupSetContent: any;
         let previousIcon = (
-          <span className="material-icons">
-            navigate_before
-          </span>
+          <span className="material-icons">navigate_before</span>
         );
-        let nextIcon = (
-          <span className="material-icons">
-            navigate_next
-          </span>
-        );
+        let nextIcon = <span className="material-icons">navigate_next</span>;
         generatedGroupSet = generateGroupSet(content.groupSet);
         groupSetLength = generatedGroupSet.length;
-        if (title === "Experience") {
+        if (title === 'Experience') {
           experienceLength = groupSetLength - 1;
           groupSetContent = generatedGroupSet[experienceIndex];
         }
-        if (title === "Education") {
+        if (title === 'Education') {
           educationLength = groupSetLength - 1;
           groupSetContent = generatedGroupSet[educationIndex];
         }
         formattedContent.push(
           <div className="group-set">
-            <div className="group-set-content">
-              
-              {groupSetContent}
-            </div>
+            <div className="group-set-content">{groupSetContent}</div>
             <div className="group-set-nav">
               <div>
-                <Button 
+                <Button
                   variant="contained"
                   startIcon={previousIcon}
-                  onClick={() => navigate("previous", title)}
+                  onClick={() => navigate('previous', title)}
                 >
                   Previous
                 </Button>
               </div>
               <div>
-                <Button 
+                <Button
                   variant="contained"
                   endIcon={nextIcon}
-                  onClick={() => navigate("next", title)}
+                  onClick={() => navigate('next', title)}
                 >
                   Next
                 </Button>
@@ -334,12 +310,8 @@ const Home = () => {
         );
       }
     }
-    return (
-      <List>
-        {formattedContent}
-      </List>
-    );
-  }
+    return <List>{formattedContent}</List>;
+  };
 
   /* 
     This function handles the generation of cards on this page, as well as
@@ -348,15 +320,15 @@ const Home = () => {
     on an otherwise empty page.
   */
   const generateContent = () => {
-    let contentArray:any[] = [];
-    let formattedArray:any[] = [];
+    let contentArray: any[] = [];
+    let formattedArray: any[] = [];
     for (let [key, value] of Object.entries(homeData)) {
       contentArray.push(value);
     }
     for (let content of contentArray) {
-      let media:any;
+      let media: any;
       switch (content.media) {
-        case "headshot":
+        case 'headshot':
           media = headshot;
           break;
         default:
@@ -373,15 +345,10 @@ const Home = () => {
         />
       );
     }
-    return (formattedArray);
-  }
-  
-  return (
-    <main className="app-home">
-      {generateContent()}
-    </main>
-  );
+    return formattedArray;
+  };
 
-}
+  return <main className="app-home">{generateContent()}</main>;
+};
 
 export default Home;

@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Home from './Home';
+import Card from './Card';
 
-describe('Home', () => {
+describe('Header', () => {
   it('should render correctly', () => {
-    const component = render(<Home />);
+    const component = render(<Card />);
   });
 });

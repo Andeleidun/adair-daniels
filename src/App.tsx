@@ -1,10 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
-import {
-  BrowserRouter,
-  Switch,
-  Route
-} from "react-router-dom";
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Slide from '@material-ui/core/Slide';
 
 import Header from './Components/Library/Header';
@@ -21,7 +17,8 @@ import Portfolio from './Components/Portfolio/Portfolio';
 import PortfolioViewer from './Components/Portfolio/Portfolio.codeview';
 import Library from './Components/Library/Library';
 import LibraryViewer from './Components/Library/Library.codeview';
-
+import Portal from './Components/Library/Portal/Portal';
+import PortalViewer from './Components/Library/Portal/Portal.codeview';
 
 interface PageInterface {
   text: string;
@@ -37,11 +34,55 @@ const App = () => {
   const [navShow, setNavShow] = useState(false);
   const [navShowClass, setNavShowClass] = useState('app app-without-menu');
   const pages: PageInterface[] = [
-    {text: 'Home', title: 'Adair Daniels', route: '/', icon: 'home', component: <Home />, codeView: <HomeViewer />, exactRoute: true},
-    {text: 'StockTwits Feed', title: 'StockTwits Feed', route: '/stock', icon: 'dvr', component: <StockTwits />, codeView: <StockViewer />},
-    {text: 'XKCD Slideshow', title: 'XKCD Slideshow', route: '/xkcd', icon: 'burst_mode', component: <XKCD />, codeView: <XKCDViewer />},
-    {text: 'Portfolio', title: 'Portfolio', route: '/portfolio', icon: 'compare', component: <Portfolio />, codeView: <PortfolioViewer />},
-    {text: 'Library', title: 'Library', route: '/library', icon: 'library_books', component: <Library />, codeView: <LibraryViewer />},
+    {
+      text: 'Home',
+      title: 'Adair Daniels',
+      route: '/',
+      icon: 'home',
+      component: <Home />,
+      codeView: <HomeViewer />,
+      exactRoute: true,
+    },
+    {
+      text: 'StockTwits Feed',
+      title: 'StockTwits Feed',
+      route: '/stock',
+      icon: 'dvr',
+      component: <StockTwits />,
+      codeView: <StockViewer />,
+    },
+    {
+      text: 'XKCD Slideshow',
+      title: 'XKCD Slideshow',
+      route: '/xkcd',
+      icon: 'burst_mode',
+      component: <XKCD />,
+      codeView: <XKCDViewer />,
+    },
+    {
+      text: 'Portfolio',
+      title: 'Portfolio',
+      route: '/portfolio',
+      icon: 'compare',
+      component: <Portfolio />,
+      codeView: <PortfolioViewer />,
+    },
+    {
+      text: 'Library',
+      title: 'Library',
+      route: '/library',
+      icon: 'library_books',
+      component: <Library />,
+      codeView: <LibraryViewer />,
+    },
+    {
+      text: 'PokeTable',
+      title: 'PokeTable',
+      route: '/poketable',
+      icon: 'table_view',
+      component: <Portal url="https://andeleidun.github.io/pokeTable/" />,
+      codeView: <PortalViewer />,
+    },
   ];
   const [currentPage, setCurrentPage] = useState(pages[0]);
   const [codeView, setCodeView] = useState(false);
@@ -60,24 +101,24 @@ const App = () => {
       setNavShowClass('app app-with-menu ');
     }
     setNavShow(!navShow);
-  }
+  };
 
   const toggleCodeView = () => {
     setCodeView(!codeView);
-  }
+  };
 
   const navigate = (page: PageInterface) => {
     setCurrentPage(page);
-  }
+  };
 
   const generateOverlay = () => {
     if (navShow) {
-      return (<div className="app-overlay-mobile" onClick={() => toggleNav()} />);
+      return <div className="app-overlay-mobile" onClick={() => toggleNav()} />;
     }
-  }
+  };
 
   const generateComponent = () => {
-    let generatedContent:any[] = [];
+    let generatedContent: any[] = [];
     for (let page of pages) {
       let component: any;
       if (codeView) {
@@ -86,22 +127,16 @@ const App = () => {
         component = page.component;
       }
       generatedContent.push(
-        <Route
-          path={page.route}
-          exact={page.exactRoute}
-          children={component}
-        />
+        <Route path={page.route} exact={page.exactRoute} children={component} />
       );
     }
     return (
       <Switch>
         {generatedContent}
-        <Route
-          path="/" children={pages[0].component} 
-        />
+        <Route path="/" children={pages[0].component} />
       </Switch>
     );
-  }
+  };
 
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
@@ -127,15 +162,12 @@ const App = () => {
           {loading ? (
             <LoadScreen />
           ) : (
-            <div className="app-content">
-              {generateComponent()}
-            </div>
+            <div className="app-content">{generateComponent()}</div>
           )}
         </div>
       </div>
     </BrowserRouter>
   );
-
-}
+};
 
 export default App;

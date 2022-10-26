@@ -78,6 +78,6 @@ const CardTemplate = (props) => {
 }
 
 export default CardTemplate;
-`
+`;
 
 export default CardCode;

@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import NavBar from './NavBar';
+import LoadScreen from './LoadScreen';
 
-describe('NavBar', () => {
+describe('LoadScreen', () => {
   it('should render correctly', () => {
-    const component = render(<NavBar />);
+    const component = render(<LoadScreen />);
   });
 });
