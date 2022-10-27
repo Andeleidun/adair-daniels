@@ -76,7 +76,7 @@ class XKCD extends React.Component<Props, State> {
   async retrieveImages(index: any) {
     /* Retrieves images from XKCD using open cors-anywhere proxy */
     this.setState({ loading: true });
-    this.setState({ images: Array(3).fill('') });
+    this.setState({ images: Array(3).fill(null) });
     const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
     const urlBase = 'http://xkcd.com/';
     const urlEnd = '/info.0.json';
@@ -162,12 +162,14 @@ class XKCD extends React.Component<Props, State> {
       <div className="xkcd">
         {this.state.loading ? (
           <img src={reactLogo} className="loading-logo" alt="logo" />
-        ) : (
+        ) : this.state.images[0] ? (
           <main className="slideshow">
             {this.renderPanels(0)}
             {this.renderPanels(1)}
             {this.renderPanels(2)}
           </main>
+        ) : (
+          <p>Loading error</p>
         )}
         <footer className="xkcd-footer">
           <NavBar onClick={(i: string) => this.navigate(i)} />

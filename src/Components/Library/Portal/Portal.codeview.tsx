@@ -11,36 +11,13 @@ import CardTemplate from '../Card';
 
 require('prismjs/components/prism-jsx');
 
-const code = `
-/*
-  This component uses lazy loading iframes to setup a portal
-  for separately hosted micro-frontends. This is implemented 
-  with the PokeTable.
-  PokeTable is a filterable and sortable React data table.
-  PokeTable code can be found on github -
-  https://github.com/Andeleidun/pokeTable
-*/
-import React from 'react';
-import './Portal.css';
-
-interface Props {
-  url: string;
-}
-
-const Portal = ({ url }: Props) => {
-  return <iframe src={url} loading="lazy" className="portal" />;
-};
-
-export default Portal;
-
-`;
+/* eslint import/no-webpack-loader-syntax: off */
+const PortalCode = require('!!raw-loader!./Portal').default;
 
 const PortalViewer = () => {
-  const [codeState] = useState(code);
-
   let viewer = (
     <Viewer
-      value={codeState}
+      value={PortalCode}
       highlight={(value) => highlight(value, languages.js)}
       padding={10}
       style={{

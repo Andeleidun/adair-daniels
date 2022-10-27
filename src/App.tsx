@@ -149,7 +149,7 @@ const App = () => {
   };
 
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter basename={process ? process.env.PUBLIC_URL : ''}>
       <div className={navShowClass}>
         <Header
           onClick={() => toggleNav()}
