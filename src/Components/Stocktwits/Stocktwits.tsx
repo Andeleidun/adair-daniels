@@ -230,6 +230,8 @@ class StockTwits extends React.Component<Props, State> {
           <section className="tweets">{this.tweets}</section>
         </section>
       );
+    } else {
+      this.content = null;
     }
     return (
       <main className="app-stocktwits">
