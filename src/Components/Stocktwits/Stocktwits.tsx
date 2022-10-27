@@ -160,7 +160,7 @@ class StockTwits extends React.Component<Props, State> {
   async retrieveTweets(symbols: any[]) {
     /* Retrieves images from StockTwits using open cors-anywhere proxy */
     this.setState({ loading: true });
-    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+    const proxyUrl = 'https://api.allorigins.win/get?url=';
     const urlBase = 'https://api.stocktwits.com/api/2/streams/symbol/';
     const urlEnd = '.json';
     const proxiedRequest = (url, options = { headers: {} }) =>
@@ -178,7 +178,8 @@ class StockTwits extends React.Component<Props, State> {
       const finalUrl = proxyUrl.concat(useUrl);
       await proxiedRequest(finalUrl)
         .then((data) => {
-          symbol.tweets = data.messages;
+          const contents = JSON.parse(data.contents);
+          symbol.tweets = contents.messages;
         })
         .catch((error) => this.setState({ error: error }));
     }
