@@ -96,7 +96,7 @@ const Home = () => {
     if (loading) {
       setLoading(false);
     }
-  }, []);
+  }, [loading]);
 
   /* 
       This function demonstrates handling multiple navigable elements for a single
@@ -316,7 +316,7 @@ const Home = () => {
   const generateContent = () => {
     let contentArray: any[] = [];
     let formattedArray: any[] = [];
-    for (let [key, value] of Object.entries(homeData)) {
+    for (let value of Object.values(homeData)) {
       contentArray.push(value);
     }
     for (let content of contentArray) {

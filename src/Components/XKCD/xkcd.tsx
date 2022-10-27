@@ -77,7 +77,7 @@ class XKCD extends React.Component<Props, State> {
     /* Retrieves images from XKCD using open cors-anywhere proxy */
     this.setState({ loading: true });
     this.setState({ images: Array(3).fill('') });
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
     const urlBase = 'http://xkcd.com/';
     const urlEnd = '/info.0.json';
     const currentUrl = 'http://xkcd.com/info.0.json';

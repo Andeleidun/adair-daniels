@@ -17,8 +17,12 @@ const NavBar = (props) => {
     let populatedPages: any[] = [];
     for (let page of props.pages) {
       populatedPages.push(
-        <Link to={page.route} onClick={() => props.navClick(page)}>
-          <ListItem button key={page.text}>
+        <Link
+          to={page.route}
+          onClick={() => props.navClick(page)}
+          key={page.text}
+        >
+          <ListItem button>
             <ListItemIcon>
               <i className="material-icons">{page.icon}</i>
             </ListItemIcon>

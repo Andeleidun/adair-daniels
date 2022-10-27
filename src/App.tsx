@@ -48,7 +48,12 @@ const App = () => {
       title: 'PokeTable',
       route: '/poketable',
       icon: 'table_view',
-      component: <Portal url="https://andeleidun.github.io/pokeTable/" />,
+      component: (
+        <Portal
+          url="https://andeleidun.github.io/pokeTable/"
+          title="PokeTable"
+        />
+      ),
       codeView: <PortalViewer />,
     },
     {
@@ -92,7 +97,7 @@ const App = () => {
     if (loading) {
       setLoading(false);
     }
-  }, []);
+  }, [loading]);
 
   const toggleNav = () => {
     if (navShow) {
@@ -127,13 +132,18 @@ const App = () => {
         component = page.component;
       }
       generatedContent.push(
-        <Route path={page.route} exact={page.exactRoute} children={component} />
+        <Route
+          path={page.route}
+          exact={page.exactRoute}
+          key={page.title}
+          children={component}
+        />
       );
     }
     return (
       <Switch>
         {generatedContent}
-        <Route path="/" children={pages[0].component} />
+        <Route path="/" children={pages[0].component} key={0} />
       </Switch>
     );
   };

@@ -11,10 +11,11 @@ import './Portal.css';
 
 interface Props {
   url: string;
+  title: string;
 }
 
-const Portal = ({ url }: Props) => {
-  return <iframe src={url} loading="lazy" className="portal" />;
+const Portal = ({ url, title }: Props) => {
+  return <iframe src={url} loading="lazy" className="portal" title={title} />;
 };
 
 export default Portal;

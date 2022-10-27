@@ -17,19 +17,19 @@ import Chip from '@material-ui/core/Chip';
 import Badge from '@material-ui/core/Badge';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-interface Props {};
+interface Props {}
 
 interface State {
-    symbols: any[];
-    input: string;
-    error: string;
-    interval: any;
-    currentCount: number;
-    filter: any[];
-    loading: boolean;
-};
+  symbols: any[];
+  input: string;
+  error: string;
+  interval: any;
+  currentCount: number;
+  filter: any[];
+  loading: boolean;
+}
 
-class StockTwits extends React.Component <Props, State> {
+class StockTwits extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,19 +39,19 @@ class StockTwits extends React.Component <Props, State> {
       interval: undefined,
       currentCount: 5,
       filter: [],
-      loading: false
+      loading: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.timer = this.timer.bind(this);
   }
 
-  chips:any[] = [];
-  tweets:any[] = [];
-  content:any;
+  chips: any[] = [];
+  tweets: any[] = [];
+  content: any;
 
-  renderChips(symbols:any[]) {
-    let chips:any[] = [];
+  renderChips(symbols: any[]) {
+    let chips: any[] = [];
     for (let symbol of symbols) {
       if (symbol.tweets) {
         let chipClass = 'chip';
@@ -67,7 +67,7 @@ class StockTwits extends React.Component <Props, State> {
               onClick={() => this.chipClick(symbol)}
             />
           </Badge>
-        )
+        );
       }
       this.chips = chips;
     }
@@ -77,14 +77,14 @@ class StockTwits extends React.Component <Props, State> {
     let intervalId = setInterval(this.timer, 60000);
     this.setState({
       interval: intervalId,
-      currentCount: 5
+      currentCount: 5,
     });
   }
 
   timer() {
     let newCount = this.state.currentCount - 1;
     if (newCount >= 0) {
-      this.setState({ currentCount: newCount })
+      this.setState({ currentCount: newCount });
     } else {
       this.submitRequest();
       clearInterval(this.state.interval);
@@ -92,32 +92,31 @@ class StockTwits extends React.Component <Props, State> {
     }
   }
 
-  renderTweets(symbols:any[]) {
-    let tweets:any[] = [];
+  renderTweets(symbols: any[]) {
+    let tweets: any[] = [];
     let tweetsFound = 0;
     for (let symbol of symbols) {
       if (symbol.tweets) {
         tweetsFound++;
-        for (let tweet of symbol.tweets) {
-            let message = (
-                <div>
-                    <figure className="picture">
-                        <img src={tweet.user.avatar_url_ssl} alt={tweet.user.username} />
-                    </figure>
-                    <p className="namearea">
-                        <span className="name">{tweet.user.name}</span> <span className="username">@ {tweet.user.username}</span>
-                    </p>
-                    <p className="text">
-                        {tweet.body}
-                    </p>
-                </div>
-            );
-            tweets.push(
-                <CardTemplate
-                    content={message}
-                    classGiven="card" 
+        for (const [index, tweet] of symbol.tweets.entries()) {
+          let message = (
+            <div key={tweet.user.username + index}>
+              <figure className="picture">
+                <img
+                  src={tweet.user.avatar_url_ssl}
+                  alt={tweet.user.username}
                 />
-            );
+              </figure>
+              <p className="namearea">
+                <span className="name">{tweet.user.name}</span>{' '}
+                <span className="username">@ {tweet.user.username}</span>
+              </p>
+              <p className="text">{tweet.body}</p>
+            </div>
+          );
+          tweets.push(
+            <CardTemplate content={message} key={index} classGiven="card" />
+          );
         }
       }
     }
@@ -127,15 +126,15 @@ class StockTwits extends React.Component <Props, State> {
     this.tweets = tweets;
   }
 
-  chipClick(symbol:any) {
-    let filter:any[] = this.state.filter;
-    let symbols:any[] = this.state.symbols;
-    let filteredSymbols:any[] = [];
+  chipClick(symbol: any) {
+    let filter: any[] = this.state.filter;
+    let symbols: any[] = this.state.symbols;
+    let filteredSymbols: any[] = [];
     if (filter.includes(symbol.key)) {
       let position = filter.indexOf(symbol.key);
       filter.splice(position, 1);
       if (filter.length === 0) {
-        this.setState({filter});
+        this.setState({ filter });
         clearInterval(this.state.interval);
         this.renderTweets(symbols);
         this.renderChips(symbols);
@@ -152,64 +151,65 @@ class StockTwits extends React.Component <Props, State> {
         }
       }
     }
-    this.setState({filter});
+    this.setState({ filter });
     clearInterval(this.state.interval);
     this.renderTweets(filteredSymbols);
     this.renderChips(symbols);
   }
 
-  async retrieveTweets(symbols:any[]) {
-    {/* Retrieves images from StockTwits using open cors-anywhere proxy */}
+  async retrieveTweets(symbols: any[]) {
+    /* Retrieves images from StockTwits using open cors-anywhere proxy */
     this.setState({ loading: true });
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
     const urlBase = 'https://api.stocktwits.com/api/2/streams/symbol/';
     const urlEnd = '.json';
-    const proxiedRequest = (url, options = {headers: {}}) =>
-    fetch(url, {
-      ...options,
-      headers: {
-        ...options.headers,
-        'X-Requested-With': 'stock-twits-live-feed',
-      },
-    })
-    .then(res => res.json())
-    .catch(error => this.setState({ error: error}));
+    const proxiedRequest = (url, options = { headers: {} }) =>
+      fetch(url, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'X-Requested-With': 'stock-twits-live-feed',
+        },
+      })
+        .then((res) => res.json())
+        .catch((error) => this.setState({ error: error }));
     for (let symbol of symbols) {
-      symbol.url = urlBase.concat(symbol.label).concat(urlEnd);
-      let finalUrl = proxyUrl.concat(symbol.url);
+      const useUrl = urlBase.concat(symbol.label).concat(urlEnd);
+      const finalUrl = proxyUrl.concat(useUrl);
       await proxiedRequest(finalUrl)
         .then((data) => {
           symbol.tweets = data.messages;
         })
-        .catch(error => this.setState({ error: error}));
+        .catch((error) => this.setState({ error: error }));
     }
     if (!this.state.error) {
       this.renderChips(symbols);
       this.renderTweets(symbols);
     }
     this.setState({ loading: false });
-    return(symbols);
+    return symbols;
   }
 
   async submitRequest() {
-    const newSymbols = this.state.input.toUpperCase().replace(/\s+/g, '').split(",");
-    let formattedSymbols:any[] = [];
-    let key:number = 0;
+    const newSymbols = this.state.input
+      .toUpperCase()
+      .replace(/\s+/g, '')
+      .split(',');
+    let formattedSymbols: any[] = [];
+    let key: number = 0;
     for (let symbol of newSymbols) {
-      formattedSymbols.push(
-        {key: key, label: symbol, tweets: 0}
-      );
+      formattedSymbols.push({ key: key, label: symbol, tweets: 0 });
       key++;
     }
     formattedSymbols = await this.retrieveTweets(formattedSymbols);
-    this.setState({symbols: formattedSymbols});
+    this.setState({ symbols: formattedSymbols });
   }
 
-  handleChange(event:any) {
-    this.setState({input: event.target.value});
+  handleChange(event: any) {
+    this.setState({ input: event.target.value });
   }
 
-  handleSubmit(event:any) {
+  handleSubmit(event: any) {
     this.submitRequest();
     event.preventDefault();
   }
@@ -222,43 +222,43 @@ class StockTwits extends React.Component <Props, State> {
     if (this.state.loading) {
       this.content = <CircularProgress />;
     } else if (this.state.error) {
-      this.content = <p>{this.state.error}</p>
+      this.content = <p>{this.state.error}</p>;
     } else {
       this.content = (
         <section className="content">
-          <section className="chips">
-            {this.chips}
-          </section>
-          <section className="tweets">
-            {this.tweets}
-          </section>
+          <section className="chips">{this.chips}</section>
+          <section className="tweets">{this.tweets}</section>
         </section>
       );
     }
     return (
-        <main className="app-stocktwits">
-            <section className="search">
-            <form>
-                <TextField
-                  className="stock-input"
-                  id="stock-symbols"
-                  label="Input stock symbols (separate with a comma)"
-                  value={this.state.input}
-                  onChange={this.handleChange}
-                  InputProps={{
-                      startAdornment: (
-                      <InputAdornment position="start">
-                          $
-                      </InputAdornment>
-                      ),
-                  }}
-                />
-                <br />
-                <Button className="search-button" variant="contained" onClick={this.handleSubmit}>Search</Button>
-            </form>
-            </section>
-            {this.content}
-        </main>
+      <main className="app-stocktwits">
+        <section className="search">
+          <form>
+            <TextField
+              className="stock-input"
+              id="stock-symbols"
+              label="Input stock symbols (separate with a comma)"
+              value={this.state.input}
+              onChange={this.handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+            />
+            <br />
+            <Button
+              className="search-button"
+              variant="contained"
+              onClick={this.handleSubmit}
+            >
+              Search
+            </Button>
+          </form>
+        </section>
+        {this.content}
+      </main>
     );
   }
 }
