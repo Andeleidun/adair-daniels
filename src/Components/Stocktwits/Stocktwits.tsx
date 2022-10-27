@@ -182,7 +182,7 @@ class StockTwits extends React.Component<Props, State> {
         })
         .catch((error) => this.setState({ error: error }));
     }
-    if (!this.state.error) {
+    if (!this.state.error && symbols[0].retrieveTweets) {
       this.renderChips(symbols);
       this.renderTweets(symbols);
     }
