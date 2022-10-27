@@ -223,7 +223,7 @@ class StockTwits extends React.Component<Props, State> {
       this.content = <CircularProgress />;
     } else if (this.state.error) {
       this.content = <p>{this.state.error}</p>;
-    } else {
+    } else if (this.tweets[0]) {
       this.content = (
         <section className="content">
           <section className="chips">{this.chips}</section>
