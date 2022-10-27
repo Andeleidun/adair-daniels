@@ -182,7 +182,7 @@ class StockTwits extends React.Component<Props, State> {
         })
         .catch((error) => this.setState({ error: error }));
     }
-    if (!this.state.error && symbols[0].retrieveTweets) {
+    if (!this.state.error && symbols[0].tweets) {
       this.renderChips(symbols);
       this.renderTweets(symbols);
     }
@@ -198,7 +198,7 @@ class StockTwits extends React.Component<Props, State> {
     let formattedSymbols: any[] = [];
     let key: number = 0;
     for (let symbol of newSymbols) {
-      formattedSymbols.push({ key: key, label: symbol, tweets: 0 });
+      formattedSymbols.push({ key: key, label: symbol, tweets: null });
       key++;
     }
     formattedSymbols = await this.retrieveTweets(formattedSymbols);
