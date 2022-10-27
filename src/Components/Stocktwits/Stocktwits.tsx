@@ -206,12 +206,13 @@ class StockTwits extends React.Component<Props, State> {
   }
 
   handleChange(event: any) {
+    event.preventDefault();
     this.setState({ input: event.target.value });
   }
 
   handleSubmit(event: any) {
-    this.submitRequest();
     event.preventDefault();
+    this.submitRequest();
   }
 
   componentWillUnmount() {
