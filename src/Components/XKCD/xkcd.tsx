@@ -102,7 +102,8 @@ class XKCD extends React.Component<Props, State> {
       const finalUrl = proxyUrl.concat(currentUrl);
       await proxiedRequest(finalUrl)
         .then((data) => {
-          const finalPlaceholder = data.num - 2;
+          const contents = JSON.parse(data.contents);
+          const finalPlaceholder = contents.num - 2;
           this.setState({ finalIndex: finalPlaceholder });
         })
         .catch((error) => console.error(error));
@@ -112,7 +113,8 @@ class XKCD extends React.Component<Props, State> {
       const finalUrl = proxyUrl.concat(useUrl);
       await proxiedRequest(finalUrl)
         .then((data: any) => {
-          dataArray.push(data);
+          const contents = JSON.parse(data.contents);
+          dataArray.push(contents);
         })
         .catch((error) => console.error(error));
     }
