@@ -57,6 +57,19 @@ const App = () => {
       codeView: <PortalViewer />,
     },
     {
+      text: 'Robot Battle Arena',
+      title: 'Robot Battle Arena',
+      route: '/robotBattle',
+      icon: 'table_view',
+      component: (
+        <Portal
+          url="https://andeleidun.github.io/robot-arena/"
+          title="Robot Battle Arena"
+        />
+      ),
+      codeView: <PortalViewer />,
+    },
+    {
       text: 'StockTwits Feed',
       title: 'StockTwits Feed',
       route: '/stock',

@@ -1,250 +1,251 @@
 // Declarations
 
-$primary: #039be5;
+$primary: #054fb9;
 $secondary: #00914c;
 $tertiary: #5616d9;
-$transTertiary: rgba(89,22,217,.5);
-$xkcd: #96A8C8;
-$greyBoxShadow: inset 0 1.5px 3px 1px rgba(0,0,0,.25), 0 1.5px 3px 2px rgba(0,0,0,.25);
+$transTertiary: rgba(89, 22, 217, 0.5);
+$xkcd: #96a8c8;
+$greyBoxShadow: inset 0 1.5px 3px 1px rgba(0, 0, 0, 0.25),
+  0 1.5px 3px 2px rgba(0, 0, 0, 0.25);
 $greyhighlight: rgba(0, 0, 0, 0.04);
 
 // Elements
 
 p {
-    word-wrap: anywhere;
+  word-wrap: anywhere;
 }
 
 // Primary Structure
 
 .app {
-    text-align: center;
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
-  
+  text-align: center;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
 .app-with-menu {
-    display: grid;
-    grid-template-areas:
-        'header header'
-        'menu main';
-    grid-template-columns: 12vw 88vw;
-    grid-template-rows: 10vh 90vh;
-    grid-gap: 0;
+  display: grid;
+  grid-template-areas:
+    'header header'
+    'menu main';
+  grid-template-columns: 12vw 88vw;
+  grid-template-rows: 10vh 90vh;
+  grid-gap: 0;
 }
 
 .app-without-menu {
-    display: grid;
-    grid-template-areas:
-        'header'
-        'main';
-    grid-template-columns: auto;
-    grid-template-rows: 10vh 90vh;
-    grid-gap: 0;
+  display: grid;
+  grid-template-areas:
+    'header'
+    'main';
+  grid-template-columns: auto;
+  grid-template-rows: 10vh 90vh;
+  grid-gap: 0;
 }
 
 // Header
 
 .app-header {
-    background-color: $secondary;
-    font-size: calc(10px + 1.5vmin);
-    position: fixed;
-    width: 100vw;
-    height: 10vh;
-    z-index: 9999;
+  background-color: $secondary;
+  font-size: calc(10px + 1.5vmin);
+  position: fixed;
+  width: 100vw;
+  height: 10vh;
+  z-index: 9999;
 }
 
 .app-header .MuiAppBar-root {
-    height: 100%;
-    background-color: $secondary;
+  height: 100%;
+  background-color: $secondary;
 }
 
 .app-header.home .MuiAppBar-root {
-    background-color: $secondary;
+  background-color: $secondary;
 }
 
 .app-header.xkcd .MuiAppBar-root {
-    background-color: $xkcd;
+  background-color: $xkcd;
 }
 
 .app-header .menu-button {
-    position: absolute;
-    left: 5vw;
-    top: 1vh;
-    padding: 20px 20px;
-    border: 0;
-    z-index: 999;
+  position: absolute;
+  left: 5vw;
+  top: 1vh;
+  padding: 20px 20px;
+  border: 0;
+  z-index: 999;
 }
 
 .app-header .menu-button i {
-    color: white;
-    font-size: calc(10px + 3vmin);
+  color: white;
+  font-size: calc(10px + 3vmin);
 }
 
 .app-header .title-bar {
-    top: 1vh;
+  top: 1vh;
 }
 
 .app-header h1 {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 
 .app-header .code-view-bar {
-    position: absolute;
-    top: 3vh;
-    right: 5vw;
+  position: absolute;
+  top: 3vh;
+  right: 5vw;
 }
 
 .code-view-bar .MuiSwitch-colorSecondary.Mui-checked {
-    color: $primary;
+  color: $primary;
 }
 
 .code-view-bar .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
-    background-color: $primary;
+  background-color: $primary;
 }
 
 .app-header .code-view-bar button {
-    color: white;
-    font-size: 20px;
+  color: white;
+  font-size: 20px;
 }
 
 // Menu
 
 .app-menu {
-    grid-area: menu;
-    position: fixed;
-    height: 90vh;
-    top: 10vh;
-    z-index: 999;
-    background-color: white;
+  grid-area: menu;
+  position: fixed;
+  height: 90vh;
+  top: 10vh;
+  z-index: 999;
+  background-color: white;
 }
 
 .app-menu ul {
-    z-index: 999;
+  z-index: 999;
 }
 
 .app-menu ul a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .app-menu ul a:visited {
-    color: rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .app-menu .code-view-bar {
-    display: none;
+  display: none;
 }
 
 .app-overlay-mobile {
-    display: none;
+  display: none;
 }
 
 // Main
 
 .app-main {
-    grid-area: main;
+  grid-area: main;
 }
 
 // Content
 
 .app-link {
-    color: $primary;
+  color: $primary;
 }
 
 .loading-logo {
-    height: 40vmin;
-    pointer-events: none;
+  height: 40vmin;
+  pointer-events: none;
 }
 
 .card {
-    display: grid;
+  display: grid;
 }
 
 .card div {
-    animation: fade-in 0.5s linear;
+  animation: fade-in 0.5s linear;
 }
 
 h2,
 h3,
 .card .card-button,
-.card .group .dates span  {
-    color: $primary;
+.card .group .dates span {
+  color: $primary;
 }
 
 .card .group .skills .skill,
 .card .group-set-nav button {
-    background-color: $primary;
-    color: white;
+  background-color: $primary;
+  color: white;
 }
 
 // Media Queries
 
 @media only screen and (max-width: 960px) {
-    .app-with-menu {
-        grid-template-areas:
-            'header'
-            'main';
-        grid-template-columns: 100vw;
-    }
+  .app-with-menu {
+    grid-template-areas:
+      'header'
+      'main';
+    grid-template-columns: 100vw;
+  }
 
-    .app-header .menu-button {
-        top: 2vh;
-        padding: 10px 10px;
-    }
-    
-    .app-header .title-bar {
-        top: 1vh;
-    }
-    
-    .app-header .code-view-bar {
-        display: none;
-    }
+  .app-header .menu-button {
+    top: 2vh;
+    padding: 10px 10px;
+  }
 
-    .app-menu .code-view-bar {
-        display: flex;
-    }
+  .app-header .title-bar {
+    top: 1vh;
+  }
 
-    .app-overlay-mobile {
-        display: block;
-        z-index: 1;
-        height: 90vh;
-        position: absolute;
-        top: 10vh;
-        width: 100vw;
-    }
+  .app-header .code-view-bar {
+    display: none;
+  }
 
-    .card .MuiCardContent-root {
-        padding: 10px;
-    }
+  .app-menu .code-view-bar {
+    display: flex;
+  }
+
+  .app-overlay-mobile {
+    display: block;
+    z-index: 1;
+    height: 90vh;
+    position: absolute;
+    top: 10vh;
+    width: 100vw;
+  }
+
+  .card .MuiCardContent-root {
+    padding: 10px;
+  }
 }
 
 @media only screen and (max-width: 450px) {
-    .card .MuiCardContent-root {
-        padding: 5px;
-    }
+  .card .MuiCardContent-root {
+    padding: 5px;
+  }
 }
 
 // Animations
 
 @media (prefers-reduced-motion: no-preference) {
-    .loading-logo {
-        animation: loading-logo-spin infinite 20s linear;
-    }
+  .loading-logo {
+    animation: loading-logo-spin infinite 20s linear;
+  }
 }
 
 @keyframes loading-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
