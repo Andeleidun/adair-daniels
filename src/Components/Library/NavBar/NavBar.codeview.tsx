@@ -1,4 +1,4 @@
-/* eslint import/no-webpack-loader-syntax: off */
+/* eslint-disable-next-line */
 const NavBarCode = require('!!raw-loader!./NavBar').default;
 
 export default NavBarCode;

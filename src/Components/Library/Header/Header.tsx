@@ -13,7 +13,7 @@ const Header = (props) => {
 
   const generateCodeView = () => {
     if (props.currentPage.codeView) {
-      let codeViewBar: any = (
+      const codeViewBar = (
         <div className="code-view-bar">
           <FormControlLabel
             control={

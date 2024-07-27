@@ -1,11 +1,3 @@
-// Declarations
-
-$greyBoxShadow: inset 0 1.5px 3px 1px rgba(0, 0, 0, 0.25),
-  0 1.5px 3px 2px rgba(0, 0, 0, 0.25);
-$greyhighlight: rgba(0, 0, 0, 0.04);
-
-// Page
-
 .app-home {
   display: grid;
   grid-template-areas:
@@ -36,7 +28,7 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
   width: 200px;
   margin: 0 auto;
   border-radius: 50%;
-  box-shadow: $greyBoxShadow;
+  box-shadow: var(--greyBoxShadow);
 }
 
 .app-home .bio-card .card-buttons {
@@ -59,7 +51,7 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
 }
 
 .app-home .highlights-card ul a:hover {
-  background-color: $greyhighlight;
+  background-color: var(--greyhighlight);
 }
 
 .app-home .highlights-card ul .MuiListItem-root.MuiListItem-gutters {
@@ -75,8 +67,7 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  box-shadow: inset 0 1.5px 3px 1px rgba(0, 0, 0, 0.25),
-    0 1.5px 3px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--greyBoxShadow);
   margin-bottom: 10px;
 }
 
@@ -196,8 +187,6 @@ $greyhighlight: rgba(0, 0, 0, 0.04);
   grid-column-start: 1;
   grid-column-end: 3;
 }
-
-// Media Queries
 
 @media only screen and (max-width: 960px) {
   .app-home {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './App.scss';
+import './App.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Slide from '@material-ui/core/Slide';
 
@@ -136,8 +136,8 @@ const App = () => {
   };
 
   const generateComponent = () => {
-    let generatedContent: any[] = [];
-    for (let page of pages) {
+    const generatedContent: any[] = [];
+    for (const page of pages) {
       let component: any;
       if (codeView) {
         component = page.codeView;

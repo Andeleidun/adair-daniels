@@ -6,7 +6,7 @@
 */
 
 import React from 'react';
-import './StockTwits.scss';
+import './StockTwits.css';
 
 import CardTemplate from '../Library/Card';
 
@@ -17,7 +17,7 @@ import Chip from '@material-ui/core/Chip';
 import Badge from '@material-ui/core/Badge';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-interface Props {}
+type Props = unknown;
 
 interface State {
   symbols: any[];
@@ -51,8 +51,8 @@ class StockTwits extends React.Component<Props, State> {
   content: any;
 
   renderChips(symbols: any[]) {
-    let chips: any[] = [];
-    for (let symbol of symbols) {
+    const chips: any[] = [];
+    for (const symbol of symbols) {
       if (symbol.tweets) {
         let chipClass = 'chip';
         if (this.state.filter.includes(symbol.key)) {
@@ -74,7 +74,7 @@ class StockTwits extends React.Component<Props, State> {
   }
 
   setTimer() {
-    let intervalId = setInterval(this.timer, 60000);
+    const intervalId = setInterval(this.timer, 60000);
     this.setState({
       interval: intervalId,
       currentCount: 5,
@@ -82,7 +82,7 @@ class StockTwits extends React.Component<Props, State> {
   }
 
   timer() {
-    let newCount = this.state.currentCount - 1;
+    const newCount = this.state.currentCount - 1;
     if (newCount >= 0) {
       this.setState({ currentCount: newCount });
     } else {
@@ -93,13 +93,13 @@ class StockTwits extends React.Component<Props, State> {
   }
 
   renderTweets(symbols: any[]) {
-    let tweets: any[] = [];
+    const tweets: any[] = [];
     let tweetsFound = 0;
-    for (let symbol of symbols) {
+    for (const symbol of symbols) {
       if (symbol.tweets) {
         tweetsFound++;
         for (const [index, tweet] of symbol.tweets.entries()) {
-          let message = (
+          const message = (
             <div key={tweet.user.username + index}>
               <figure className="picture">
                 <img
@@ -127,11 +127,11 @@ class StockTwits extends React.Component<Props, State> {
   }
 
   chipClick(symbol: any) {
-    let filter: any[] = this.state.filter;
-    let symbols: any[] = this.state.symbols;
-    let filteredSymbols: any[] = [];
+    const filter: any[] = this.state.filter;
+    const symbols: any[] = this.state.symbols;
+    const filteredSymbols: any[] = [];
     if (filter.includes(symbol.key)) {
-      let position = filter.indexOf(symbol.key);
+      const position = filter.indexOf(symbol.key);
       filter.splice(position, 1);
       if (filter.length === 0) {
         this.setState({ filter });
@@ -143,8 +143,8 @@ class StockTwits extends React.Component<Props, State> {
     } else {
       filter.push(symbol.key);
     }
-    for (let member of filter) {
-      for (let symbol of symbols) {
+    for (const member of filter) {
+      for (const symbol of symbols) {
         if (symbol.key === member) {
           filteredSymbols.push(symbol);
           break;
@@ -173,7 +173,7 @@ class StockTwits extends React.Component<Props, State> {
       })
         .then((res) => res.json())
         .catch((error) => this.setState({ error: error }));
-    for (let symbol of symbols) {
+    for (const symbol of symbols) {
       const useUrl = urlBase.concat(symbol.label).concat(urlEnd);
       const finalUrl = proxyUrl.concat(useUrl);
       await proxiedRequest(finalUrl)
@@ -197,8 +197,8 @@ class StockTwits extends React.Component<Props, State> {
       .replace(/\s+/g, '')
       .split(',');
     let formattedSymbols: any[] = [];
-    let key: number = 0;
-    for (let symbol of newSymbols) {
+    let key = 0;
+    for (const symbol of newSymbols) {
       formattedSymbols.push({ key: key, label: symbol, tweets: null });
       key++;
     }

@@ -1,21 +1,17 @@
-// Declarations
-
-$primary: #054fb9;
-$secondary: #00914c;
-$tertiary: #5616d9;
-$transTertiary: rgba(89, 22, 217, 0.5);
-$xkcd: #96a8c8;
-$greyBoxShadow: inset 0 1.5px 3px 1px rgba(0, 0, 0, 0.25),
-  0 1.5px 3px 2px rgba(0, 0, 0, 0.25);
-$greyhighlight: rgba(0, 0, 0, 0.04);
-
-// Elements
+:root {
+  --primary: #054fb9;
+  --secondary: #007a3f;
+  --tertiary: #5616d9;
+  --transTertiary: rgba(89, 22, 217, 0.5);
+  --xkcd: #96a8c8;
+  --greyBoxShadow: inset 0 1.5px 3px 1px rgba(0, 0, 0, 0.25),
+    0 1.5px 3px 2px rgba(0, 0, 0, 0.25);
+  --greyhighlight: rgba(0, 0, 0, 0.04);
+}
 
 p {
   word-wrap: anywhere;
 }
-
-// Primary Structure
 
 .app {
   text-align: center;
@@ -25,9 +21,7 @@ p {
 
 .app-with-menu {
   display: grid;
-  grid-template-areas:
-    'header header'
-    'menu main';
+  grid-template-areas: 'header header' 'menu main';
   grid-template-columns: 12vw 88vw;
   grid-template-rows: 10vh 90vh;
   grid-gap: 0;
@@ -35,18 +29,14 @@ p {
 
 .app-without-menu {
   display: grid;
-  grid-template-areas:
-    'header'
-    'main';
+  grid-template-areas: 'header' 'main';
   grid-template-columns: auto;
   grid-template-rows: 10vh 90vh;
   grid-gap: 0;
 }
 
-// Header
-
 .app-header {
-  background-color: $secondary;
+  background-color: var(--secondary);
   font-size: calc(10px + 1.5vmin);
   position: fixed;
   width: 100vw;
@@ -56,15 +46,15 @@ p {
 
 .app-header .MuiAppBar-root {
   height: 100%;
-  background-color: $secondary;
+  background-color: var(--secondary);
 }
 
 .app-header.home .MuiAppBar-root {
-  background-color: $secondary;
+  background-color: var(--secondary);
 }
 
 .app-header.xkcd .MuiAppBar-root {
-  background-color: $xkcd;
+  background-color: var(--xkcd);
 }
 
 .app-header .menu-button {
@@ -96,19 +86,17 @@ p {
 }
 
 .code-view-bar .MuiSwitch-colorSecondary.Mui-checked {
-  color: $primary;
+  color: var(--primary);
 }
 
 .code-view-bar .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
-  background-color: $primary;
+  background-color: var(--primary);
 }
 
 .app-header .code-view-bar button {
   color: white;
   font-size: 20px;
 }
-
-// Menu
 
 .app-menu {
   grid-area: menu;
@@ -139,16 +127,12 @@ p {
   display: none;
 }
 
-// Main
-
 .app-main {
   grid-area: main;
 }
 
-// Content
-
 .app-link {
-  color: $primary;
+  color: var(--primary);
 }
 
 .loading-logo {
@@ -168,42 +152,33 @@ h2,
 h3,
 .card .card-button,
 .card .group .dates span {
-  color: $primary;
+  color: var(--primary);
 }
 
 .card .group .skills .skill,
 .card .group-set-nav button {
-  background-color: $primary;
+  background-color: var(--primary);
   color: white;
 }
 
-// Media Queries
-
 @media only screen and (max-width: 960px) {
   .app-with-menu {
-    grid-template-areas:
-      'header'
-      'main';
+    grid-template-areas: 'header' 'main';
     grid-template-columns: 100vw;
   }
-
   .app-header .menu-button {
     top: 2vh;
     padding: 10px 10px;
   }
-
   .app-header .title-bar {
     top: 1vh;
   }
-
   .app-header .code-view-bar {
     display: none;
   }
-
   .app-menu .code-view-bar {
     display: flex;
   }
-
   .app-overlay-mobile {
     display: block;
     z-index: 1;
@@ -212,7 +187,6 @@ h3,
     top: 10vh;
     width: 100vw;
   }
-
   .card .MuiCardContent-root {
     padding: 10px;
   }
@@ -223,8 +197,6 @@ h3,
     padding: 5px;
   }
 }
-
-// Animations
 
 @media (prefers-reduced-motion: no-preference) {
   .loading-logo {

@@ -11,8 +11,8 @@ const CardTemplate = (props) => {
 
   const generateLinks = () => {
     if (links) {
-      let generatedLinks: any[] = [];
-      for (let link of links) {
+      const generatedLinks: any[] = [];
+      for (const link of links) {
         generatedLinks.push(
           <a
             href={link.url ? link.url : null}
@@ -39,7 +39,7 @@ const CardTemplate = (props) => {
   };
 
   const generateContent = () => {
-    let genContent: any[] = [];
+    const genContent: any[] = [];
 
     if (title) {
       genContent.push(<h2>{title}</h2>);

@@ -11,13 +11,6 @@ import CardTemplate from '../Library/Card';
 
 require('prismjs/components/prism-jsx');
 
-interface Props {};
-
-interface State {
-    code: string,
-    readonly: boolean
-};
-
 const code = `
 /*
     This page shows the strength available in React's component
@@ -263,35 +256,26 @@ class Portfolio extends React.Component <Props, State> {
 }
 
 export default Portfolio;
-`
+`;
 
-class PortfolioViewer extends React.Component <Props, State> {
+const viewer = (
+  <Viewer
+    value={code}
+    highlight={(code) => highlight(code, languages.js)}
+    padding={10}
+    style={{
+      fontFamily: '"Fira code", "Fira Mono", monospace',
+      fontSize: 12,
+    }}
+  />
+);
 
-    state = {
-        code,
-        readonly: true,
-      };
-
-    render() {
-        let viewer = (
-            <Viewer
-                value={this.state.code}
-                highlight={code => highlight(code, languages.js)}
-                padding={10}
-                style={{
-                fontFamily: '"Fira code", "Fira Mono", monospace',
-                fontSize: 12,
-                }}
-            />);
-    return (
-        <main className="app-code-viewer">
-            <CardTemplate
-                content={viewer}
-                classGiven="card"
-            />
-        </main>
-    );
-    }
+function PortfolioViewer() {
+  return (
+    <main className="app-code-viewer">
+      <CardTemplate content={viewer} classGiven="card" />
+    </main>
+  );
 }
 
 export default PortfolioViewer;

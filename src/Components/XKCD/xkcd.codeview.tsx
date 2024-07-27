@@ -11,28 +11,27 @@ import CardTemplate from '../Library/Card';
 
 require('prismjs/components/prism-jsx');
 
-/* eslint import/no-webpack-loader-syntax: off */
+/* eslint-disable-next-line */
 const XKCDCode = require('!!raw-loader!./xkcd').default;
 
-class XKCDViewer extends React.Component {
-  render() {
-    let viewer = (
-      <Viewer
-        value={XKCDCode}
-        highlight={(code) => highlight(code, languages.js)}
-        padding={10}
-        style={{
-          fontFamily: '"Fira code", "Fira Mono", monospace',
-          fontSize: 12,
-        }}
-      />
-    );
-    return (
-      <main className="app-code-viewer">
-        <CardTemplate content={viewer} classGiven="card" />
-      </main>
-    );
-  }
+const viewer = (
+  <Viewer
+    value={XKCDCode}
+    highlight={(code) => highlight(code, languages.js)}
+    padding={10}
+    style={{
+      fontFamily: '"Fira code", "Fira Mono", monospace',
+      fontSize: 12,
+    }}
+  />
+);
+
+function XKCDViewer() {
+  return (
+    <main className="app-code-viewer">
+      <CardTemplate content={viewer} classGiven="card" />
+    </main>
+  );
 }
 
 export default XKCDViewer;

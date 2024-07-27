@@ -14,8 +14,8 @@ const NavBar = (props) => {
   };
 
   const populatePages = () => {
-    let populatedPages: any[] = [];
-    for (let page of props.pages) {
+    const populatedPages: any[] = [];
+    for (const page of props.pages) {
       populatedPages.push(
         <Link
           to={page.route}
@@ -35,7 +35,7 @@ const NavBar = (props) => {
   };
 
   const populateOptions = () => {
-    let options: any[] = [
+    const options: any[] = [
       <ListItem className="code-view-bar">
         <FormControlLabel
           control={

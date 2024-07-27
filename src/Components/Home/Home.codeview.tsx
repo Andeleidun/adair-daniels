@@ -8,7 +8,7 @@ import 'prismjs/components/prism-markup';
 import '../Library/CodeView.css';
 import CardTemplate from '../Library/Card';
 
-/* eslint import/no-webpack-loader-syntax: off */
+/* eslint-disable-next-line */
 const homeCode = require('!!raw-loader!./Home').default;
 
 require('prismjs/components/prism-jsx');

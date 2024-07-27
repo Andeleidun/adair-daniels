@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Library.scss';
+import './Library.css';
 
 import Viewer from 'react-code-viewer';
 import { highlight, languages } from 'prismjs/components/prism-core';
@@ -37,7 +37,7 @@ const Library = () => {
   ];
 
   const generateOptions = () => {
-    let generatedOptions: any[] = [];
+    const generatedOptions: any[] = [];
 
     generatedOptions.push(
       <CardTemplate

@@ -7,7 +7,7 @@
   The kind of strong typing displayed in this page is extremely important for an enterprise platform.
 */
 import React, { useState, useEffect } from 'react';
-import './Home.scss';
+import './Home.css';
 
 import CardTemplate from '../Library/Card';
 import { headshot, ketomate, hp, nike } from '../../Resources/images/index';
@@ -89,8 +89,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   const homeData: DataSet = HomeData.homeData;
-  let experienceLength: number = 0;
-  let educationLength: number = 0;
+  let experienceLength = 0;
+  let educationLength = 0;
 
   useEffect(() => {
     if (loading) {
@@ -104,10 +104,10 @@ const Home = () => {
     */
 
   const navigate = (input: string, title: string) => {
-    const step: number = 1;
-    const baseIndex: number = 0;
-    let newState: number = 1;
-    let operation: string = input + title;
+    const step = 1;
+    const baseIndex = 0;
+    let newState = 1;
+    const operation = input + title;
 
     switch (operation) {
       case 'previousExperience':
@@ -139,7 +139,7 @@ const Home = () => {
         setEducationIndex(newState);
         break;
       default:
-        console.log('Navigation error.');
+        console.error('Navigation error.');
     }
   };
 
@@ -149,11 +149,11 @@ const Home = () => {
     */
 
   const generateGroupSet = (groupSet: GroupSet[]) => {
-    let groupSetContent: any[] = [];
-    for (let group of groupSet) {
-      let groupContent: any[] = [];
-      let groupClass: string = '';
-      for (let item of group.group) {
+    const groupSetContent: any[] = [];
+    for (const group of groupSet) {
+      const groupContent: any[] = [];
+      let groupClass = '';
+      for (const item of group.group) {
         if (item.title) {
           groupContent.push(
             <div className="title">
@@ -196,8 +196,8 @@ const Home = () => {
           );
         }
         if (item.skills) {
-          let skills: any[] = [];
-          for (let skill of item.skills) {
+          const skills: any[] = [];
+          for (const skill of item.skills) {
             skills.push(<Chip size="small" label={skill} className="skill" />);
           }
           groupContent.push(<div className="skills">{skills}</div>);
@@ -213,10 +213,10 @@ const Home = () => {
       of the cards within the page.
     */
   const formatContent = (contentSet: CardContent) => {
-    let formattedContent: any[] = [];
-    let title: string = contentSet.title;
-    let contentGroup: any[] = contentSet.content;
-    for (let content of contentGroup) {
+    const formattedContent: any[] = [];
+    const title: string = contentSet.title;
+    const contentGroup: any[] = contentSet.content;
+    for (const content of contentGroup) {
       if (content.title) {
         formattedContent.push(<h3>{title}</h3>);
       }
@@ -253,14 +253,13 @@ const Home = () => {
         );
       }
       if (content.groupSet) {
-        let generatedGroupSet: any[];
-        let groupSetLength: number = 0;
+        let groupSetLength = 0;
         let groupSetContent: any;
-        let previousIcon = (
+        const previousIcon = (
           <span className="material-icons">navigate_before</span>
         );
-        let nextIcon = <span className="material-icons">navigate_next</span>;
-        generatedGroupSet = generateGroupSet(content.groupSet);
+        const nextIcon = <span className="material-icons">navigate_next</span>;
+        const generatedGroupSet = generateGroupSet(content.groupSet);
         groupSetLength = generatedGroupSet.length;
         if (title === 'Experience') {
           experienceLength = groupSetLength - 1;
@@ -314,12 +313,12 @@ const Home = () => {
     on an otherwise empty page.
   */
   const generateContent = () => {
-    let contentArray: any[] = [];
-    let formattedArray: any[] = [];
-    for (let value of Object.values(homeData)) {
+    const contentArray: any[] = [];
+    const formattedArray: any[] = [];
+    for (const value of Object.values(homeData)) {
       contentArray.push(value);
     }
-    for (let content of contentArray) {
+    for (const content of contentArray) {
       let media: any;
       switch (content.media) {
         case 'headshot':
