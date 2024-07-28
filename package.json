@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build && copy build\\index.html build\\404.html",
+    "build": "react-scripts --openssl-legacy-provider build && copy build\\index.html build\\404.html",
     "test": "react-scripts test",
     "predeploy": "npm run build && copy CNAME build\\CNAME",
     "deploy": "gh-pages -d build",
@@ -47,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/prismjs": "^1.26.4",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
