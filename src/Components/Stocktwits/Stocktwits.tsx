@@ -206,12 +206,12 @@ class StockTwits extends React.Component<Props, State> {
     this.setState({ symbols: formattedSymbols });
   }
 
-  handleChange(event: any) {
+  handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
     this.setState({ input: event.target.value });
   }
 
-  handleSubmit(event: any) {
+  handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     this.submitRequest();
   }

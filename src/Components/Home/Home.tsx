@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
   This page demonstrates React's strong capacity for generating content from provided data. 
   Aside from a singular primary 'main' component, no static content exists on this page.
@@ -6,11 +7,17 @@
   to progressively load and submit information for their B2B Printer Sales Contract System.
   The kind of strong typing displayed in this page is extremely important for an enterprise platform.
 */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import './Home.css';
 
 import CardTemplate from '../Library/Card';
-import { headshot, ketomate, hp, nike } from '../../Resources/images/index';
+import {
+  headshot,
+  ketomate,
+  hp,
+  nike,
+  aws,
+} from '../../Resources/images/index';
 import HomeData from './Home.json';
 
 import List from '@material-ui/core/List';
@@ -59,6 +66,7 @@ interface Content {
   linkset?: LinkSet;
   skillset?: SkillSet;
   groupSet?: GroupSet[];
+  title?: string;
 }
 
 interface CardContent {
@@ -149,9 +157,9 @@ const Home = () => {
     */
 
   const generateGroupSet = (groupSet: GroupSet[]) => {
-    const groupSetContent: any[] = [];
+    const groupSetContent: ReactElement[] = [];
     for (const group of groupSet) {
-      const groupContent: any[] = [];
+      const groupContent: ReactElement[] = [];
       let groupClass = '';
       for (const item of group.group) {
         if (item.title) {
@@ -196,7 +204,7 @@ const Home = () => {
           );
         }
         if (item.skills) {
-          const skills: any[] = [];
+          const skills: ReactElement[] = [];
           for (const skill of item.skills) {
             skills.push(<Chip size="small" label={skill} className="skill" />);
           }
@@ -213,9 +221,9 @@ const Home = () => {
       of the cards within the page.
     */
   const formatContent = (contentSet: CardContent) => {
-    const formattedContent: any[] = [];
+    const formattedContent: ReactElement[] = [];
     const title: string = contentSet.title;
-    const contentGroup: any[] = contentSet.content;
+    const contentGroup: Content[] = contentSet.content;
     for (const content of contentGroup) {
       if (content.title) {
         formattedContent.push(<h3>{title}</h3>);
@@ -225,6 +233,7 @@ const Home = () => {
           ketomate,
           hp,
           nike,
+          aws,
         };
         const image = imageSet[content.linkset.img];
         formattedContent.push(
@@ -254,7 +263,7 @@ const Home = () => {
       }
       if (content.groupSet) {
         let groupSetLength = 0;
-        let groupSetContent: any;
+        let groupSetContent: ReactElement;
         const previousIcon = (
           <span className="material-icons">navigate_before</span>
         );
@@ -264,8 +273,7 @@ const Home = () => {
         if (title === 'Experience') {
           experienceLength = groupSetLength - 1;
           groupSetContent = generatedGroupSet[experienceIndex];
-        }
-        if (title === 'Education') {
+        } else {
           educationLength = groupSetLength - 1;
           groupSetContent = generatedGroupSet[educationIndex];
         }
@@ -313,13 +321,13 @@ const Home = () => {
     on an otherwise empty page.
   */
   const generateContent = () => {
-    const contentArray: any[] = [];
-    const formattedArray: any[] = [];
+    const cardContentArray: CardContent[] = [];
+    const formattedArray: ReactElement[] = [];
     for (const value of Object.values(homeData)) {
-      contentArray.push(value);
+      cardContentArray.push(value);
     }
-    for (const content of contentArray) {
-      let media: any;
+    for (const content of cardContentArray) {
+      let media: string | null;
       switch (content.media) {
         case 'headshot':
           media = headshot;

@@ -5,19 +5,19 @@
       "media": "headshot",
       "content": [
         {
-          "text": "Over 8 years of experience as UI/UX and Frontend Software Developer specializing in the development and design of accessible user interfaces for complex software applications that meet WCAG 2.1 AA standards."
+          "text": "Over 8 years of experience as Frontend Developer specializing in the development and design of accessible user interfaces for complex software applications."
         },
         {
-          "text": "Expert at developing full stack enterprise level web data API integrated applications utilizing React, Redux, Angular 2-8, Ionic, Vue, PostgreSQL, MySQL, NodeJS, JavaScript, TypeScript, HTML5, and CSS3."
+          "text": "Expert at developing full stack enterprise level API integrated applications utilizing React 18, Redux, JavaScript, TypeScript, Next.js, Angular, Ionic, Vue, NodeJS, HTML, and CSS."
         },
         {
-          "text": "Experienced leader with a successful track record of bringing applications to launch, coaching and mentoring junior developers, and coordinating with other team leads to bring projects to life."
+          "text": "Experienced leader with a successful track record of bringing applications to launch, coaching junior developers, and coordinating with other team leads to bring projects to life."
         },
         {
-          "text": "Experience in Web and Client/Server applications that includes analysis, design, coding, testing, and implementation of the systems accompanied by strong programming skills in JavaScript."
+          "text": "Highly knowledgeable with Cloud, Web, and Client/Server applications that includes analysis, design, coding, testing, implementation and deployment of the systems in AWS and Azure."
         },
         {
-          "text": "Cross trained in UX design, knowledgeable on user stories, workflows, and user centric design. Experience developing prototypes and wireframes via MockFlow and mockups in Axure and Photoshop."
+          "text": "Cross trained in UX design, user stories, and workflows. Experienced in developing prototypes, wireframes, and mockups via Figma, Axure, MockFlow, and Photoshop."
         }
       ],
       "links": [
@@ -38,6 +38,14 @@
       "content": [
         {
           "linkset": {
+            "url": "https://aws.amazon.com/",
+            "title": "AWS",
+            "img": "aws",
+            "text": "Former Senior Frontend Engineer at AWS"
+          }
+        },
+        {
+          "linkset": {
             "url": "https://www.nike.com/launch",
             "title": "Nike",
             "img": "nike",
@@ -46,18 +54,10 @@
         },
         {
           "linkset": {
-            "url": "https://play.google.com/store/apps/details?id=com.ketomatecalculator.app",
-            "title": "Keto Mate",
-            "img": "ketomate",
-            "text": "Keto Mate is a highly successful diet tool for the Ketogenic diet, with over 20,000 users and a 4* rating."
-          }
-        },
-        {
-          "linkset": {
             "url": "https://www.hp.com/",
             "title": "HP",
             "img": "hp",
-            "text": "Former Sr. Frontend Developer at HP"
+            "text": "Former Senior Frontend Developer at HP"
           }
         }
       ],
@@ -105,70 +105,127 @@
       "media": "",
       "content": [
         {
-          "group": [
-            {
-              "classes": "group adair-futures-group"
-            },
-            {
-              "title": "Adair Futures"
-            },
-            {
-              "dates": "June 2015 - Present"
-            },
-            {
-              "description": "Adair Futures is a small business consulting firm founded by Adair to provide high quality user interface development, expert technical guidance, and futures forecasts to various clients including Intuit, SDG&E, and T-Mobile; and to function as the umbrella for independent projects by Adair."
-            },
-            {
-              "jobTitle": "Lead Developer"
-            },
-            {
-              "text": "Develop and launch the Keto Mate suite of apps full stack utilizing Angular, Ionic, and NodeJS, and grow its user base – currently over 20k users with a 4* rating on Google Play."
-            },
-            {
-              "text": "Provide full scope accessibility services for client applications from initial analysis to solution planning and execution to achieve compliance with WCAG 2.1 AA standards using axe, NVDA, and pa11y ci for automated accessibility compliance scans."
-            },
-            {
-              "text": "Created data tables, views, and other components to provide SDG&E Builder Services Portal users with the ability to live view  and download CSVs for service meters and permit data using React with Hooks and Context, and ES6 JS patterns."
-            },
-            {
-              "text": "Consult on frontend technologies for web apps, guiding on design direction, adherence to UX and accessibility standards, and establishing unit testing using React, Angular 8, Bootstrap, Vue, Jest, Mocha, Chai, and JavaScript/TypeScript."
-            },
-            {
-              "text": "Collaborate with client UX designers on wireframes and mockups using Axure, advising on design documents and guiding towards UX best practices and mindfulness of accessibility standards."
-            },
-            {
-              "text": "Research and report on the future development of industries and technologies, and present findings in Qualitative Futures Squares form."
-            },
-            {
-              "skills": [
-                "React",
-                "axe",
-                "NVDA",
-                "pa11y",
-                "Angular",
-                "Ionic",
-                "Mocha",
-                "Chai",
-                "Jest",
-                "AWS",
-                "EC2",
-                "CSS3",
-                "SASS",
-                "Redux",
-                "Axure",
-                "JavaScript",
-                "TypeScript",
-                "GIT",
-                "Photoshop",
-                "Qualitative Futures Squares",
-                "LaTeX",
-                "HTML5"
-              ]
-            }
-          ]
-        },
-        {
           "groupSet": [
+            {
+              "group": [
+                {
+                  "classes": "group adair-futures-group"
+                },
+                {
+                  "title": "Adair Futures"
+                },
+                {
+                  "dates": "June 2015 - Present"
+                },
+                {
+                  "description": "Adair Futures is a business consulting firm founded by Adair to provide high quality UI development, expert technical guidance, and futures forecasts to various clients including Intuit, SDG&E, and T-Mobile; and to function as the umbrella for independent projects by Adair."
+                },
+                {
+                  "jobTitle": "Lead Developer"
+                },
+                {
+                  "text": "Develop and launch the Keto Mate suite of apps full stack utilizing Angular, Ionic, and NodeJS, and grow its user base – currently over 20k users with a 4* rating on Google Play."
+                },
+                {
+                  "text": "Provide full scope accessibility services for client applications from initial analysis to solution planning and execution to achieve compliance with WCAG 2.1 AA standards using axe, NVDA, and pa11y ci for automated accessibility compliance scans."
+                },
+                {
+                  "text": "Created data tables, views, and other components to provide SDG&E Builder Services Portal users with the ability to live view  and download CSVs for service meters and permit data using React with Hooks and Context, and ES6 JS patterns."
+                },
+                {
+                  "text": "Developed data fetching, management, and pagination for live project tracker for Intuit project managers to search, filter, edit, and view detailed information for all Intuit projects in React 18 data table, as well as development of data management and pagination components."
+                },
+                {
+                  "text": "Consult on frontend technologies for web apps, guiding on design direction, adherence to UX and accessibility standards, and establishing unit testing using React, Angular 8, Bootstrap, Vue, Jest, Mocha, Chai, and JavaScript/TypeScript."
+                },
+                {
+                  "text": "Collaborate with client UX designers on wireframes and mockups using Axure, advising on design documents and guiding towards UX best practices and mindfulness of accessibility standards."
+                },
+                {
+                  "text": "Research and report on the future development of industries and technologies, and present findings in Qualitative Futures Squares form."
+                },
+                {
+                  "skills": [
+                    "React",
+                    "JavaScript",
+                    "TypeScript",
+                    "axe",
+                    "NVDA",
+                    "pa11y",
+                    "Angular",
+                    "Ionic",
+                    "Mocha",
+                    "Chai",
+                    "Jest",
+                    "AWS",
+                    "EC2",
+                    "CSS3",
+                    "SASS",
+                    "Redux",
+                    "Axure",
+                    "GIT",
+                    "Photoshop",
+                    "Qualitative Futures Squares",
+                    "LaTeX",
+                    "HTML5"
+                  ]
+                }
+              ]
+            },
+            {
+              "group": [
+                {
+                  "classes": "group aws-group"
+                },
+                {
+                  "title": "Amazon Web Services"
+                },
+                {
+                  "dates": "September 2023 - March 2024"
+                },
+                {
+                  "description": "Amazon is a top 10 member of the Fortune 500, and is considered to be one of the Big Five American technology companies, along with Alphabet, Apple, Meta and Microsoft. Collabera is a talent agency."
+                },
+                {
+                  "jobTitle": "Senior Frontend Engineer"
+                },
+                {
+                  "text": "Developed key features for AWS Quicksight accessibility certification effort, including live screen reader status system for reactive searches and roaming highlights, and focus management for global tab navigation and panel rendering, using React 17, TypeScript, and ES6."
+                },
+                {
+                  "text": "Created new components for AWS Vega library, and implemented accessibility updates including programmatic determination of aria-label and other accessibility attributes, and visual updates for color contrast, hover, and focus states using Storybook and Material UI Theming."
+                },
+                {
+                  "text": "Investigated, documented, and ticketed complex accessibility issues across AWS Quicksight involving the use of data filters and themes across different types of sheets, charts, and tables."
+                },
+                {
+                  "text": "Ensured ongoing accessibility, code quality, and data integrity with type, unit, and integration testing, bug fixes, user stories, and code reviews with other team members using React Testing Library, Jest, Sinon, and Enzyme. "
+                },
+                {
+                  "text": "Collaborated with cross team designers and engineers to ensure accessibility updates are synchronized with new features and designs using Figma, Slack, Chime, and AWS cloud developer environments."
+                },
+                {
+                  "skills": [
+                    "React",
+                    "TypeScript",
+                    "ES6",
+                    "React Testing Library",
+                    "Jest",
+                    "Sinon",
+                    "Enzyme",
+                    "JavaScript",
+                    "Storybook",
+                    "Material UI",
+                    "Figma",
+                    "GIT",
+                    "AWS",
+                    "Mocha",
+                    "HTML",
+                    "CSS"
+                  ]
+                }
+              ]
+            },
             {
               "group": [
                 {
@@ -219,7 +276,7 @@
                     "CSS3",
                     "GIT",
                     "JIRA",
-                    "Copnfluence",
+                    "Confluence",
                     "Zoom",
                     "Rest"
                   ]

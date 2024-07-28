@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 
 import List from '@material-ui/core/List';
@@ -14,7 +14,7 @@ const NavBar = (props) => {
   };
 
   const populatePages = () => {
-    const populatedPages: any[] = [];
+    const populatedPages: ReactElement[] = [];
     for (const page of props.pages) {
       populatedPages.push(
         <Link
@@ -35,7 +35,7 @@ const NavBar = (props) => {
   };
 
   const populateOptions = () => {
-    const options: any[] = [
+    const options: ReactElement[] = [
       <ListItem className="code-view-bar">
         <FormControlLabel
           control={

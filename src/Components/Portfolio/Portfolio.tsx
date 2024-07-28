@@ -45,12 +45,12 @@ interface State {
 
 interface PortfolioSlides {
   title: string;
-  img: any;
+  img: string;
   label: string;
 }
 
 class Portfolio extends React.Component<Props, State> {
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       activeSlide: 0,

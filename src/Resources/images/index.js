@@ -2,6 +2,7 @@ import headshot from './self/headshot.jpg';
 import ketomate from './logos/ketomate.png';
 import nike from './logos/nike.jpg';
 import hp from './logos/hp.png';
+import aws from './logos/awsLogo.png';
 import reactLogo from './logos/reactLogo.svg';
 import agechart from './portfolio/agechart.jpg';
 import experiencechart from './portfolio/experiencechart.jpg';
@@ -27,6 +28,7 @@ export {
   ketomate,
   nike,
   hp,
+  aws,
   reactLogo,
   agechart,
   experiencechart,

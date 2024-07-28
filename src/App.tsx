@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import './App.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Slide from '@material-ui/core/Slide';
@@ -25,8 +25,8 @@ interface PageInterface {
   title: string;
   route: string;
   icon: string;
-  component: any;
-  codeView?: any;
+  component: ReactElement;
+  codeView?: ReactElement;
   exactRoute?: boolean;
 }
 
@@ -136,10 +136,10 @@ const App = () => {
   };
 
   const generateComponent = () => {
-    const generatedContent: any[] = [];
+    const generatedContent: ReactElement[] = [];
     for (const page of pages) {
-      let component: any;
-      if (codeView) {
+      let component: ReactElement;
+      if (codeView && page.codeView) {
         component = page.codeView;
       } else {
         component = page.component;

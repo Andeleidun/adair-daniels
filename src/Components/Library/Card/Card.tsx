@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -11,7 +11,7 @@ const CardTemplate = (props) => {
 
   const generateLinks = () => {
     if (links) {
-      const generatedLinks: any[] = [];
+      const generatedLinks: ReactElement[] = [];
       for (const link of links) {
         generatedLinks.push(
           <a
@@ -39,7 +39,7 @@ const CardTemplate = (props) => {
   };
 
   const generateContent = () => {
-    const genContent: any[] = [];
+    const genContent: ReactElement[] = [];
 
     if (title) {
       genContent.push(<h2>{title}</h2>);
