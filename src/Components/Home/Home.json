@@ -5,19 +5,16 @@
       "media": "headshot",
       "content": [
         {
-          "text": "Over 8 years of experience as Frontend Developer specializing in the development and design of accessible user interfaces for complex software applications."
+          "text": "Senior Frontend Engineer with 9+ years of experience specializing in the design and development of accessible user interfaces for complex software applications."
         },
         {
-          "text": "Expert at developing full stack enterprise level API integrated applications utilizing React 18, Redux, JavaScript, TypeScript, Next.js, Angular, Ionic, Vue, NodeJS, HTML, and CSS."
+          "text": "Experienced leader and mentor with a successful track record of bringing applications to market, coaching junior developers, and collaborating with cross-functional teams."
         },
         {
-          "text": "Experienced leader with a successful track record of bringing applications to launch, coaching junior developers, and coordinating with other team leads to bring projects to life."
+          "text": "Expertise in developing full-stack enterprise-level applications, integrating with APIs, and deploying to cloud environments in AWS and Azure."
         },
         {
-          "text": "Highly knowledgeable with Cloud, Web, and Client/Server applications that includes analysis, design, coding, testing, implementation and deployment of the systems in AWS and Azure."
-        },
-        {
-          "text": "Cross trained in UX design, user stories, and workflows. Experienced in developing prototypes, wireframes, and mockups via Figma, Axure, MockFlow, and Photoshop."
+          "text": "Strong understanding of UX principles, user stories, and workflows, with experience in prototyping, wireframing, and mockup creation using Figma, Axure, and Photoshop."
         }
       ],
       "links": [
@@ -39,9 +36,9 @@
         {
           "linkset": {
             "url": "https://aws.amazon.com/",
-            "title": "AWS",
+            "title": "Amazon / AWS",
             "img": "aws",
-            "text": "Former Senior Frontend Engineer at AWS"
+            "text": "Senior Software Engineer at Amazon / Former Senior Frontend Engineer at AWS"
           }
         },
         {
@@ -109,6 +106,59 @@
             {
               "group": [
                 {
+                  "classes": "group amazon-group"
+                },
+                {
+                  "title": "Amazon"
+                },
+                {
+                  "dates": "September 2024 - Present"
+                },
+                {
+                  "description": "Amazon is a top 10 member of the Fortune 500, and is considered to be one of the Big Five American technology companies, along with Alphabet, Apple, Meta and Microsoft. Collabera is a talent agency."
+                },
+                {
+                  "jobTitle": "Senior Software Engineer"
+                },
+                {
+                  "text": "Lead the design and implementation of a global content delivery network using CloudFront, alongside a transition to video streaming. Achieving 79% improvement in P90 loading speed and 84% reduction in variance for video streams across North America, Europe, and Asia."
+                },
+                {
+                  "text": "Engineer a TypeScript CDK stack for dynamic provisioning of CloudFront infrastructure, enabling rapid deployment and scaling across multiple stages and regions."
+                },
+                {
+                  "text": "Develop interactive UI components and views in React 18 with TypeScript to compare ergonomic assessments and highlight areas for improvement, facilitating workplace safety and employee well-being."
+                },
+                {
+                  "text": "Successfully migrate the backend application from JDK 11 to 17, addressing deprecated code patterns and ensuring seamless integration across the CI/CD pipeline."
+                },
+                {
+                  "text": "Develop and deploy a Java-based file signing service for time-limited access to CloudFront downloads, enhancing security and user experience."
+                },
+                {
+                  "skills": [
+                    "React",
+                    "TypeScript",
+                    "Java",
+                    "React Testing Library",
+                    "JavaScript",
+                    "CDK",
+                    "JDK",
+                    "AWS CloudFront",
+                    "AWS CloudFormation",
+                    "AWS Route 53",
+                    "AWS S3",
+                    "Git",
+                    "Figma",
+                    "HTML",
+                    "CSS"
+                  ]
+                }
+              ]
+            },
+            {
+              "group": [
+                {
                   "classes": "group adair-futures-group"
                 },
                 {
@@ -124,25 +174,25 @@
                   "jobTitle": "Lead Developer"
                 },
                 {
-                  "text": "Develop and launch the Keto Mate suite of apps full stack utilizing Angular, Ionic, and NodeJS, and grow its user base – currently over 20k users with a 4* rating on Google Play."
+                  "text": "Lead accessibility initiatives for client projects, ensuring compliance with WCAG 2.1 AA standards using tools such as axe, NVDA, and pa11y."
                 },
                 {
-                  "text": "Provide full scope accessibility services for client applications from initial analysis to solution planning and execution to achieve compliance with WCAG 2.1 AA standards using axe, NVDA, and pa11y ci for automated accessibility compliance scans."
+                  "text": "Created data tables, views, and components for the SDG&E Builder Services Portal to enable users to view and download CSVs for service meters and permit data using React 18 with Hooks and Context."
                 },
                 {
-                  "text": "Created data tables, views, and other components to provide SDG&E Builder Services Portal users with the ability to live view  and download CSVs for service meters and permit data using React with Hooks and Context, and ES6 JS patterns."
+                  "text": "Developed data fetching, management, and pagination features for a live project tracker in React 18, allowing Intuit project managers to search, filter, edit, and view detailed information for all projects."
                 },
                 {
                   "text": "Developed data fetching, management, and pagination for live project tracker for Intuit project managers to search, filter, edit, and view detailed information for all Intuit projects in React 18 data table, as well as development of data management and pagination components."
                 },
                 {
-                  "text": "Consult on frontend technologies for web apps, guiding on design direction, adherence to UX and accessibility standards, and establishing unit testing using React, Angular 8, Bootstrap, Vue, Jest, Mocha, Chai, and JavaScript/TypeScript."
+                  "text": "Consult with clients to ensure that frontend technologies and design align with modern UX and accessibility standards, guiding teams in best practices and trend analysis."
                 },
                 {
-                  "text": "Collaborate with client UX designers on wireframes and mockups using Axure, advising on design documents and guiding towards UX best practices and mindfulness of accessibility standards."
+                  "text": "Develop and launch the full-stack Keto Mate suite of apps using Angular, Ionic, and Node.js, which has attracted over 20k users and maintains a 4* rating on Google Play."
                 },
                 {
-                  "text": "Research and report on the future development of industries and technologies, and present findings in Qualitative Futures Squares form."
+                  "text": "Deliver prototypes, mockups, and futures forecasts to demonstrate future tech trends and user experience advancements, integrating insights into development roadmaps."
                 },
                 {
                   "skills": [
@@ -190,16 +240,13 @@
                   "jobTitle": "Senior Frontend Engineer"
                 },
                 {
-                  "text": "Developed key features for AWS Quicksight accessibility certification effort, including live screen reader status system for reactive searches and roaming highlights, and focus management for global tab navigation and panel rendering, using React 17, TypeScript, and ES6."
+                  "text": "Developed key features, including a live screen reader status system, roaming highlights, and enhanced focus management (React 17, TypeScript, ES6), enabling AWS QuickSight to achieve accessibility certification and reducing identified accessibility issues by 97%."
                 },
                 {
-                  "text": "Created new components for AWS Vega library, and implemented accessibility updates including programmatic determination of aria-label and other accessibility attributes, and visual updates for color contrast, hover, and focus states using Storybook and Material UI Theming."
+                  "text": "Created new and accessibility updated components for AWS Vega component library, including programmatic determination of aria-label and other accessibility attributes, and visual updates for color contrast, hover, and focus states using Storybook and Material UI Theming."
                 },
                 {
-                  "text": "Investigated, documented, and ticketed complex accessibility issues across AWS Quicksight involving the use of data filters and themes across different types of sheets, charts, and tables."
-                },
-                {
-                  "text": "Ensured ongoing accessibility, code quality, and data integrity with type, unit, and integration testing, bug fixes, user stories, and code reviews with other team members using React Testing Library, Jest, Sinon, and Enzyme. "
+                  "text": "Investigated, documented, and ticketed over 50 complex accessibility issues across AWS Quicksight involving the use of data filters and themes across different types of sheets, charts, and tables. Maintained accessibility, code quality, and data integrity through testing (React Testing Library, axe, Sinon, Enzyme), bug fixes, user stories, and code reviews."
                 },
                 {
                   "text": "Collaborated with cross team designers and engineers to ensure accessibility updates are synchronized with new features and designs using Figma, Slack, Chime, and AWS cloud developer environments."
