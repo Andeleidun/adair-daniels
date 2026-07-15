@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">AD monogram</title>
+  <rect width="512" height="512" rx="96" fill="#007a3f" />
+  <g transform="translate(-38)">
+    <path d="M286 128h58c43 0 77 10 101 31 25 21 37 51 37 90 0 40-12 71-37 93-24 21-58 32-101 32h-58V128Zm55 53v140c25 0 44-6 57-18 13-11 19-29 19-53 0-23-6-40-19-52-13-11-32-17-57-17Z" fill="#fff" fill-rule="evenodd" />
+    <path d="M105 374 205 128h54l100 246h-61l-20-53H184l-20 53h-59Zm98-104h56l-28-77-28 77Z" fill="#fff" />
+  </g>
+</svg>
