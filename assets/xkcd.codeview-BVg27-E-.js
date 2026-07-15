@@ -1,4 +1,4 @@
-import"./rolldown-runtime-Bh1tDfsg.js";import{X as e,z as t}from"./ButtonBase-C6bbDwrF.js";import{t as n}from"./SourceViewer-ctJJIHNP.js";import{t as r}from"./Card-B-Vc2Yd5.js";import{t as i}from"./remoteData-D3mAZNIF.js";e();var a=`/*
+import"./rolldown-runtime-Bh1tDfsg.js";import{X as e,z as t}from"./ButtonBase-C6bbDwrF.js";import{t as n}from"./SourceViewer-ctJJIHNP.js";import{t as r}from"./Card-B-Vc2Yd5.js";import{t as i}from"./remoteData-Dsm-72yM.js";e();var a=`/*
   This page demonstrates live API content with bounded parallel requests,
   cancellation, validation, and recoverable navigation failures.
 */
@@ -7,7 +7,7 @@ import './xkcd.css';
 import CardTemplate from '../Library/Card';
 import LoadScreen from '../Library/LoadScreen';
 import Button from '@mui/material/Button';
-import { fetchComicBatch, fetchCurrentComic, XkcdSlot } from './xkcdApi';
+import { fetchComicBatch, fetchInitialComics, XkcdSlot } from './xkcdApi';
 import { RemoteRequestError } from '../../Services/remoteData';
 import DemoExpansionButton, {
   DemoExpansionOptions,
@@ -84,19 +84,14 @@ const XKCD = ({
     setError('');
     setRetryIndex(1);
     try {
-      const current = await fetchCurrentComic(request.controller.signal);
-      const nextSlots = await fetchComicBatch(
-        1,
-        current.num,
-        request.controller.signal
-      );
+      const initial = await fetchInitialComics(request.controller.signal);
       if (request.version !== requestVersionRef.current) {
         return;
       }
-      setLatest(current.num);
+      setLatest(initial.latest);
       setIndex(1);
       setRetryIndex(1);
-      setSlots(nextSlots);
+      setSlots(initial.slots);
       setStatus('success');
     } catch (requestError) {
       if (
@@ -177,8 +172,8 @@ const XKCD = ({
         <div className={isExpanded ? 'visually-hidden' : 'xkcd-intro-copy'}>
           <h2 id="comic-browser-title">Browse XKCD in groups of three</h2>
           <p>
-            Comics are loaded through AllOrigins from XKCD. Navigation requests
-            are cancellable, and unavailable comic positions remain visible.
+            Comics are loaded through a bounded XKCD service. Navigation
+            requests are cancellable, and unavailable positions remain visible.
           </p>
         </div>
         <DemoExpansionButton
@@ -266,102 +261,106 @@ const XKCD = ({
 };
 
 export default XKCD;
-`,o=`import {\r
-  fetchAllOriginsJson,\r
-  isHttpsUrl,\r
-  RemoteRequestError,\r
-} from '../../Services/remoteData';\r
-\r
-export interface XkcdComic {\r
-  readonly kind: 'comic';\r
-  readonly num: number;\r
-  readonly title: string;\r
-  readonly img: string;\r
-  readonly alt: string;\r
-}\r
-\r
-export interface XkcdUnavailableSlot {\r
-  readonly kind: 'unavailable';\r
-  readonly num: number;\r
-}\r
-\r
-export type XkcdSlot = XkcdComic | XkcdUnavailableSlot;\r
-\r
-const isRecord = (value: unknown): value is Record<string, unknown> =>\r
-  typeof value === 'object' && value !== null;\r
-\r
-const parseComic = (value: unknown): XkcdComic => {\r
-  if (\r
-    !isRecord(value) ||\r
-    typeof value.num !== 'number' ||\r
-    !Number.isInteger(value.num) ||\r
-    value.num < 1 ||\r
-    typeof value.title !== 'string' ||\r
-    !isHttpsUrl(value.img) ||\r
-    typeof value.alt !== 'string'\r
-  ) {\r
-    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');\r
-  }\r
-  return {\r
-    kind: 'comic',\r
-    num: value.num,\r
-    title: value.title,\r
-    img: value.img,\r
-    alt: value.alt,\r
-  };\r
-};\r
-\r
-export const fetchCurrentComic = async (\r
-  signal?: AbortSignal\r
-): Promise<XkcdComic> =>\r
-  parseComic(\r
-    await fetchAllOriginsJson('https://xkcd.com/info.0.json', {\r
-      signal,\r
-      requestName: 'xkcd-slideshow',\r
-    })\r
-  );\r
-\r
-export const fetchComic = async (\r
-  number: number,\r
-  signal?: AbortSignal\r
-): Promise<XkcdSlot> => {\r
-  try {\r
-    const comic = parseComic(\r
-      await fetchAllOriginsJson(\`https://xkcd.com/\${number}/info.0.json\`, {\r
-        signal,\r
-        requestName: 'xkcd-slideshow',\r
-      })\r
-    );\r
-    if (comic.num !== number) {\r
-      throw new RemoteRequestError(\r
-        'schema',\r
-        'XKCD returned a comic for the wrong position.'\r
-      );\r
-    }\r
-    return comic;\r
-  } catch (error) {\r
-    if (\r
-      error instanceof RemoteRequestError &&\r
-      error.category === 'http' &&\r
-      error.status === 404\r
-    ) {\r
-      return { kind: 'unavailable', num: number };\r
-    }\r
-    throw error;\r
-  }\r
-};\r
-\r
-export const fetchComicBatch = (\r
-  start: number,\r
-  latest: number,\r
-  signal?: AbortSignal\r
-): Promise<ReadonlyArray<XkcdSlot>> => {\r
-  const count = Math.min(3, latest - start + 1);\r
-  const numbers = Array.from(\r
-    { length: count },\r
-    (_value, index) => start + index\r
-  );\r
-  return Promise.all(numbers.map((number) => fetchComic(number, signal)));\r
-};\r
+`,o=`import {
+  fetchRemoteJson,
+  isAllowedHttpsUrl,
+  RemoteRequestError,
+} from '../../Services/remoteData';
+
+export interface XkcdComic {
+  readonly kind: 'comic';
+  readonly num: number;
+  readonly title: string;
+  readonly img: string;
+  readonly alt: string;
+}
+
+export interface XkcdUnavailableSlot {
+  readonly kind: 'unavailable';
+  readonly num: number;
+}
+
+export type XkcdSlot = XkcdComic | XkcdUnavailableSlot;
+
+export interface XkcdInitial {
+  readonly latest: number;
+  readonly slots: ReadonlyArray<XkcdSlot>;
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const parseSlot = (value: unknown, expected: number): XkcdSlot => {
+  if (!isRecord(value) || value.num !== expected) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  if (value.kind === 'unavailable') {
+    return { kind: 'unavailable', num: expected };
+  }
+  if (
+    value.kind !== 'comic' ||
+    typeof value.title !== 'string' ||
+    !isAllowedHttpsUrl(value.img, 'imgs.xkcd.com') ||
+    typeof value.alt !== 'string'
+  ) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  return {
+    kind: 'comic',
+    num: expected,
+    title: value.title,
+    img: value.img,
+    alt: value.alt,
+  };
+};
+
+const parseSlots = (
+  value: unknown,
+  start: number,
+  count: number
+): ReadonlyArray<XkcdSlot> => {
+  if (!Array.isArray(value) || value.length !== count) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  return value.map((slot, index) => parseSlot(slot, start + index));
+};
+
+export const fetchInitialComics = async (
+  signal?: AbortSignal
+): Promise<XkcdInitial> => {
+  const value = await fetchRemoteJson('/v1/xkcd/initial', { signal });
+  if (
+    !isRecord(value) ||
+    typeof value.latest !== 'number' ||
+    !Number.isInteger(value.latest) ||
+    value.latest < 1
+  ) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  const count = Math.min(3, value.latest);
+  return {
+    latest: value.latest,
+    slots: parseSlots(value.slots, 1, count),
+  };
+};
+
+export const fetchComicBatch = async (
+  start: number,
+  latest: number,
+  signal?: AbortSignal
+): Promise<ReadonlyArray<XkcdSlot>> => {
+  const count = Math.min(3, latest - start + 1);
+  if (!Number.isSafeInteger(start) || start < 1 || count < 1) {
+    throw new RemoteRequestError('schema', 'The XKCD range is invalid.');
+  }
+  const value = await fetchRemoteJson(
+    \`/v1/xkcd/batch?start=\${start}&count=\${count}\`,
+    { signal }
+  );
+  if (!isRecord(value) || value.start !== start) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  return parseSlots(value.slots, start, count);
+};
 `,s=t(),c=[`// XKCD component`,a,``,`// XKCD adapter`,o,``,`// Shared remote transport`,i].join(`
 `),l=()=>(0,s.jsx)(`div`,{className:`app-code-viewer`,children:(0,s.jsx)(r,{content:(0,s.jsx)(n,{value:c}),classGiven:`card`})});export{l as default};

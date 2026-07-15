@@ -1,4 +1,4 @@
-import"./rolldown-runtime-Bh1tDfsg.js";import{X as e,z as t}from"./ButtonBase-C6bbDwrF.js";import{t as n}from"./SourceViewer-ctJJIHNP.js";import{t as r}from"./Card-B-Vc2Yd5.js";import{t as i}from"./remoteData-D3mAZNIF.js";e();var a=`/*
+import"./rolldown-runtime-Bh1tDfsg.js";import{X as e,z as t}from"./ButtonBase-C6bbDwrF.js";import{t as n}from"./SourceViewer-ctJJIHNP.js";import{t as r}from"./Card-B-Vc2Yd5.js";import{t as i}from"./remoteData-Dsm-72yM.js";e();var a=`/*
   This page demonstrates a bounded, refreshable StockTwits symbol feed. Remote
   responses are validated before they reach the presentation components.
 */
@@ -44,7 +44,7 @@ const StockTwits = ({
   const controllerRef = useRef<AbortController | null>(null);
   const requestVersionRef = useRef(0);
   const requestInProgressRef = useRef(false);
-  const elapsedMinutesRef = useRef(0);
+  const refreshDeadlineRef = useRef(0);
   const refreshRequestRef = useRef<() => void>(() => undefined);
   const { isExpanded, setExpanded } = useDemoExpansionState({
     expanded,
@@ -66,7 +66,7 @@ const StockTwits = ({
     const nextController = new AbortController();
     controllerRef.current = nextController;
     requestInProgressRef.current = true;
-    elapsedMinutesRef.current = 0;
+    refreshDeadlineRef.current = 0;
     setPolling(false);
     setCountdown(5);
     setFeeds([]);
@@ -89,6 +89,7 @@ const StockTwits = ({
       setFeeds(result.feeds);
       setWarning(warningFor(result.failedSymbols));
       setStatus(isEmpty(result.feeds) ? 'empty' : 'success');
+      refreshDeadlineRef.current = Date.now() + 5 * 60000;
       setPolling(true);
     } catch (requestError) {
       if (
@@ -148,7 +149,7 @@ const StockTwits = ({
       if (result.failedSymbols.length > 0) {
         setPolling(false);
       } else {
-        elapsedMinutesRef.current = 0;
+        refreshDeadlineRef.current = Date.now() + 5 * 60000;
         setCountdown(5);
       }
     } catch (requestError) {
@@ -182,10 +183,12 @@ const StockTwits = ({
       return undefined;
     }
     const interval = window.setInterval(() => {
-      elapsedMinutesRef.current += 1;
-      const remaining = Math.max(0, 5 - elapsedMinutesRef.current);
+      const remaining = Math.max(
+        0,
+        Math.ceil((refreshDeadlineRef.current - Date.now()) / 60000)
+      );
       setCountdown(remaining);
-      if (elapsedMinutesRef.current >= 5) {
+      if (remaining === 0) {
         refreshRequestRef.current();
       }
     }, 60000);
@@ -249,9 +252,8 @@ const StockTwits = ({
         <div className={isExpanded ? 'visually-hidden' : 'stock-intro-copy'}>
           <h2 id="stock-search-title">Search public symbol feeds</h2>
           <p>
-            Stock symbols are sent through the AllOrigins proxy to StockTwits.
-            Results refresh every five minutes until a refresh fails or the page
-            is closed.
+            Stock symbols are sent through a bounded StockTwits service. Results
+            refresh every five minutes until a refresh fails or the page closes.
           </p>
         </div>
         <DemoExpansionButton
@@ -372,160 +374,169 @@ const StockTwits = ({
 };
 
 export default StockTwits;
-`,o=`import {\r
-  fetchAllOriginsJson,\r
-  isHttpsUrl,\r
-  RemoteRequestError,\r
-} from '../../Services/remoteData';\r
-\r
-export interface StockTwitsUser {\r
-  readonly name: string;\r
-  readonly username: string;\r
-  readonly avatarUrl: string;\r
-}\r
-\r
-export interface StockTwitsMessage {\r
-  readonly id: number;\r
-  readonly body: string;\r
-  readonly user: StockTwitsUser;\r
-}\r
-\r
-export interface StockSymbolFeed {\r
-  readonly symbol: string;\r
-  readonly messages: ReadonlyArray<StockTwitsMessage>;\r
-}\r
-\r
-export interface StockSearchResult {\r
-  readonly feeds: ReadonlyArray<StockSymbolFeed>;\r
-  readonly failedSymbols: ReadonlyArray<string>;\r
-}\r
-\r
-export type SymbolInputResult =\r
-  | { readonly valid: true; readonly symbols: ReadonlyArray<string> }\r
-  | { readonly valid: false; readonly message: string };\r
-\r
-const isRecord = (value: unknown): value is Record<string, unknown> =>\r
-  typeof value === 'object' && value !== null;\r
-\r
-export const normalizeSymbols = (input: string): SymbolInputResult => {\r
-  const symbols = input\r
-    .split(',')\r
-    .map((symbol) => symbol.trim().toUpperCase())\r
-    .filter(\r
-      (symbol, index, all) => symbol !== '' && all.indexOf(symbol) === index\r
-    );\r
-\r
-  if (symbols.length === 0) {\r
-    return { valid: false, message: 'Enter at least one stock symbol.' };\r
-  }\r
-  if (symbols.length > 10) {\r
-    return { valid: false, message: 'Enter no more than 10 stock symbols.' };\r
-  }\r
-  if (\r
-    symbols.some(\r
-      (symbol) => !/^[A-Z0-9.-]+$/.test(symbol) || !/[A-Z0-9]/.test(symbol)\r
-    )\r
-  ) {\r
-    return {\r
-      valid: false,\r
-      message:\r
-        'Symbols must include a letter or number and may also contain periods and hyphens.',\r
-    };\r
-  }\r
-  return { valid: true, symbols };\r
-};\r
-\r
-const parseMessage = (value: unknown): StockTwitsMessage => {\r
-  if (\r
-    !isRecord(value) ||\r
-    typeof value.id !== 'number' ||\r
-    !Number.isInteger(value.id) ||\r
-    value.id < 1\r
-  ) {\r
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');\r
-  }\r
-  if (typeof value.body !== 'string' || !isRecord(value.user)) {\r
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');\r
-  }\r
-  const user = value.user;\r
-  if (\r
-    typeof user.name !== 'string' ||\r
-    typeof user.username !== 'string' ||\r
-    !isHttpsUrl(user.avatar_url_ssl)\r
-  ) {\r
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');\r
-  }\r
-  return {\r
-    id: value.id,\r
-    body: value.body,\r
-    user: {\r
-      name: user.name,\r
-      username: user.username,\r
-      avatarUrl: user.avatar_url_ssl,\r
-    },\r
-  };\r
-};\r
-\r
-export const fetchStockSymbol = async (\r
-  symbol: string,\r
-  signal?: AbortSignal\r
-): Promise<StockSymbolFeed> => {\r
-  const value = await fetchAllOriginsJson(\r
-    \`https://api.stocktwits.com/api/2/streams/symbol/\${encodeURIComponent(\r
-      symbol\r
-    )}.json\`,\r
-    { signal, requestName: 'stock-twits-live-feed' }\r
-  );\r
-  if (!isRecord(value)) {\r
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');\r
-  }\r
-  if (value.error !== undefined || value.errors !== undefined) {\r
-    throw new RemoteRequestError(\r
-      'http',\r
-      'StockTwits could not complete the symbol request.'\r
-    );\r
-  }\r
-  if (\r
-    !isRecord(value.response) ||\r
-    typeof value.response.status !== 'number' ||\r
-    !Number.isInteger(value.response.status)\r
-  ) {\r
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');\r
-  }\r
-  if (value.response.status < 200 || value.response.status >= 300) {\r
-    throw new RemoteRequestError(\r
-      'http',\r
-      'StockTwits could not complete the symbol request.',\r
-      value.response.status\r
-    );\r
-  }\r
-  if (!Array.isArray(value.messages)) {\r
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');\r
-  }\r
-  const messages = value.messages.map(parseMessage);\r
-  if (new Set(messages.map((message) => message.id)).size !== messages.length) {\r
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');\r
-  }\r
-  return { symbol, messages };\r
-};\r
-\r
-export const fetchStockSymbols = async (\r
-  symbols: ReadonlyArray<string>,\r
-  signal?: AbortSignal\r
-): Promise<StockSearchResult> => {\r
-  const feeds: StockSymbolFeed[] = [];\r
-  const failedSymbols: string[] = [];\r
-  for (const symbol of symbols) {\r
-    try {\r
-      feeds.push(await fetchStockSymbol(symbol, signal));\r
-    } catch (error) {\r
-      if (error instanceof RemoteRequestError && error.category === 'aborted') {\r
-        throw error;\r
-      }\r
-      failedSymbols.push(symbol);\r
-    }\r
-  }\r
-  return { feeds, failedSymbols };\r
-};\r
+`,o=`import {
+  fetchRemoteJson,
+  isAllowedHttpsUrl,
+  RemoteRequestError,
+} from '../../Services/remoteData';
+
+export interface StockTwitsUser {
+  readonly name: string;
+  readonly username: string;
+  readonly avatarUrl: string;
+}
+
+export interface StockTwitsMessage {
+  readonly id: number;
+  readonly body: string;
+  readonly user: StockTwitsUser;
+}
+
+export interface StockSymbolFeed {
+  readonly symbol: string;
+  readonly messages: ReadonlyArray<StockTwitsMessage>;
+}
+
+export interface StockSearchResult {
+  readonly feeds: ReadonlyArray<StockSymbolFeed>;
+  readonly failedSymbols: ReadonlyArray<string>;
+}
+
+export type SymbolInputResult =
+  | { readonly valid: true; readonly symbols: ReadonlyArray<string> }
+  | { readonly valid: false; readonly message: string };
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+export const normalizeSymbols = (input: string): SymbolInputResult => {
+  if (input.length > 200) {
+    return { valid: false, message: 'Enter no more than 200 characters.' };
+  }
+  const seen = new Set<string>();
+  const symbols: string[] = [];
+  for (const part of input.split(',')) {
+    const symbol = part.trim().toUpperCase();
+    if (symbol !== '' && !seen.has(symbol)) {
+      seen.add(symbol);
+      symbols.push(symbol);
+    }
+  }
+
+  if (symbols.length === 0) {
+    return { valid: false, message: 'Enter at least one stock symbol.' };
+  }
+  if (symbols.length > 10) {
+    return { valid: false, message: 'Enter no more than 10 stock symbols.' };
+  }
+  if (symbols.some((symbol) => symbol.length > 16)) {
+    return {
+      valid: false,
+      message: 'Stock symbols may not exceed 16 characters.',
+    };
+  }
+  if (
+    symbols.some(
+      (symbol) => !/^[A-Z0-9.-]+$/.test(symbol) || !/[A-Z0-9]/.test(symbol)
+    )
+  ) {
+    return {
+      valid: false,
+      message:
+        'Symbols must include a letter or number and may also contain periods and hyphens.',
+    };
+  }
+  return { valid: true, symbols };
+};
+
+const parseMessage = (value: unknown): StockTwitsMessage => {
+  if (
+    !isRecord(value) ||
+    typeof value.id !== 'number' ||
+    !Number.isInteger(value.id) ||
+    value.id < 1 ||
+    typeof value.body !== 'string' ||
+    !isRecord(value.user) ||
+    typeof value.user.name !== 'string' ||
+    typeof value.user.username !== 'string' ||
+    !isAllowedHttpsUrl(value.user.avatarUrl, 'avatars.stocktwits.com')
+  ) {
+    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
+  }
+  return {
+    id: value.id,
+    body: value.body,
+    user: {
+      name: value.user.name,
+      username: value.user.username,
+      avatarUrl: value.user.avatarUrl,
+    },
+  };
+};
+
+export const fetchStockSymbol = async (
+  symbol: string,
+  signal?: AbortSignal
+): Promise<StockSymbolFeed> => {
+  const value = await fetchRemoteJson(
+    \`/v1/stocktwits/\${encodeURIComponent(symbol)}\`,
+    { signal }
+  );
+  if (
+    !isRecord(value) ||
+    value.symbol !== symbol ||
+    !Array.isArray(value.messages)
+  ) {
+    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
+  }
+  const messages = value.messages.map(parseMessage);
+  if (new Set(messages.map((message) => message.id)).size !== messages.length) {
+    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
+  }
+  return { symbol, messages };
+};
+
+export const fetchStockSymbols = async (
+  symbols: ReadonlyArray<string>,
+  signal?: AbortSignal
+): Promise<StockSearchResult> => {
+  const results = Array.from(
+    { length: symbols.length },
+    (): StockSymbolFeed | undefined => undefined
+  );
+  const failed = new Set<number>();
+  let nextIndex = 0;
+
+  const run = async () => {
+    while (nextIndex < symbols.length) {
+      if (signal?.aborted) {
+        throw new RemoteRequestError('aborted', 'The request was cancelled.');
+      }
+      const index = nextIndex;
+      nextIndex += 1;
+      try {
+        results[index] = await fetchStockSymbol(symbols[index], signal);
+      } catch (error) {
+        if (
+          error instanceof RemoteRequestError &&
+          error.category === 'aborted'
+        ) {
+          throw error;
+        }
+        failed.add(index);
+      }
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(3, symbols.length) }, () => run())
+  );
+  return {
+    feeds: results.filter(
+      (feed): feed is StockSymbolFeed => feed !== undefined
+    ),
+    failedSymbols: symbols.filter((_symbol, index) => failed.has(index)),
+  };
+};
 `,s=t(),c=[`// StockTwits component`,a,``,`// StockTwits adapter`,o,``,`// Shared remote transport`,i].join(`
 `),l=()=>(0,s.jsx)(`div`,{className:`app-code-viewer`,children:(0,s.jsx)(r,{content:(0,s.jsx)(n,{value:c}),classGiven:`card`})});export{l as default};
