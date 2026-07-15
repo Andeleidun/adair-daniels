@@ -205,15 +205,18 @@ const AppFooter = (): ReactElement => (
 export const ApplicationShell = (): ReactElement => {
   const location = useLocation();
   const desktop = useMediaQuery('(min-width:961px)');
+  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const headingRef = useRef<HTMLHeadingElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const previousPathnameRef = useRef(location.pathname);
   const [navShow, setNavShow] = useState(false);
   const [codeView, setCodeView] = useState(false);
   const currentPage = pageForPath(location.pathname);
+  const sourceViewActive = codeView && Boolean(currentPage?.codeView);
   const pageTitle = currentPage?.title ?? 'Page not found';
   const pageDescription =
     currentPage?.description ?? 'The requested portfolio page was not found.';
+  const showPageHeading = currentPage?.route !== '/';
   const pageKicker = currentPage
     ? currentPage.route === '/'
       ? undefined
@@ -295,7 +298,7 @@ export const ApplicationShell = (): ReactElement => {
         variant={desktop ? 'persistent' : 'temporary'}
         open={navShow}
         onClose={closeNav}
-        transitionDuration={120}
+        transitionDuration={reduceMotion ? 0 : 160}
         ModalProps={{ disableRestoreFocus: true, keepMounted: true }}
       >
         <NavBar
@@ -309,32 +312,52 @@ export const ApplicationShell = (): ReactElement => {
       </Drawer>
       <div className={contentClass}>
         <main id="main-content" className="app-content" tabIndex={-1}>
-          <header className="page-heading">
-            {pageKicker ? <p className="page-kicker">{pageKicker}</p> : null}
-            <h1 id="page-title" ref={headingRef} tabIndex={-1}>
-              {pageTitle}
-            </h1>
-            <p className="page-description">{pageDescription}</p>
+          <div
+            className="app-screen"
+            key={`${location.pathname}-${sourceViewActive ? 'source' : 'live'}`}
+          >
+            {showPageHeading ? (
+              <header className="page-heading">
+                {pageKicker ? (
+                  <p className="page-kicker">{pageKicker}</p>
+                ) : null}
+                <h1 id="page-title" ref={headingRef} tabIndex={-1}>
+                  {pageTitle}
+                </h1>
+                <p className="page-description">{pageDescription}</p>
+              </header>
+            ) : (
+              <h1
+                id="page-title"
+                className="visually-hidden"
+                ref={headingRef}
+                tabIndex={-1}
+              >
+                {pageTitle}
+              </h1>
+            )}
             {currentPage?.codeView ? (
               <p className="visually-hidden" role="status">
-                {codeView ? 'Source view' : 'Live demonstration view'}
+                {sourceViewActive ? 'Source view' : 'Live demonstration view'}
               </p>
             ) : null}
-          </header>
-          <Suspense fallback={<LoadScreen />}>
-            <Routes>
-              {pages.map((page) => (
-                <Route
-                  path={page.route}
-                  key={page.route}
-                  element={
-                    codeView && page.codeView ? page.codeView : page.component
-                  }
-                />
-              ))}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+            <Suspense fallback={<LoadScreen />}>
+              <Routes>
+                {pages.map((page) => (
+                  <Route
+                    path={page.route}
+                    key={page.route}
+                    element={
+                      sourceViewActive && page.codeView
+                        ? page.codeView
+                        : page.component
+                    }
+                  />
+                ))}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </div>
         </main>
         <AppFooter />
       </div>

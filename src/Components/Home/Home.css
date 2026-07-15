@@ -194,6 +194,8 @@
   cursor: pointer;
   min-height: 56px;
   padding: 1rem 1.25rem;
+  transition: background-color var(--motion-duration-fast)
+    var(--motion-easing-standard);
 }
 
 .timeline-summary {
@@ -241,6 +243,12 @@
 .timeline-skills .MuiChip-root {
   background: var(--primary);
   color: #ffffff;
+}
+
+@media (hover: hover) {
+  .timeline-entry summary:hover {
+    background: var(--greyhighlight);
+  }
 }
 
 @media only screen and (min-width: 961px) and (max-width: 1200px) {

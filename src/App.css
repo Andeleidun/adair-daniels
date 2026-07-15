@@ -12,6 +12,9 @@
   --header-height: 68px;
   --drawer-width: 304px;
   --content-width: 1480px;
+  --motion-duration-fast: 120ms;
+  --motion-duration-standard: 160ms;
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --greyBoxShadow:
     inset 0 1.5px 3px 1px rgba(0, 0, 0, 0.2),
     0 1.5px 3px 2px rgba(0, 0, 0, 0.16);
@@ -51,6 +54,8 @@ p {
 }
 
 .app {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -101,15 +106,24 @@ p {
   color: #ffffff;
   display: inline-flex;
   font-size: clamp(1.15rem, 2vw, 1.4rem);
-  font-weight: 500;
+  font-weight: 600;
+  gap: clamp(0.65rem, 1.5vw, 0.9rem);
   left: 50%;
   letter-spacing: 0.01em;
   line-height: 1.2;
+  padding: 0.3rem 0.55rem;
   position: absolute;
   text-decoration: none;
   top: 50%;
   transform: translate(-50%, -50%);
   white-space: nowrap;
+}
+
+.site-brand-monogram {
+  display: block;
+  flex: 0 0 auto;
+  height: 40px;
+  width: 40px;
 }
 
 .app-header .code-view-bar {
@@ -147,6 +161,10 @@ p {
   color: var(--text);
   min-height: 48px;
   text-decoration: none;
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-easing-standard),
+    border-color var(--motion-duration-fast) var(--motion-easing-standard),
+    color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .app-nav a[aria-current='page'] {
@@ -173,8 +191,10 @@ p {
 }
 
 .app-main {
-  min-height: calc(100vh - var(--header-height) - env(safe-area-inset-top));
-  transition: margin-left 120ms ease-out;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .app-main-with-menu {
@@ -182,15 +202,36 @@ p {
 }
 
 .app-content {
+  flex: 1 0 auto;
   margin: 0 auto;
   max-width: var(--content-width);
-  min-height: calc(
-    100vh - var(--header-height) - env(safe-area-inset-top) - 160px
-  );
   padding: clamp(1rem, 3vw, 2.5rem);
   scroll-margin-top: calc(
     var(--header-height) + env(safe-area-inset-top) + 1rem
   );
+  width: 100%;
+}
+
+.app-screen {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .app-screen {
+    animation: app-screen-enter 180ms var(--motion-easing-standard) backwards;
+  }
+}
+
+@keyframes app-screen-enter {
+  from {
+    opacity: 0.82;
+    transform: translate3d(0, -4px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .page-heading {
@@ -221,6 +262,10 @@ p {
 }
 
 .page-heading h1:focus {
+  outline: 0;
+}
+
+.app-screen > .visually-hidden:focus {
   outline: 0;
 }
 
@@ -301,6 +346,19 @@ h3,
   color: #ffffff;
 }
 
+@media (hover: hover) {
+  .app-nav a:not([aria-current='page']):hover {
+    background: var(--greyhighlight);
+  }
+}
+
+@media only screen and (min-width: 961px) and (prefers-reduced-motion: no-preference) {
+  .app-main {
+    transition: margin-left var(--motion-duration-standard)
+      var(--motion-easing-standard);
+  }
+}
+
 @media only screen and (max-width: 960px) {
   .app-header .code-view-bar {
     display: none;
@@ -320,6 +378,16 @@ h3,
   .site-footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .site-brand {
+    gap: 0.55rem;
+    padding: 0.25rem;
+  }
+
+  .site-brand-monogram {
+    height: 36px;
+    width: 36px;
   }
 }
 

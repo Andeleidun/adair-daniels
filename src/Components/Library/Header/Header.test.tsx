@@ -23,9 +23,13 @@ describe('Header', () => {
     const menu = screen.getByRole('button', { name: 'Open navigation' });
     expect(menu).toHaveAttribute('aria-expanded', 'false');
     expect(menu).toHaveAttribute('aria-controls', 'app-navigation');
-    expect(
-      screen.getByRole('link', { name: 'Adair Daniels home' })
-    ).toHaveAttribute('href', '/');
+    const brand = screen.getByRole('link', { name: 'Adair Daniels home' });
+    expect(brand).toHaveAttribute('href', '/');
+    expect(brand).toHaveTextContent('Adair Daniels');
+    const monogram = brand.querySelector('img');
+    expect(monogram).toHaveAttribute('src', '/ad-monogram.svg');
+    expect(monogram).toHaveAttribute('alt', '');
+    expect(monogram).toHaveAttribute('aria-hidden', 'true');
     fireEvent.click(menu);
     fireEvent.click(screen.getByRole('switch', { name: 'Code View' }));
     expect(toggleMenu).toHaveBeenCalledTimes(1);

@@ -24,6 +24,23 @@ const theme = createTheme({
   shape: {
     borderRadius: 12,
   },
+  transitions: {
+    easing: {
+      easeInOut: 'cubic-bezier(0.2, 0, 0, 1)',
+      easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
+      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+      sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+    },
+    duration: {
+      shortest: 90,
+      shorter: 120,
+      short: 160,
+      standard: 180,
+      complex: 240,
+      enteringScreen: 160,
+      leavingScreen: 120,
+    },
+  },
   typography: {
     fontFamily:
       "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",

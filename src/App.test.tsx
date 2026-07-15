@@ -99,9 +99,13 @@ describe('Application shell', () => {
       expect(document.title).toContain('Senior Frontend Engineer')
     );
     expect(container.querySelector('.page-kicker')).toBeNull();
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Adair Daniels' })
-    ).not.toHaveFocus();
+    expect(container.querySelector('.page-heading')).toBeNull();
+    const homeHeading = screen.getByRole('heading', {
+      level: 1,
+      name: 'Adair Daniels',
+    });
+    expect(homeHeading).toHaveClass('visually-hidden');
+    expect(homeHeading).not.toHaveFocus();
   });
 
   it('keeps canonical and social URLs aligned with the active route', async () => {
@@ -139,9 +143,9 @@ describe('Application shell', () => {
           <ApplicationShell />
         </MemoryRouter>
       );
-      expect(
-        screen.getByRole('heading', { level: 1, name: title })
-      ).toBeVisible();
+      const heading = screen.getByRole('heading', { level: 1, name: title });
+      if (path === '/') expect(heading).toHaveClass('visually-hidden');
+      else expect(heading).toBeVisible();
       expect(await screen.findByText(content)).toBeVisible();
       const navigation = openNavigation();
       expect(
@@ -171,12 +175,14 @@ describe('Application shell', () => {
   });
 
   it('opens and closes navigation through its controls and route selection', async () => {
-    render(
+    const { container } = render(
       <MemoryRouter>
         <ApplicationShell />
       </MemoryRouter>
     );
     await screen.findByText('Home content');
+    const homeScreen = container.querySelector('.app-screen');
+    expect(homeScreen).toBeInTheDocument();
     const menu = screen.getByRole('button', { name: 'Open navigation' });
     const navigation = openNavigation();
     expect(menu).toHaveAttribute('aria-expanded', 'true');
@@ -195,6 +201,7 @@ describe('Application shell', () => {
       within(reopened).getByRole('link', { name: 'Selected Work' })
     );
     expect(await screen.findByText('Portfolio content')).toBeVisible();
+    expect(container.querySelector('.app-screen')).not.toBe(homeScreen);
     await waitFor(() =>
       expect(
         screen.getByRole('button', { name: 'Open navigation' })
@@ -286,26 +293,31 @@ describe('Application shell', () => {
   });
 
   it('persists Code View while navigating', async () => {
-    render(
+    const { container } = render(
       <MemoryRouter>
         <ApplicationShell />
       </MemoryRouter>
     );
     await screen.findByText('Home content');
+    const liveScreen = container.querySelector('.app-screen');
     const navigation = openNavigation();
     fireEvent.click(
       within(navigation).getByRole('switch', { name: 'Code View' })
     );
     expect(await screen.findByText('Home source code')).toBeVisible();
+    expect(container.querySelector('.app-screen')).not.toBe(liveScreen);
     fireEvent.click(
       within(navigation).getByRole('link', { name: 'Selected Work' })
     );
     expect(await screen.findByText('Portfolio source code')).toBeVisible();
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', { name: 'Open navigation' })
+      ).toHaveAttribute('aria-expanded', 'false')
+    );
+    const reopenedNavigation = openNavigation();
     expect(
-      within(navigation).getByRole('switch', {
-        name: 'Code View',
-        hidden: true,
-      })
+      within(reopenedNavigation).getByRole('switch', { name: 'Code View' })
     ).toBeChecked();
   });
 });

@@ -59,6 +59,8 @@
   min-height: 280px;
   overflow: hidden;
   padding: 0.75rem;
+  transition: border-color var(--motion-duration-fast)
+    var(--motion-easing-standard);
   width: 100%;
 }
 
@@ -118,6 +120,9 @@
   flex: 0 0 64px;
   height: 64px;
   padding: 3px;
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-easing-standard),
+    border-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .thumbnail-button[aria-pressed='true'] {
@@ -162,6 +167,13 @@
   gap: 1rem;
   justify-content: space-between;
   width: 100%;
+}
+
+@media (hover: hover) {
+  .project-image-button:hover,
+  .thumbnail-button:not([aria-pressed='true']):hover {
+    border-color: var(--primary);
+  }
 }
 
 @media only screen and (min-width: 961px) and (max-width: 1200px) {

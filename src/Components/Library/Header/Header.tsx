@@ -65,7 +65,15 @@ const Header = ({
             <SiteIcon name={menuOpen ? 'close' : 'menu'} />
           </IconButton>
           <Link className="site-brand" to="/" aria-label="Adair Daniels home">
-            <span>Adair Daniels</span>
+            <img
+              className="site-brand-monogram"
+              src={`${import.meta.env.BASE_URL}ad-monogram.svg`}
+              alt=""
+              aria-hidden="true"
+              width="40"
+              height="40"
+            />
+            <span className="site-brand-name">Adair Daniels</span>
           </Link>
           {generateCodeView()}
         </Toolbar>
