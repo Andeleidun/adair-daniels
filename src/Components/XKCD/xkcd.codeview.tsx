@@ -18,9 +18,9 @@ const source = [
 ].join('\n');
 
 const XKCDViewer = (): React.ReactElement => (
-  <main className="app-code-viewer">
+  <div className="app-code-viewer">
     <CardTemplate content={<SourceViewer value={source} />} classGiven="card" />
-  </main>
+  </div>
 );
 
 export default XKCDViewer;

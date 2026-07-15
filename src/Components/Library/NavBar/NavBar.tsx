@@ -8,11 +8,17 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import Button from '@mui/material/Button';
+import ListSubheader from '@mui/material/ListSubheader';
+import SiteIcon, { SiteIconName } from '../SiteIcon';
+
+export type NavigationGroup = 'demos' | 'profile';
 
 export interface NavigationPage {
   readonly text: string;
   readonly route: string;
-  readonly icon: string;
+  readonly icon: SiteIconName;
+  readonly navGroup: NavigationGroup;
 }
 
 interface NavBarProps {
@@ -20,6 +26,7 @@ interface NavBarProps {
   readonly activeRoute: string;
   readonly navClick: () => void;
   readonly codeView: boolean;
+  readonly codeViewAvailable: boolean;
   readonly toggleCodeView: () => void;
 }
 
@@ -28,24 +35,24 @@ const NavBar = (props: NavBarProps): React.ReactElement => {
     props.toggleCodeView();
   };
 
-  const populatePages = () =>
-    props.pages.map((page) => (
-      <li key={page.route}>
-        <ListItemButton
-          component={Link}
-          to={page.route}
-          onClick={props.navClick}
-          aria-current={props.activeRoute === page.route ? 'page' : undefined}
-        >
-          <ListItemIcon>
-            <i className="material-icons" aria-hidden="true">
-              {page.icon}
-            </i>
-          </ListItemIcon>
-          <ListItemText primary={page.text} />
-        </ListItemButton>
-      </li>
-    ));
+  const populatePages = (group: NavigationGroup) =>
+    props.pages
+      .filter((page) => page.navGroup === group)
+      .map((page) => (
+        <li key={page.route}>
+          <ListItemButton
+            component={Link}
+            to={page.route}
+            onClick={props.navClick}
+            aria-current={props.activeRoute === page.route ? 'page' : undefined}
+          >
+            <ListItemIcon aria-hidden="true">
+              <SiteIcon name={page.icon} />
+            </ListItemIcon>
+            <ListItemText primary={page.text} />
+          </ListItemButton>
+        </li>
+      ));
 
   const populateOptions = () => (
     <ListItem className="code-view-bar">
@@ -65,8 +72,19 @@ const NavBar = (props: NavBarProps): React.ReactElement => {
   return (
     <nav className="app-nav" id="app-navigation" aria-label="Main navigation">
       <List>
-        {populatePages()}
-        {populateOptions()}
+        <li className="nav-close">
+          <Button
+            onClick={props.navClick}
+            startIcon={<SiteIcon name="close" />}
+          >
+            Close navigation
+          </Button>
+        </li>
+        <ListSubheader component="li">Profile and work</ListSubheader>
+        {populatePages('profile')}
+        <ListSubheader component="li">Engineering demos</ListSubheader>
+        {populatePages('demos')}
+        {props.codeViewAvailable ? populateOptions() : null}
       </List>
     </nav>
   );

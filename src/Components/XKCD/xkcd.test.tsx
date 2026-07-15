@@ -41,9 +41,9 @@ describe('XKCD', () => {
     batch.mockResolvedValue(comics(1));
   });
 
-  it('loads metadata first, renders current props, and navigates in clamped steps', async () => {
+  it('loads metadata first and navigates in page-aligned batches', async () => {
     render(<XKCD />);
-    expect(screen.getByRole('img', { name: 'Loading comics' })).toBeVisible();
+    expect(screen.getByRole('status')).toHaveTextContent('Loading content');
     expect(
       await screen.findByRole('heading', { name: 'Synthetic Comic 1' })
     ).toBeVisible();
@@ -54,7 +54,7 @@ describe('XKCD', () => {
     expect(screen.getByRole('button', { name: 'First' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled();
     expect(
-      screen.getByRole('link', { name: 'Randall Munroe over at XKCD' })
+      screen.getByRole('link', { name: /Randall Munroe over at XKCD/ })
     ).toHaveAttribute('href', 'https://xkcd.com');
 
     batch.mockResolvedValueOnce(comics(4));
@@ -64,21 +64,21 @@ describe('XKCD', () => {
     ).toBeVisible();
     expect(batch).toHaveBeenLastCalledWith(4, 10, expect.anything());
 
-    batch.mockResolvedValueOnce(comics(8));
+    batch.mockResolvedValueOnce([comic(10)]);
     fireEvent.click(screen.getByRole('button', { name: 'Last' }));
     expect(
-      await screen.findByRole('heading', { name: 'Synthetic Comic 8' })
+      await screen.findByRole('heading', { name: 'Synthetic Comic 10' })
     ).toBeVisible();
-    expect(batch).toHaveBeenLastCalledWith(8, 10, expect.anything());
+    expect(batch).toHaveBeenLastCalledWith(10, 10, expect.anything());
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Last' })).toBeDisabled();
 
-    batch.mockResolvedValueOnce(comics(5));
+    batch.mockResolvedValueOnce(comics(7));
     fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
     expect(
-      await screen.findByRole('heading', { name: 'Synthetic Comic 5' })
+      await screen.findByRole('heading', { name: 'Synthetic Comic 7' })
     ).toBeVisible();
-    expect(batch).toHaveBeenLastCalledWith(5, 10, expect.anything());
+    expect(batch).toHaveBeenLastCalledWith(7, 10, expect.anything());
 
     batch.mockResolvedValueOnce(comics(1));
     fireEvent.click(screen.getByRole('button', { name: 'First' }));
@@ -99,6 +99,7 @@ describe('XKCD', () => {
         })
     );
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Loading comics');
     expect(
       screen.getByRole('heading', { name: 'Synthetic Comic 1' })
     ).toBeVisible();

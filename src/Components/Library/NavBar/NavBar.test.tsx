@@ -12,12 +12,23 @@ describe('NavBar', () => {
       <MemoryRouter>
         <NavBar
           pages={[
-            { text: 'Home', route: '/', icon: 'home' },
-            { text: 'Portfolio', route: '/portfolio', icon: 'compare' },
+            {
+              text: 'Home',
+              route: '/',
+              icon: 'home',
+              navGroup: 'profile',
+            },
+            {
+              text: 'Portfolio',
+              route: '/portfolio',
+              icon: 'portfolio',
+              navGroup: 'profile',
+            },
           ]}
           activeRoute="/portfolio"
           navClick={navigate}
           codeView={false}
+          codeViewAvailable
           toggleCodeView={toggleCode}
         />
       </MemoryRouter>

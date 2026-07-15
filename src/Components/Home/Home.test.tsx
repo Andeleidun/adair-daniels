@@ -1,76 +1,69 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import Home from './Home';
 
 describe('Home', () => {
-  it('renders structured resume content and safe external links', () => {
-    const { container } = render(<Home />);
-    expect(screen.getByRole('main')).toHaveClass('app-home');
+  it('renders complete structured resume content and safe external links', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    );
+    expect(container.querySelector('.app-home')).toBeVisible();
     expect(
       screen.getByRole('heading', { name: 'Senior Frontend Engineer' })
     ).toBeVisible();
+    expect(screen.getByRole('img', { name: 'Adair Daniels' })).toBeVisible();
     expect(
       screen.getByText(/Senior Frontend Engineer with over 10 years/)
     ).toBeVisible();
     expect(
-      screen.getByRole('heading', { name: 'Languages & Frameworks' })
-    ).toBeVisible();
-    expect(
       screen.getByRole('list', { name: 'Languages & Frameworks skills' })
     ).toBeVisible();
-    expect(screen.getByText('TypeScript')).toBeVisible();
+    expect(container.querySelectorAll('.skill-group')).toHaveLength(5);
     expect(
-      screen.getByRole('heading', { name: 'Accessibility' })
-    ).toBeVisible();
-    expect(container.querySelectorAll('.technical-skill-group')).toHaveLength(
-      5
-    );
-    expect(screen.getByRole('img', { name: 'Amazon / AWS' })).toBeVisible();
-    const linkedIn = screen.getByRole('link', { name: 'LinkedIn' });
+      container.querySelectorAll('.skill-group .MuiChip-filled').length
+    ).toBeGreaterThan(0);
+    expect(
+      container.querySelectorAll('.skill-group .MuiChip-outlined')
+    ).toHaveLength(0);
+    expect(screen.getByRole('heading', { name: 'Amazon / AWS' })).toBeVisible();
+    const linkedIn = screen.getByRole('link', { name: /LinkedIn/ });
     expect(linkedIn).toHaveAttribute(
       'href',
       'https://www.linkedin.com/in/adairdaniels/'
     );
     expect(linkedIn).toHaveAttribute('target', '_blank');
     expect(linkedIn).toHaveAttribute('rel', 'noopener noreferrer');
-    expect(screen.getByRole('heading', { name: 'Highlights' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Experience' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Education' })).toBeVisible();
+    expect(
+      container.querySelectorAll('.experience-timeline details')
+    ).toHaveLength(9);
+    expect(container.querySelectorAll('.education-card')).toHaveLength(3);
+    expect(screen.getAllByText('Adair Futures').length).toBeGreaterThan(0);
+    expect(
+      screen.queryByText('Consulting and technical leadership')
+    ).toBeNull();
+    expect(
+      screen.queryByRole('link', { name: 'View selected work' })
+    ).toBeNull();
+    expect(screen.getByText('Server Sky')).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: 'Portland State University' })
+    ).toBeVisible();
   });
 
-  it('keeps Experience and Education navigation independent and wraps', () => {
-    render(<Home />);
-    expect(
-      screen.getByRole('heading', { name: 'Adair Futures' })
-    ).toBeVisible();
-    expect(
-      screen.getByRole('heading', { name: 'Portland State University' })
-    ).toBeVisible();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Next Experience' }));
-    expect(
-      screen.getByRole('heading', { name: 'Amazon / Collabera' })
-    ).toBeVisible();
-    expect(
-      screen.getByRole('heading', { name: 'Portland State University' })
-    ).toBeVisible();
-
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Previous Experience' })
+  it('defaults the newest roles open and controls all disclosures', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
     );
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Previous Experience' })
-    );
-    expect(screen.getByRole('heading', { name: 'Server Sky' })).toBeVisible();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Previous Education' }));
-    expect(
-      screen.getByRole('heading', { name: 'Continued Learning' })
-    ).toBeVisible();
-    fireEvent.click(screen.getByRole('button', { name: 'Next Education' }));
-    expect(
-      screen.getByRole('heading', { name: 'Portland State University' })
-    ).toBeVisible();
+    expect(container.querySelectorAll('details[open]')).toHaveLength(3);
+    fireEvent.click(screen.getByRole('button', { name: 'Expand all' }));
+    expect(container.querySelectorAll('details[open]')).toHaveLength(9);
+    fireEvent.click(screen.getByRole('button', { name: 'Collapse all' }));
+    expect(container.querySelectorAll('details[open]')).toHaveLength(0);
   });
 });

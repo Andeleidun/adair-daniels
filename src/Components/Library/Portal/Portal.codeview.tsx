@@ -5,12 +5,12 @@ import SourceViewer from '../SourceViewer';
 import portalCode from './Portal.tsx?raw';
 
 const PortalViewer = (): React.ReactElement => (
-  <main className="app-code-viewer">
+  <div className="app-code-viewer">
     <CardTemplate
       content={<SourceViewer value={portalCode} />}
       classGiven="card"
     />
-  </main>
+  </div>
 );
 
 export default PortalViewer;

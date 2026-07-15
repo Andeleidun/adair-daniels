@@ -1,104 +1,137 @@
 .xkcd {
   --xkcd-action: #59677f;
+  display: grid;
+  gap: 1.25rem;
 }
 
-.xkcd .loading-logo {
-  height: 70vh;
+.xkcd-intro {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  text-align: left;
+}
+
+.xkcd-intro h2 {
+  color: var(--text);
+  margin: 0 0 0.4rem;
+}
+
+.xkcd-intro p {
+  color: var(--text-muted);
+  margin: 0;
 }
 
 .slideshow {
   display: grid;
-  justify-content: space-evenly;
-  grid-template-columns: 32% 32% 32%;
-  height: 74vh;
-  margin: 0 5px;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .panel-card {
-  height: 70vh;
+  min-width: 0;
+}
+
+.panel-card .MuiCardContent-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.panel-card figure {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  margin: 0;
+  min-height: 320px;
 }
 
 .unavailable-comic {
   align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   display: flex;
-  font-size: 20px;
-  height: 70vh;
+  font-size: 1.1rem;
   justify-content: center;
-}
-
-.xkcd-error button {
-  background-color: var(--xkcd-action);
-  border: 0;
-  border-radius: 7px;
-  color: white;
-  cursor: pointer;
-  font-size: 17px;
-  padding: 10px 20px;
+  min-height: 420px;
+  padding: 2rem;
 }
 
 .slideshow img {
+  height: auto;
+  max-height: 52vh;
   max-width: 100%;
-  max-height: 50vh;
+  object-fit: contain;
+}
+
+.comic-range {
+  color: var(--text-muted);
+  margin: 0;
+  text-align: center;
+}
+
+.xkcd-error {
+  background: #fff4f3;
+  border: 1px solid #b3261e;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.xkcd-footer {
+  display: grid;
+  gap: 1rem;
 }
 
 .xkcd-footer nav {
   display: grid;
-  justify-content: space-evenly;
-  grid-template-columns: 23% 23% 23% 23%;
+  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.xkcd-footer nav button {
-  width: 30%;
-  margin: 0 auto;
-  text-align: center;
-  padding: 10px 0;
-  font-size: 17px;
-  font-weight: bold;
+.xkcd-footer nav .MuiButton-root,
+.xkcd-error .MuiButton-root {
   background-color: var(--xkcd-action);
-  color: white;
-  cursor: pointer;
-  box-shadow:
-    0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 7px;
-  border: 0;
-  font-variant: small-caps;
+  color: #ffffff;
+  min-height: 44px;
 }
 
-.xkcd-footer nav button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
+.xkcd-footer nav .MuiButton-root.Mui-disabled {
+  background: #d8dddf;
+  color: #576166;
 }
 
 .credit {
-  padding-top: 20px;
-  font-size: 17px;
+  color: var(--text-muted);
+  font-size: 1rem;
+  text-align: center;
+}
+
+@media only screen and (min-width: 961px) and (max-width: 1200px) {
+  .app-main-with-menu .slideshow {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media only screen and (max-width: 960px) {
-  .xkcd .loading-logo {
-    height: 50vh;
+  .slideshow {
+    grid-template-columns: 1fr;
   }
 
-  .slideshow {
-    grid-template-columns: 100%;
-    height: auto;
+  .panel-card figure,
+  .unavailable-comic {
+    min-height: 260px;
   }
 
   .xkcd-footer nav {
-    grid-template-columns: 48% 48%;
-    margin: 10px auto;
-  }
-
-  .xkcd-footer nav button {
-    width: 50%;
-    margin: 10px auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media only screen and (max-width: 450px) {
-  .xkcd .loading-logo {
-    height: 30vh;
+  .xkcd-footer nav {
+    grid-template-columns: 1fr;
   }
 }

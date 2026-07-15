@@ -3,7 +3,6 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 
 export type CardAction =
@@ -15,7 +14,13 @@ export type CardAction =
     };
 
 interface CardTemplateProps {
-  readonly img?: string | null;
+  readonly media?: {
+    readonly src: string;
+    readonly alt: string;
+    readonly width: number;
+    readonly height: number;
+    readonly loading?: 'eager' | 'lazy';
+  };
   readonly title?: string;
   readonly text?: string;
   readonly content?: React.ReactNode;
@@ -24,7 +29,7 @@ interface CardTemplateProps {
 }
 
 const CardTemplate = (props: CardTemplateProps): React.ReactElement => {
-  const { img, title, text, content, classGiven, links } = props;
+  const { media, title, text, content, classGiven, links } = props;
 
   const generateLinks = () => {
     if (links && links.length > 0) {
@@ -42,6 +47,7 @@ const CardTemplate = (props: CardTemplateProps): React.ReactElement => {
                 rel="noopener noreferrer"
               >
                 {link.text}
+                <span className="visually-hidden"> (opens in a new tab)</span>
               </Button>
             ) : (
               <Button
@@ -61,15 +67,16 @@ const CardTemplate = (props: CardTemplateProps): React.ReactElement => {
   };
 
   const generateMedia = () => {
-    if (img) {
+    if (media) {
       return (
-        <CardMedia
+        <img
           className="media-area"
-          image={img}
-          title={title}
-          role={title ? 'img' : undefined}
-          aria-label={title}
-          aria-hidden={title ? undefined : true}
+          src={media.src}
+          alt={media.alt}
+          width={media.width}
+          height={media.height}
+          loading={media.loading ?? 'lazy'}
+          decoding="async"
         />
       );
     }

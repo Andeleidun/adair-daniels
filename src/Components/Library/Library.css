@@ -1,39 +1,36 @@
 .library-page {
   display: grid;
-  grid-template-areas:
-    'nav'
-    'code';
-  grid-template-columns: 60%;
-  justify-content: space-around;
-  grid-gap: 10px;
-}
-
-.library-page .card {
-  margin: 0 auto;
+  gap: 1rem;
   width: 100%;
 }
 
-.library-page .library-card .card-buttons {
-  justify-content: center;
-  grid-gap: 15px;
+.library-navigation,
+.library-source {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(22, 54, 39, 0.08);
+  min-width: 0;
 }
 
-@media only screen and (max-width: 960px) {
-  .library-page .library-card {
-    width: 100%;
-  }
-
-  .library-page .library-card .card-buttons {
-    grid-gap: 10px;
-  }
+.library-navigation {
+  padding: 1rem 1rem 0;
 }
 
-@media only screen and (max-width: 450px) {
-  .library-page {
-    grid-template-columns: 90%;
-  }
+.library-navigation h2,
+.library-source h2 {
+  color: var(--text);
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem;
+  text-align: left;
+}
 
-  .library-page .library-card .card-buttons {
-    grid-gap: 5px;
-  }
+.library-navigation .MuiTab-root {
+  min-height: 48px;
+  text-transform: none;
+}
+
+.library-source {
+  overflow: hidden;
+  padding: 1rem;
 }

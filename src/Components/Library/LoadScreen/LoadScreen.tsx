@@ -1,11 +1,12 @@
 import React from 'react';
-import { reactLogo } from '../../../Resources/images/index';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function LoadScreen(): React.ReactElement {
   return (
-    <figure>
-      <img src={reactLogo} className="loading-logo" alt="Loading Logo" />
-    </figure>
+    <div className="loading-status" role="status" aria-live="polite">
+      <CircularProgress aria-hidden="true" />
+      <span className="visually-hidden">Loading content</span>
+    </div>
   );
 }
 

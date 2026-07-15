@@ -5,12 +5,12 @@ import SourceViewer from '../Library/SourceViewer';
 import homeCode from './Home.tsx?raw';
 
 const HomeViewer = (): React.ReactElement => (
-  <main className="app-code-viewer">
+  <div className="app-code-viewer">
     <CardTemplate
       content={<SourceViewer value={homeCode} />}
       classGiven="card"
     />
-  </main>
+  </div>
 );
 
 export default HomeViewer;

@@ -226,19 +226,33 @@ const StockTwits = (): React.ReactElement => {
       : `Next refresh in ${countdown} minute${countdown === 1 ? '' : 's'}.`;
 
   return (
-    <main className="app-stocktwits">
+    <div className="app-stocktwits">
+      <section className="stock-intro" aria-labelledby="stock-search-title">
+        <h2 id="stock-search-title">Search public symbol feeds</h2>
+        <p>
+          Stock symbols are sent through the AllOrigins proxy to StockTwits.
+          Results refresh every five minutes until a refresh fails or the page
+          is closed.
+        </p>
+      </section>
       <section className="search" aria-label="Stock symbol search">
         <form onSubmit={submit}>
           <TextField
             className="stock-input"
             id="stock-symbols"
-            label="Input stock symbols (separate with a comma)"
+            label="Stock symbols"
             value={input}
             onChange={(event) => setInput(event.target.value)}
             error={status === 'error' && error !== ''}
-            helperText={status === 'error' ? error : undefined}
+            helperText={
+              status === 'error'
+                ? error
+                : 'Separate up to 10 symbols with commas, such as AAPL, MSFT.'
+            }
             slotProps={{
-              formHelperText: { role: 'alert' },
+              formHelperText: {
+                role: status === 'error' && error !== '' ? 'alert' : undefined,
+              },
               input: {
                 startAdornment: (
                   <InputAdornment position="start">$</InputAdornment>
@@ -246,7 +260,6 @@ const StockTwits = (): React.ReactElement => {
               },
             }}
           />
-          <br />
           <Button className="search-button" variant="contained" type="submit">
             Search
           </Button>
@@ -305,6 +318,11 @@ const StockTwits = (): React.ReactElement => {
                           <img
                             src={message.user.avatarUrl}
                             alt={`${message.user.name}'s avatar`}
+                            width="64"
+                            height="64"
+                            loading="lazy"
+                            decoding="async"
+                            referrerPolicy="no-referrer"
                           />
                         </figure>
                         <p className="namearea">
@@ -324,7 +342,7 @@ const StockTwits = (): React.ReactElement => {
           </section>
         </section>
       ) : null}
-    </main>
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 import LoadScreen from './LoadScreen';
 
-it('renders an accessible loading image', () => {
+it('renders a compact accessible loading status', () => {
   render(<LoadScreen />);
-  expect(screen.getByRole('img', { name: 'Loading Logo' })).toBeVisible();
+  expect(screen.getByRole('status')).toHaveTextContent('Loading content');
 });

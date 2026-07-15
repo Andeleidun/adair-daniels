@@ -1,260 +1,287 @@
 .app-home {
   display: grid;
-  grid-template-areas:
-    'bio highlights'
-    'bio skills'
-    'experience experience'
-    'education education';
-  grid-template-columns: 48% 48%;
-  justify-content: space-around;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
 }
 
-.app-home .home-card {
-  margin: 10px 5px;
-  padding: 5px;
+.home-hero,
+.home-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 16px 38px rgba(22, 54, 39, 0.08);
 }
 
-.app-home .home-card h3 {
-  margin: 4px 0;
-}
-
-.app-home .bio-card {
-  grid-area: bio;
-  padding-top: 10px;
-}
-
-.app-home .bio-card .media-area {
-  height: 200px;
-  width: 200px;
-  margin: 0 auto;
-  border-radius: 50%;
-  box-shadow: var(--greyBoxShadow);
-}
-
-.app-home .bio-card .card-buttons {
+.home-hero {
+  align-items: center;
   display: grid;
-  grid-template-columns: auto auto;
-}
-
-.app-home .highlights-card {
-  grid-area: highlights;
-}
-
-.app-home .highlights-card .MuiList-root {
-  display: grid;
-  grid-template-columns: 33% 33% 33%;
-}
-
-.app-home .highlights-card .MuiList-root a {
-  text-decoration: none;
-  display: list-item;
-}
-
-.app-home .highlights-card .MuiList-root a:hover {
-  background-color: var(--greyhighlight);
-}
-
-.app-home .highlights-card .linkset {
-  display: block;
-  text-align: center;
-}
-
-.app-home .highlights-card .linkset img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  box-shadow: var(--greyBoxShadow);
-  margin-bottom: 10px;
-}
-
-.app-home .skills-card {
-  grid-area: skills;
-}
-
-.app-home .skills-card .MuiList-root {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 3rem);
+  grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.6fr);
+  padding: clamp(1.25rem, 4vw, 3rem);
   text-align: left;
 }
 
-.app-home .skills-card h3 {
-  margin: 0 0 10px;
-  padding: 0;
+.home-headshot {
+  aspect-ratio: 1;
+  border: 6px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: var(--greyBoxShadow);
+  height: auto;
+  justify-self: center;
+  max-width: 320px;
+  object-fit: cover;
+  width: 100%;
 }
 
-.app-home .skills-card .technical-skill-group {
-  border-left: 4px solid var(--primary);
-  border-radius: 4px;
-  display: block;
-  padding: 12px;
+.hero-copy {
+  max-width: 72ch;
 }
 
-.app-home .skills-card .technical-skill-list {
+.hero-copy h2,
+.section-heading h2 {
+  color: var(--text);
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0.2rem 0 1rem;
+}
+
+.hero-lead {
+  color: var(--text);
+  font-size: clamp(1.08rem, 2vw, 1.25rem);
+  font-weight: 650;
+}
+
+.hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.hero-actions .MuiButton-root {
+  min-height: 44px;
+}
+
+.section-kicker {
+  color: var(--secondary-dark);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.timeline-role {
+  color: var(--text-muted);
+  display: block;
+  font-weight: 650;
+}
+
+.home-section {
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.section-heading {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.employer-grid,
+.education-grid,
+.skills-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.employer-grid,
+.education-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.employer-card,
+.education-card,
+.skill-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.employer-card {
+  text-align: center;
+}
+
+.employer-card img {
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: var(--greyBoxShadow);
+  height: 120px;
+  object-fit: contain;
+  width: 120px;
+}
+
+.employer-card h3,
+.education-card h3,
+.skill-group h3 {
+  color: var(--primary-dark);
+  margin: 0.75rem 0 0.35rem;
+}
+
+.skills-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.skill-group h3 {
+  margin-top: 0;
+}
+
+.skill-group ul,
+.timeline-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.app-home .skills-card .technical-skill-list li {
+.timeline-heading {
+  align-items: center;
   display: flex;
+  gap: 1rem;
+  justify-content: space-between;
 }
 
-.app-home .skills-card .technical-skill {
-  background-color: white;
-  border: 1px solid var(--primary);
-  color: var(--primary);
+.timeline-actions {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.app-home .experience-card {
-  grid-area: experience;
+.timeline-actions .MuiButton-root {
+  min-height: 44px;
 }
 
-.app-home .experience-card h3,
-.app-home .education-card h3 {
+.experience-timeline {
+  border-left: 3px solid var(--secondary);
+  display: grid;
+  gap: 1rem;
+  margin-left: 0.65rem;
+  padding-left: 1.4rem;
+}
+
+.timeline-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  position: relative;
   text-align: left;
 }
 
-.app-home .experience-card .MuiListItem-root,
-.app-home .education-card .MuiListItem-root {
-  padding-top: 2px;
-  padding-bottom: 2px;
+.timeline-entry::before {
+  background: var(--secondary);
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  content: '';
+  height: 16px;
+  left: calc(-1.4rem - 11px);
+  position: absolute;
+  top: 1.25rem;
+  width: 16px;
 }
 
-.app-home .experience-card .MuiListItem-root span,
-.app-home .education-card .MuiListItem-root span {
-  line-height: 1.4;
+.timeline-entry summary {
+  cursor: pointer;
+  min-height: 56px;
+  padding: 1rem 1.25rem;
 }
 
-.app-home .experience-card .group {
+.timeline-summary {
+  align-items: start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-left: 0.35rem;
+}
+
+.timeline-summary strong {
+  color: var(--primary-dark);
+  display: block;
+  font-size: 1.05rem;
+}
+
+.timeline-date {
+  color: var(--secondary-dark);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.timeline-content {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 1.25rem 1.25rem;
+}
+
+.timeline-content > p,
+.timeline-content > ul:not(.timeline-skills) {
+  max-width: 90ch;
+}
+
+.timeline-content > ul:not(.timeline-skills),
+.education-card > ul:not(.timeline-skills) {
   display: grid;
-  grid-template-areas:
-    'title title dates'
-    'description description description'
-    'jobTitle jobTitle jobTitle';
-  margin: 10px auto;
+  gap: 0.65rem;
+  padding-left: 1.25rem;
 }
 
-.app-home .home-card .group .title {
-  grid-area: title;
+.timeline-skills {
+  margin-top: 1rem;
 }
 
-.app-home .home-card .group .dates {
-  grid-area: dates;
-  text-align: right;
+.skill-group .MuiChip-root,
+.timeline-skills .MuiChip-root {
+  background: var(--primary);
+  color: #ffffff;
 }
 
-.app-home .experience-card .group .description {
-  grid-area: description;
-  font-style: italic;
-}
+@media only screen and (min-width: 961px) and (max-width: 1200px) {
+  .app-main-with-menu .employer-grid,
+  .app-main-with-menu .education-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-.app-home .experience-card .group .job-title {
-  grid-area: jobTitle;
-}
-
-.app-home .experience-card .group .job-title span {
-  font-weight: bold;
-}
-
-.app-home .experience-card .group .skills {
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 4;
-  grid-row-end: 7;
-}
-
-.app-home .home-card .group .skills .skill {
-  margin: 2px 10px;
-}
-
-.app-home .experience-card .group .group-text {
-  grid-column-start: 1;
-  grid-column-end: 3;
-}
-
-.app-home .home-card .group-set-content {
-  padding-bottom: 10px;
-}
-
-.app-home .home-card .group-set-nav {
-  display: grid;
-  grid-template-columns: 50% 50%;
-}
-
-.app-home .home-card .group-set-nav button {
-  width: 150px;
-}
-
-.app-home .education-card {
-  grid-area: education;
-}
-
-.app-home .education-card .group {
-  display: grid;
-  grid-template-areas: 'title title dates';
-  grid-template-columns: 33% 33% 33%;
-  margin: 10px auto;
-  align-content: center;
-}
-
-.app-home .education-card .group .skills {
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 3;
-  grid-row-end: 7;
-}
-
-.app-home .education-card .group .group-text {
-  grid-column-start: 1;
-  grid-column-end: 3;
+  .app-main-with-menu .employer-grid > :last-child,
+  .app-main-with-menu .education-grid > :last-child {
+    grid-column: 1 / -1;
+  }
 }
 
 @media only screen and (max-width: 960px) {
-  .app-home {
-    grid-template-areas:
-      'bio'
-      'highlights'
-      'skills'
-      'experience'
-      'education';
-    grid-template-columns: 100%;
+  .home-hero {
+    grid-template-columns: 1fr;
   }
 
-  .app-home .experience-card .group .skills {
-    grid-column-start: 1;
-    grid-column-end: 4;
-    grid-row-start: 10;
-    grid-row-end: 10;
+  .home-headshot {
+    max-width: 240px;
   }
 
-  .app-home .experience-card .group .group-text {
-    grid-column-start: 1;
-    grid-column-end: 4;
-  }
-
-  .app-home .education-card .group .skills {
-    grid-column-start: 1;
-    grid-column-end: 4;
-    grid-row-start: 8;
-    grid-row-end: 8;
-  }
-
-  .app-home .education-card .group .group-text {
-    grid-column-start: 1;
-    grid-column-end: 4;
+  .employer-grid,
+  .education-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-@media only screen and (max-width: 450px) {
-  .app-home .highlights-card .MuiList-root {
-    grid-template-columns: 100%;
+@media only screen and (max-width: 650px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
   }
 
-  .app-home .skills-card .MuiList-root {
-    grid-template-columns: 100%;
+  .timeline-heading,
+  .timeline-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .timeline-date {
+    white-space: normal;
   }
 }

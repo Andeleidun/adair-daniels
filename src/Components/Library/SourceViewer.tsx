@@ -10,10 +10,14 @@ import './CodeView.css';
 
 interface SourceViewerProps {
   readonly value: string;
+  readonly label?: string;
 }
 
-const SourceViewer = ({ value }: SourceViewerProps): React.ReactElement => (
-  <pre className="source-viewer" aria-label="Source code" tabIndex={0}>
+const SourceViewer = ({
+  value,
+  label = 'Source code',
+}: SourceViewerProps): React.ReactElement => (
+  <pre className="source-viewer" aria-label={label} tabIndex={0}>
     <code
       // Prism escapes the source text before adding its own highlighting spans.
       // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml

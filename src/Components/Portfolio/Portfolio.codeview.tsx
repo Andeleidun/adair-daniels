@@ -5,12 +5,12 @@ import SourceViewer from '../Library/SourceViewer';
 import portfolioCode from './Portfolio.tsx?raw';
 
 const PortfolioViewer = (): React.ReactElement => (
-  <main className="app-code-viewer">
+  <div className="app-code-viewer">
     <CardTemplate
       content={<SourceViewer value={portfolioCode} />}
       classGiven="card"
     />
-  </main>
+  </div>
 );
 
 export default PortfolioViewer;

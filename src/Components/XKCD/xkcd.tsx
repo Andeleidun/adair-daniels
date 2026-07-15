@@ -4,8 +4,9 @@
 */
 import React, { useEffect, useRef, useState } from 'react';
 import './xkcd.css';
-import { reactLogo } from '../../Resources/images/index';
 import CardTemplate from '../Library/Card';
+import LoadScreen from '../Library/LoadScreen';
+import Button from '@mui/material/Button';
 import { fetchComicBatch, fetchCurrentComic, XkcdSlot } from './xkcdApi';
 import { RemoteRequestError } from '../../Services/remoteData';
 
@@ -26,7 +27,13 @@ export const Panel = ({ slot }: PanelProps): React.ReactElement => {
       title={slot.title}
       content={
         <figure>
-          <img src={slot.img} alt={slot.alt} />
+          <img
+            src={slot.img}
+            alt={slot.alt}
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+          />
         </figure>
       }
       classGiven="card panel-card"
@@ -46,7 +53,7 @@ const XKCD = (): React.ReactElement => {
   const controllerRef = useRef<AbortController | null>(null);
   const requestVersionRef = useRef(0);
   const initialRequestRef = useRef<() => void>(() => undefined);
-  const finalIndex = Math.max(1, latest - 2);
+  const finalIndex = latest > 0 ? Math.floor((latest - 1) / 3) * 3 + 1 : 1;
 
   const beginRequest = () => {
     controllerRef.current?.abort();
@@ -149,54 +156,84 @@ const XKCD = (): React.ReactElement => {
 
   return (
     <div className="xkcd" aria-busy={loading}>
-      {slots.length === 0 && loading ? (
-        <img src={reactLogo} className="loading-logo" alt="Loading comics" />
-      ) : null}
+      <section className="xkcd-intro" aria-labelledby="comic-browser-title">
+        <h2 id="comic-browser-title">Browse XKCD in groups of three</h2>
+        <p>
+          Comics are loaded through AllOrigins from XKCD. Navigation requests
+          are cancellable, and unavailable comic positions remain visible.
+        </p>
+      </section>
+      {slots.length === 0 && loading ? <LoadScreen /> : null}
       {slots.length > 0 ? (
-        <main className="slideshow" aria-live="polite">
+        <section className="slideshow" aria-label="XKCD comics">
           {slots.map((slot) => (
             <Panel slot={slot} key={slot.num} />
           ))}
-        </main>
+        </section>
+      ) : null}
+      {slots.length > 0 ? (
+        <p
+          className="comic-range"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {loading
+            ? 'Loading comics…'
+            : `Showing comics ${slots[0].num} through ${slots[slots.length - 1].num}.`}
+        </p>
       ) : null}
       {error ? (
         <section className="xkcd-error" role="alert">
           <p>{error}</p>
-          <button onClick={retry}>Retry</button>
+          <Button onClick={retry} variant="contained">
+            Retry
+          </Button>
         </section>
       ) : null}
       <footer className="xkcd-footer">
         <nav aria-label="Comic navigation">
-          <button
+          <Button
             onClick={() => void loadBatch(1)}
             disabled={loading || latest === 0 || index === 1}
+            variant="contained"
           >
             First
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => void loadBatch(index - 3)}
             disabled={loading || latest === 0 || index === 1}
+            variant="contained"
           >
             Previous
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => void loadBatch(index + 3)}
             disabled={loading || latest === 0 || index === finalIndex}
+            variant="contained"
           >
             Next
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => void loadBatch(finalIndex)}
             disabled={loading || latest === 0 || index === finalIndex}
+            variant="contained"
           >
             Last
-          </button>
+          </Button>
         </nav>
         <section className="credit">
           <p>
             Sincere thanks to{' '}
-            <a href="https://xkcd.com">Randall Munroe over at XKCD</a> for
-            making such an awesome webcomic.
+            <a
+              href="https://xkcd.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Randall Munroe over at XKCD
+              <span className="visually-hidden"> (opens in a new tab)</span>
+            </a>{' '}
+            for making such an awesome webcomic.
           </p>
         </section>
       </footer>

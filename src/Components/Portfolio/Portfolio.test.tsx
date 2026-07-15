@@ -1,88 +1,85 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import Portfolio from './Portfolio';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import Portfolio, { portfolioProjects } from './Portfolio';
 
 describe('Portfolio', () => {
-  it('preserves controls, current slide, swiping, and both wrap directions', () => {
-    const { container } = render(<Portfolio />);
-    const carousel = screen.getByRole('region', {
-      name: 'Portfolio screenshots',
-    });
-    const slides = container.querySelector('.portfolio-slides');
-    expect(carousel).toHaveAttribute('aria-roledescription', 'carousel');
-    expect(
-      screen.getByRole('heading', {
-        name: 'Keto Mate - Home, Angular and Ionic App',
-      })
-    ).toBeVisible();
-    expect(slides).toHaveAttribute('data-interval', '10000');
-    expect(slides).toHaveAttribute('data-autoplay', 'true');
-
-    fireEvent.click(screen.getByRole('button', { name: 'Pause slideshow' }));
-    expect(slides).toHaveAttribute('data-autoplay', 'false');
-    expect(
-      screen.getByRole('button', { name: 'Resume slideshow' })
-    ).toHaveAttribute('aria-pressed', 'false');
-
-    fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
-    expect(
-      screen.getByRole('heading', { name: 'MyLifter - eCommerce Site' })
-    ).toBeVisible();
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-    expect(
-      screen.getByRole('heading', {
-        name: 'Keto Mate - Home, Angular and Ionic App',
-      })
-    ).toBeVisible();
-    expect(slides).not.toBeNull();
-    if (slides) {
-      fireEvent.touchStart(slides, { touches: [{ clientX: 200 }] });
-      fireEvent.touchEnd(slides, { changedTouches: [{ clientX: 100 }] });
-    }
-    expect(
-      screen.getByRole('heading', { name: 'Keto Mate - Store Listing' })
-    ).toBeVisible();
-  });
-
-  it('advances once after the ten-second autoplay interval', () => {
-    vi.useFakeTimers();
+  it('groups all existing screenshots into manually controlled projects', () => {
     render(<Portfolio />);
-
-    act(() => {
-      vi.advanceTimersByTime(10000);
-    });
-
+    expect(portfolioProjects).toHaveLength(5);
     expect(
-      screen.getByRole('heading', { name: 'Keto Mate - Store Listing' })
+      portfolioProjects.reduce(
+        (count, project) => count + project.images.length,
+        0
+      )
+    ).toBe(18);
+    expect(screen.getByRole('heading', { name: 'Keto Mate' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Metric Media' })).toBeVisible();
+    expect(screen.queryByText(/Explore project screenshots/)).toBeNull();
+    expect(screen.queryByText(/Pause slideshow/i)).toBeNull();
+
+    const ketoMate = screen
+      .getByRole('heading', { name: 'Keto Mate' })
+      .closest('article');
+    expect(ketoMate).not.toBeNull();
+    if (!ketoMate) return;
+    fireEvent.click(
+      within(ketoMate).getByRole('button', { name: 'Show Navigation Menu' })
+    );
+    expect(
+      within(ketoMate).getByRole('button', { name: 'Show Navigation Menu' })
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(within(ketoMate).getByText('Navigation Menu')).toBeVisible();
+
+    fireEvent.click(
+      within(ketoMate).getByRole('button', {
+        name: 'Previous Keto Mate image',
+      })
+    );
+    expect(
+      within(ketoMate).getByText('Home, Angular and Ionic App')
     ).toBeVisible();
   });
 
-  it('starts paused when reduced motion is preferred', () => {
-    const matchMediaDescriptor = Object.getOwnPropertyDescriptor(
-      window,
-      'matchMedia'
-    );
-    Object.defineProperty(window, 'matchMedia', {
-      configurable: true,
-      value: vi.fn().mockReturnValue({ matches: true }),
+  it('opens a focus-managed full-size dialog and closes it', async () => {
+    render(<Portfolio />);
+    const openImage = screen.getByRole('button', {
+      name: 'Open Home, Angular and Ionic App full size',
     });
-
-    try {
-      render(<Portfolio />);
-      expect(document.querySelector('.portfolio-slides')).toHaveAttribute(
-        'data-autoplay',
-        'false'
-      );
-      expect(
-        screen.getByRole('button', { name: 'Resume slideshow' })
-      ).toBeVisible();
-    } finally {
-      if (matchMediaDescriptor) {
-        Object.defineProperty(window, 'matchMedia', matchMediaDescriptor);
-      } else {
-        Reflect.deleteProperty(window, 'matchMedia');
-      }
-    }
+    expect(openImage).toHaveAccessibleDescription(/Keto Mate's home screen/);
+    fireEvent.click(openImage);
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toBeVisible();
+    expect(
+      screen.getByRole('heading', {
+        name: 'Keto Mate: Home, Angular and Ionic App',
+      })
+    ).toBeVisible();
+    expect(within(dialog).getByRole('status')).toHaveTextContent(
+      'Home, Angular and Ionic App, full-size image 1 of 9'
+    );
+    fireEvent.click(
+      within(dialog).getByRole('button', {
+        name: 'Next Keto Mate full-size image',
+      })
+    );
+    expect(
+      within(dialog).getByRole('heading', {
+        name: 'Keto Mate: Navigation Menu',
+      })
+    ).toBeVisible();
+    expect(within(dialog).getByRole('status')).toHaveTextContent(
+      'Navigation Menu, full-size image 2 of 9'
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Close full-size image' })
+    );
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
   });
 });

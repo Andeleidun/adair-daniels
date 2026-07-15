@@ -5,12 +5,12 @@ import SourceViewer from './SourceViewer';
 import libraryCode from './Library.tsx?raw';
 
 const LibraryViewer = (): React.ReactElement => (
-  <main className="app-code-viewer">
+  <div className="app-code-viewer">
     <CardTemplate
       content={<SourceViewer value={libraryCode} />}
       classGiven="card"
     />
-  </main>
+  </div>
 );
 
 export default LibraryViewer;

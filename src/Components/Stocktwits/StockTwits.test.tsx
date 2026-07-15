@@ -31,7 +31,7 @@ const feed = (symbol: string, id = 1) => ({
 });
 
 const submit = (value: string) => {
-  fireEvent.change(screen.getByLabelText(/Input stock symbols/), {
+  fireEvent.change(screen.getByLabelText('Stock symbols'), {
     target: { value },
   });
   fireEvent.click(screen.getByRole('button', { name: 'Search' }));
@@ -68,7 +68,7 @@ describe('StockTwits', () => {
   it('supports Enter, rejects invalid input accessibly, and bounds requests', async () => {
     fetchSymbols.mockResolvedValue(result([]));
     render(<StockTwits />);
-    fireEvent.change(screen.getByLabelText(/Input stock symbols/), {
+    fireEvent.change(screen.getByLabelText('Stock symbols'), {
       target: { value: 'BAD SYMBOL' },
     });
     const form = screen.getByRole('button', { name: 'Search' }).closest('form');
@@ -130,7 +130,7 @@ describe('StockTwits', () => {
       await Promise.resolve();
     });
     expect(screen.getByText('AAPL synthetic update')).toBeVisible();
-    fireEvent.change(screen.getByLabelText(/Input stock symbols/), {
+    fireEvent.change(screen.getByLabelText('Stock symbols'), {
       target: { value: 'TSLA' },
     });
 

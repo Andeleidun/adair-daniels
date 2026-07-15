@@ -1,37 +1,42 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-
-interface HeaderPage {
-  readonly title: string;
-  readonly codeView?: React.ReactElement;
-}
+import SiteIcon from '../SiteIcon';
 
 interface HeaderProps {
-  readonly currentPage: HeaderPage;
   readonly codeView: boolean;
+  readonly codeViewAvailable: boolean;
   readonly menuOpen: boolean;
   readonly onClick: () => void;
+  readonly ref?: React.Ref<HTMLButtonElement>;
   readonly toggleCodeView: () => void;
 }
 
-const Header = (props: HeaderProps): React.ReactElement => {
+const Header = ({
+  codeView,
+  codeViewAvailable,
+  menuOpen,
+  onClick,
+  ref,
+  toggleCodeView,
+}: HeaderProps): React.ReactElement => {
   const handleChange = () => {
-    props.toggleCodeView();
+    toggleCodeView();
   };
 
   const generateCodeView = () => {
-    if (props.currentPage.codeView) {
+    if (codeViewAvailable) {
       const codeViewBar = (
         <div className="code-view-bar">
           <FormControlLabel
             control={
               <Switch
-                checked={props.codeView}
+                checked={codeView}
                 onChange={handleChange}
                 name="codeView"
               />
@@ -46,23 +51,24 @@ const Header = (props: HeaderProps): React.ReactElement => {
 
   return (
     <header className="app-header">
-      <AppBar position="static">
-        <IconButton
-          edge="start"
-          aria-label="menu"
-          className="menu-button"
-          onClick={props.onClick}
-          aria-controls="app-navigation"
-          aria-expanded={props.menuOpen}
-        >
-          <i className="material-icons" aria-hidden="true">
-            menu
-          </i>
-        </IconButton>
-        <Toolbar className="title-bar">
-          <h1>{props.currentPage.title}</h1>
+      <AppBar position="fixed" color="secondary" component="div">
+        <Toolbar className="header-toolbar">
+          <IconButton
+            edge="start"
+            ref={ref}
+            aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+            className="menu-button"
+            onClick={onClick}
+            aria-controls="app-navigation"
+            aria-expanded={menuOpen}
+          >
+            <SiteIcon name={menuOpen ? 'close' : 'menu'} />
+          </IconButton>
+          <Link className="site-brand" to="/" aria-label="Adair Daniels home">
+            <span>Adair Daniels</span>
+          </Link>
+          {generateCodeView()}
         </Toolbar>
-        {generateCodeView()}
       </AppBar>
     </header>
   );
