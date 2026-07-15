@@ -1,12 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import { StyledEngineProvider } from '@mui/material/styles';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const rootElement = document.getElementById('root');
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+if (!rootElement) {
+  throw new Error('The application root element is missing.');
+}
+
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <StyledEngineProvider injectFirst>
+      <App />
+    </StyledEngineProvider>
+  </React.StrictMode>
+);

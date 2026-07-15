@@ -1,16 +1,17 @@
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
+import { afterEach, beforeEach, vi, type MockInstance } from 'vitest';
 
 const browserGetComputedStyle = window.getComputedStyle;
 window.getComputedStyle = (element: Element) =>
   browserGetComputedStyle.call(window, element);
 
-let consoleError: jest.SpyInstance;
-let consoleWarn: jest.SpyInstance;
+let consoleError: MockInstance;
+let consoleWarn: MockInstance;
 
 beforeEach(() => {
-  consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-  consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+  consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 });
 
 afterEach(() => {
@@ -19,8 +20,10 @@ afterEach(() => {
   const warnings = consoleWarn.mock.calls.slice();
   consoleError.mockRestore();
   consoleWarn.mockRestore();
-  jest.useRealTimers();
-  jest.restoreAllMocks();
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+  vi.clearAllMocks();
+  vi.unstubAllGlobals();
 
   if (errors.length > 0 || warnings.length > 0) {
     const calls = [...errors, ...warnings]
@@ -39,7 +42,7 @@ if (typeof AbortController === 'undefined') {
     }
   }
 
-  Object.defineProperty(global, 'AbortController', {
+  Object.defineProperty(globalThis, 'AbortController', {
     value: TestAbortController,
     writable: true,
   });

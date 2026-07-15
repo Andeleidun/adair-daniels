@@ -2,9 +2,9 @@ import React from 'react';
 import '../Library/CodeView.css';
 import CardTemplate from '../Library/Card';
 import SourceViewer from '../Library/SourceViewer';
-import componentCode from '!!raw-loader!./xkcd';
-import adapterCode from '!!raw-loader!./xkcdApi';
-import transportCode from '!!raw-loader!../../Services/remoteData';
+import componentCode from './xkcd.tsx?raw';
+import adapterCode from './xkcdApi.ts?raw';
+import transportCode from '../../Services/remoteData.ts?raw';
 
 const source = [
   '// XKCD component',

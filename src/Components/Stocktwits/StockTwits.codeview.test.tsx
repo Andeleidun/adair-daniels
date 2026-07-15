@@ -1,18 +1,17 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { expect, it, vi } from 'vitest';
 import StockViewer from './StockTwits.codeview';
 
-jest.mock('!!raw-loader!./Stocktwits', () => 'STOCK COMPONENT SOURCE', {
-  virtual: true,
-});
-jest.mock('!!raw-loader!./stockTwitsApi', () => 'STOCK ADAPTER SOURCE', {
-  virtual: true,
-});
-jest.mock(
-  '!!raw-loader!../../Services/remoteData',
-  () => 'SHARED TRANSPORT SOURCE',
-  { virtual: true }
-);
+vi.mock('./Stocktwits.tsx?raw', () => ({
+  default: 'STOCK COMPONENT SOURCE',
+}));
+vi.mock('./stockTwitsApi.ts?raw', () => ({
+  default: 'STOCK ADAPTER SOURCE',
+}));
+vi.mock('../../Services/remoteData.ts?raw', () => ({
+  default: 'SHARED TRANSPORT SOURCE',
+}));
 
 it('includes the StockTwits component, adapter, and shared transport', () => {
   render(<StockViewer />);

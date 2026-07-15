@@ -2,15 +2,15 @@ import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import StockTwits from './Stocktwits';
 import { fetchStockSymbols, StockSearchResult } from './stockTwitsApi';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-jest.mock('./stockTwitsApi', () => {
-  const actual = jest.requireActual('./stockTwitsApi');
-  return { ...actual, fetchStockSymbols: jest.fn() };
+vi.mock('./stockTwitsApi', async () => {
+  const actual =
+    await vi.importActual<typeof import('./stockTwitsApi')>('./stockTwitsApi');
+  return { ...actual, fetchStockSymbols: vi.fn() };
 });
 
-const fetchSymbols = fetchStockSymbols as jest.MockedFunction<
-  typeof fetchStockSymbols
->;
+const fetchSymbols = vi.mocked(fetchStockSymbols);
 const result = (
   feeds: StockSearchResult['feeds'],
   failedSymbols: ReadonlyArray<string> = []
@@ -38,6 +38,10 @@ const submit = (value: string) => {
 };
 
 describe('StockTwits', () => {
+  beforeEach(() => {
+    fetchSymbols.mockReset();
+  });
+
   it('submits normalized input by button and renders stable, filterable results', async () => {
     fetchSymbols.mockResolvedValue(result([feed('AAPL'), feed('MSFT', 2)]));
     render(<StockTwits />);
@@ -56,7 +60,9 @@ describe('StockTwits', () => {
     expect(screen.queryByText('MSFT synthetic update')).toBeNull();
     fireEvent.click(apple as HTMLElement);
     expect(screen.getByText('MSFT synthetic update')).toBeVisible();
-    expect(screen.getByRole('img', { name: "AAPL User's avatar" })).toBeVisible();
+    expect(
+      screen.getByRole('img', { name: "AAPL User's avatar" })
+    ).toBeVisible();
   });
 
   it('supports Enter, rejects invalid input accessibly, and bounds requests', async () => {
@@ -70,7 +76,9 @@ describe('StockTwits', () => {
     if (form) {
       fireEvent.submit(form);
     }
-    expect(await screen.findByRole('alert')).toHaveTextContent(/only letters/);
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /must include a letter or number/
+    );
     expect(fetchSymbols).not.toHaveBeenCalled();
   });
 
@@ -87,7 +95,9 @@ describe('StockTwits', () => {
     expect(await screen.findByRole('status')).toHaveTextContent('FAIL');
     expect(screen.getByText('AAPL synthetic update')).toBeVisible();
     submit('FAIL');
-    expect(await screen.findByRole('alert')).toHaveTextContent(/could not load/);
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /could not load/
+    );
     expect(screen.queryByText('AAPL synthetic update')).toBeNull();
   });
 
@@ -110,25 +120,28 @@ describe('StockTwits', () => {
   });
 
   it('refreshes once at five minutes, merges partial data, and stops polling', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     fetchSymbols
       .mockResolvedValueOnce(result([feed('AAPL', 1), feed('MSFT', 2)]))
       .mockResolvedValueOnce(result([feed('AAPL', 3)], ['MSFT']));
     render(<StockTwits />);
     submit('AAPL,MSFT');
-    await screen.findByText('AAPL synthetic update');
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(screen.getByText('AAPL synthetic update')).toBeVisible();
     fireEvent.change(screen.getByLabelText(/Input stock symbols/), {
       target: { value: 'TSLA' },
     });
 
     await act(async () => {
-      jest.advanceTimersByTime(60000);
+      vi.advanceTimersByTime(60000);
       await Promise.resolve();
     });
     expect(screen.getByText('Next refresh in 4 minutes.')).toBeVisible();
 
     await act(async () => {
-      jest.advanceTimersByTime(4 * 60000);
+      vi.advanceTimersByTime(4 * 60000);
       await Promise.resolve();
     });
     expect(fetchSymbols).toHaveBeenCalledTimes(2);
@@ -136,14 +149,14 @@ describe('StockTwits', () => {
     expect(screen.getByRole('status')).toHaveTextContent('MSFT');
     expect(screen.getByText('MSFT synthetic update')).toBeVisible();
     await act(async () => {
-      jest.advanceTimersByTime(5 * 60000);
+      vi.advanceTimersByTime(5 * 60000);
       await Promise.resolve();
     });
     expect(fetchSymbols).toHaveBeenCalledTimes(2);
   });
 
   it('prevents overlapping automatic refresh requests', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     let resolveRefresh: (value: StockSearchResult) => void = () => undefined;
     fetchSymbols
       .mockResolvedValueOnce(result([feed('AAPL')]))
@@ -155,10 +168,13 @@ describe('StockTwits', () => {
       );
     render(<StockTwits />);
     submit('AAPL');
-    await screen.findByText('AAPL synthetic update');
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(screen.getByText('AAPL synthetic update')).toBeVisible();
 
     await act(async () => {
-      jest.advanceTimersByTime(6 * 60000);
+      vi.advanceTimersByTime(6 * 60000);
       await Promise.resolve();
     });
     expect(fetchSymbols).toHaveBeenCalledTimes(2);
@@ -178,7 +194,8 @@ describe('StockTwits', () => {
     let resolveFirst: (value: StockSearchResult) => void = () => undefined;
     fetchSymbols
       .mockImplementationOnce(
-        () => new Promise<StockSearchResult>((resolve) => (resolveFirst = resolve))
+        () =>
+          new Promise<StockSearchResult>((resolve) => (resolveFirst = resolve))
       )
       .mockResolvedValueOnce(result([feed('MSFT')]));
     const { unmount } = render(<StockTwits />);
@@ -194,7 +211,7 @@ describe('StockTwits', () => {
     expect(secondSignal.aborted).toBe(true);
   });
 
-  it('aborts an active request when a replacement submission is invalid', async () => {
+  it('aborts an active request when a replacement submission is invalid', () => {
     let resolveSearch: (value: StockSearchResult) => void = () => undefined;
     fetchSymbols.mockImplementationOnce(
       () =>
@@ -210,7 +227,9 @@ describe('StockTwits', () => {
 
     expect(signal).toBeDefined();
     expect(signal && signal.aborted).toBe(true);
-    expect(screen.getByRole('alert')).toHaveTextContent(/only letters/);
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      /must include a letter or number/
+    );
     act(() => resolveSearch(result([feed('AAPL')])));
     expect(screen.queryByText('AAPL synthetic update')).toBeNull();
   });

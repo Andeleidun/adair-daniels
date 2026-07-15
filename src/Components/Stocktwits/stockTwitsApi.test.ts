@@ -8,28 +8,36 @@ import {
   normalizeSymbols,
 } from './stockTwitsApi';
 import { stockFeed, stockMessage } from '../../testUtils/remoteFixtures';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-jest.mock('../../Services/remoteData', () => {
-  const actual = jest.requireActual('../../Services/remoteData');
-  return { ...actual, fetchAllOriginsJson: jest.fn() };
+vi.mock('../../Services/remoteData', async () => {
+  const actual = await vi.importActual<
+    typeof import('../../Services/remoteData')
+  >('../../Services/remoteData');
+  return { ...actual, fetchAllOriginsJson: vi.fn() };
 });
 
-const remote = fetchAllOriginsJson as jest.MockedFunction<
-  typeof fetchAllOriginsJson
->;
+const remote = vi.mocked(fetchAllOriginsJson);
 const insecureAvatarMessage = stockMessage(2);
 
 describe('StockTwits adapter', () => {
+  beforeEach(() => {
+    remote.mockReset();
+  });
+
   it('normalizes, de-duplicates, and validates bounded symbol input', () => {
     expect(normalizeSymbols(' aapl, msft, AAPL, brk.b ')).toEqual({
       valid: true,
       symbols: ['AAPL', 'MSFT', 'BRK.B'],
     });
     expect(normalizeSymbols(' , ')).toMatchObject({ valid: false });
-    expect(normalizeSymbols('AAPL, BAD SYMBOL')).toMatchObject({ valid: false });
-    expect(
-      normalizeSymbols('1,2,3,4,5,6,7,8,9,10,11')
-    ).toMatchObject({ valid: false });
+    expect(normalizeSymbols('AAPL, BAD SYMBOL')).toMatchObject({
+      valid: false,
+    });
+    expect(normalizeSymbols('., -.-')).toMatchObject({ valid: false });
+    expect(normalizeSymbols('1,2,3,4,5,6,7,8,9,10,11')).toMatchObject({
+      valid: false,
+    });
     expect(normalizeSymbols('1,2,3,4,5,6,7,8,9,10')).toMatchObject({
       valid: true,
     });
@@ -71,10 +79,7 @@ describe('StockTwits adapter', () => {
     let maximumActiveRequests = 0;
     remote.mockImplementation(async (url: string) => {
       activeRequests += 1;
-      maximumActiveRequests = Math.max(
-        maximumActiveRequests,
-        activeRequests
-      );
+      maximumActiveRequests = Math.max(maximumActiveRequests, activeRequests);
       await Promise.resolve();
       activeRequests -= 1;
       if (url.includes('/MSFT.json')) {

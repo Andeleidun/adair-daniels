@@ -15,12 +15,12 @@ import {
 } from '../../Resources/images/index';
 import HomeData from './Home.json';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Chip from '@mui/material/Chip';
+import Button from '@mui/material/Button';
 
 interface ExternalLink {
   readonly url: string;
@@ -89,17 +89,38 @@ const isImageKey = (key: string): key is ImageKey => key in contentImages;
 const imageForKey = (key: string): string | undefined =>
   isImageKey(key) ? contentImages[key] : undefined;
 
+const groupItemKey = (item: GroupItem): string => {
+  if ('classes' in item) return `classes-${item.classes}`;
+  if ('title' in item) return `title-${item.title}`;
+  if ('dates' in item) return `dates-${item.dates}`;
+  if ('description' in item) return `description-${item.description}`;
+  if ('jobTitle' in item) return `job-${item.jobTitle}`;
+  if ('text' in item) return `text-${item.text}`;
+  return `skills-${item.skills.join('-')}`;
+};
+
+const groupKey = (group: GroupSet): string =>
+  group.group.map(groupItemKey).join('|');
+
+const contentItemKey = (content: ContentItem): string => {
+  if ('linkset' in content) return `link-${content.linkset.url}`;
+  if ('skillGroup' in content) return `skills-${content.skillGroup.title}`;
+  if ('groupSet' in content)
+    return `groups-${content.groupSet.map(groupKey).join('|')}`;
+  return `text-${content.text}`;
+};
+
 const Home = (): ReactElement => {
   const [experienceIndex, setExperienceIndex] = useState(0);
   const [educationIndex, setEducationIndex] = useState(0);
 
   const generateGroupSet = (groupSet: ReadonlyArray<GroupSet>) =>
-    groupSet.map((group, groupIndex) => {
+    groupSet.map((group) => {
       let groupClass = '';
       const groupContent: ReactElement[] = [];
 
-      group.group.forEach((item, itemIndex) => {
-        const itemKey = `${groupIndex}-${itemIndex}`;
+      group.group.forEach((item) => {
+        const itemKey = groupItemKey(item);
         if ('classes' in item) {
           groupClass = item.classes;
         }
@@ -167,7 +188,7 @@ const Home = (): ReactElement => {
                   size="small"
                   label={skill}
                   className="skill"
-                  key={`${groupIndex}-${skill}`}
+                  key={skill}
                 />
               ))}
             </div>
@@ -176,7 +197,7 @@ const Home = (): ReactElement => {
       });
 
       return (
-        <div className={groupClass} key={`${groupClass}-${groupIndex}`}>
+        <div className={groupClass} key={groupKey(group)}>
           {groupContent}
         </div>
       );
@@ -186,8 +207,8 @@ const Home = (): ReactElement => {
     const formattedContent: ReactElement[] = [];
     const title = contentSet.title;
 
-    contentSet.content.forEach((content, index) => {
-      const contentKey = `${title}-${index}`;
+    contentSet.content.forEach((content) => {
+      const contentKey = `${title}-${contentItemKey(content)}`;
       if ('linkset' in content) {
         formattedContent.push(
           <ListItem
@@ -245,9 +266,7 @@ const Home = (): ReactElement => {
         const generatedGroups = generateGroupSet(content.groupSet);
         const isExperience = title === 'Experience';
         const activeIndex = isExperience ? experienceIndex : educationIndex;
-        const setIndex = isExperience
-          ? setExperienceIndex
-          : setEducationIndex;
+        const setIndex = isExperience ? setExperienceIndex : setEducationIndex;
         const lastIndex = generatedGroups.length - 1;
         const previous = () =>
           setIndex(activeIndex === 0 ? lastIndex : activeIndex - 1);

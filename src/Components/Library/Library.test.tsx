@@ -1,11 +1,12 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import Library from './Library';
 
-jest.mock('./App.codeview', () => 'ApplicationShell source');
-jest.mock('./Card/Card.codeview', () => 'CardAction source');
-jest.mock('./Header/Header.codeview', () => 'HeaderProps source');
-jest.mock('./NavBar/NavBar.codeview', () => 'NavBarProps source');
+vi.mock('./App.codeview', () => ({ default: 'ApplicationShell source' }));
+vi.mock('./Card/Card.codeview', () => ({ default: 'CardAction source' }));
+vi.mock('./Header/Header.codeview', () => ({ default: 'HeaderProps source' }));
+vi.mock('./NavBar/NavBar.codeview', () => ({ default: 'NavBarProps source' }));
 
 describe('Library', () => {
   it('defaults to App source and selects every supported component', () => {

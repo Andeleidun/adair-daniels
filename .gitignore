@@ -10,6 +10,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -21,14 +22,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# AI tooling and generated artifacts
-AGENTS.md
-CLAUDE.md
-GEMINI.md
-.agents/
-.codex/
-.claude/
-.cursor/
-.aider*
-.github/copilot-instructions.md

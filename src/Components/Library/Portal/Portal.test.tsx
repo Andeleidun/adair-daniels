@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { expect, it } from 'vitest';
 import Portal from './Portal';
 
 it('preserves the portal source, title, and lazy loading', () => {

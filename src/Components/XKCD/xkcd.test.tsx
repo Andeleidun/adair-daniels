@@ -7,20 +7,19 @@ import {
   XkcdComic,
   XkcdSlot,
 } from './xkcdApi';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-jest.mock('./xkcdApi', () => {
-  const actual = jest.requireActual('./xkcdApi');
+vi.mock('./xkcdApi', async () => {
+  const actual = await vi.importActual<typeof import('./xkcdApi')>('./xkcdApi');
   return {
     ...actual,
-    fetchCurrentComic: jest.fn(),
-    fetchComicBatch: jest.fn(),
+    fetchCurrentComic: vi.fn(),
+    fetchComicBatch: vi.fn(),
   };
 });
 
-const current = fetchCurrentComic as jest.MockedFunction<
-  typeof fetchCurrentComic
->;
-const batch = fetchComicBatch as jest.MockedFunction<typeof fetchComicBatch>;
+const current = vi.mocked(fetchCurrentComic);
+const batch = vi.mocked(fetchComicBatch);
 const comic = (num: number): XkcdComic => ({
   kind: 'comic',
   num,
@@ -28,7 +27,11 @@ const comic = (num: number): XkcdComic => ({
   img: `https://example.test/${num}.png`,
   alt: `Alternative ${num}`,
 });
-const comics = (start: number) => [comic(start), comic(start + 1), comic(start + 2)];
+const comics = (start: number) => [
+  comic(start),
+  comic(start + 1),
+  comic(start + 2),
+];
 
 describe('XKCD', () => {
   beforeEach(() => {
@@ -40,10 +43,10 @@ describe('XKCD', () => {
 
   it('loads metadata first, renders current props, and navigates in clamped steps', async () => {
     render(<XKCD />);
+    expect(screen.getByRole('img', { name: 'Loading comics' })).toBeVisible();
     expect(
-      screen.getByRole('img', { name: 'Loading comics' })
+      await screen.findByRole('heading', { name: 'Synthetic Comic 1' })
     ).toBeVisible();
-    expect(await screen.findByRole('heading', { name: 'Synthetic Comic 1' })).toBeVisible();
     expect(current.mock.invocationCallOrder[0]).toBeLessThan(
       batch.mock.invocationCallOrder[0]
     );
@@ -56,12 +59,16 @@ describe('XKCD', () => {
 
     batch.mockResolvedValueOnce(comics(4));
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-    expect(await screen.findByRole('heading', { name: 'Synthetic Comic 4' })).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { name: 'Synthetic Comic 4' })
+    ).toBeVisible();
     expect(batch).toHaveBeenLastCalledWith(4, 10, expect.anything());
 
     batch.mockResolvedValueOnce(comics(8));
     fireEvent.click(screen.getByRole('button', { name: 'Last' }));
-    expect(await screen.findByRole('heading', { name: 'Synthetic Comic 8' })).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { name: 'Synthetic Comic 8' })
+    ).toBeVisible();
     expect(batch).toHaveBeenLastCalledWith(8, 10, expect.anything());
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Last' })).toBeDisabled();
@@ -81,38 +88,35 @@ describe('XKCD', () => {
     expect(batch).toHaveBeenLastCalledWith(1, 10, expect.anything());
   });
 
-  it(
-    'keeps a successful batch visible during navigation and failure, then retries',
-    async () => {
-      render(<XKCD />);
-      await screen.findByRole('heading', { name: 'Synthetic Comic 1' });
-      let rejectNavigation: (error: Error) => void = () => undefined;
-      batch.mockImplementationOnce(
-        () =>
-          new Promise<XkcdSlot[]>((_resolve, reject) => {
-            rejectNavigation = reject;
-          })
-      );
-      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-      expect(
-        screen.getByRole('heading', { name: 'Synthetic Comic 1' })
-      ).toBeVisible();
-      expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
-      act(() => rejectNavigation(new Error('offline')));
-      expect(await screen.findByRole('alert')).toHaveTextContent(
-        /batch could not/
-      );
-      expect(
-        screen.getByRole('heading', { name: 'Synthetic Comic 1' })
-      ).toBeVisible();
+  it('keeps a successful batch visible during navigation and failure, then retries', async () => {
+    render(<XKCD />);
+    await screen.findByRole('heading', { name: 'Synthetic Comic 1' });
+    let rejectNavigation: (error: Error) => void = () => undefined;
+    batch.mockImplementationOnce(
+      () =>
+        new Promise<XkcdSlot[]>((_resolve, reject) => {
+          rejectNavigation = reject;
+        })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(
+      screen.getByRole('heading', { name: 'Synthetic Comic 1' })
+    ).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
+    act(() => rejectNavigation(new Error('offline')));
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /batch could not/
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Synthetic Comic 1' })
+    ).toBeVisible();
 
-      batch.mockResolvedValueOnce(comics(4));
-      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-      expect(
-        await screen.findByRole('heading', { name: 'Synthetic Comic 4' })
-      ).toBeVisible();
-    }
-  );
+    batch.mockResolvedValueOnce(comics(4));
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(
+      await screen.findByRole('heading', { name: 'Synthetic Comic 4' })
+    ).toBeVisible();
+  });
 
   it('renders definitive missing comics as accessible unavailable slots', async () => {
     batch.mockResolvedValueOnce([
@@ -128,9 +132,13 @@ describe('XKCD', () => {
   });
 
   it('shows a retryable initial failure', async () => {
-    current.mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce(comic(10));
+    current
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(comic(10));
     render(<XKCD />);
-    expect(await screen.findByRole('alert')).toHaveTextContent(/could not be loaded/);
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /could not be loaded/
+    );
     batch.mockResolvedValueOnce(comics(1));
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     await screen.findByRole('heading', { name: 'Synthetic Comic 1' });
@@ -146,7 +154,7 @@ describe('XKCD', () => {
     );
     const { unmount } = render(<XKCD />);
     await act(async () => {
-      await Promise.resolve();
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
       await Promise.resolve();
     });
     expect(batch).toHaveBeenCalledTimes(1);

@@ -1,14 +1,7 @@
 export type RemoteErrorCategory =
-  | 'network'
-  | 'http'
-  | 'proxy'
-  | 'parse'
-  | 'schema'
-  | 'aborted';
+  'network' | 'http' | 'proxy' | 'parse' | 'schema' | 'aborted';
 
-export type RemoteFeatureName =
-  | 'stock-twits-live-feed'
-  | 'xkcd-slideshow';
+export type RemoteFeatureName = 'stock-twits-live-feed' | 'xkcd-slideshow';
 
 export interface AllOriginsOptions {
   readonly signal?: AbortSignal;
@@ -19,11 +12,7 @@ export class RemoteRequestError extends Error {
   readonly category: RemoteErrorCategory;
   readonly status?: number;
 
-  constructor(
-    category: RemoteErrorCategory,
-    message: string,
-    status?: number
-  ) {
+  constructor(category: RemoteErrorCategory, message: string, status?: number) {
     super(message);
     this.name = 'RemoteRequestError';
     this.category = category;
@@ -40,15 +29,17 @@ export const isHttpsUrl = (value: unknown): value is string => {
     return false;
   }
   try {
-    return new URL(value).protocol === 'https:';
-  } catch (_error) {
+    const url = new URL(value);
+    return (
+      url.protocol === 'https:' && url.username === '' && url.password === ''
+    );
+  } catch {
     return false;
   }
 };
 
 const isAbortError = (error: unknown, signal?: AbortSignal): boolean =>
-  signal?.aborted === true ||
-  (isRecord(error) && error.name === 'AbortError');
+  signal?.aborted === true || (isRecord(error) && error.name === 'AbortError');
 
 const abortedRequest = (): RemoteRequestError =>
   new RemoteRequestError('aborted', 'The request was cancelled.');
@@ -164,7 +155,7 @@ export const fetchAllOriginsJson = async (
 
     try {
       return JSON.parse(envelope.contents);
-    } catch (_error) {
+    } catch {
       throw new RemoteRequestError(
         'parse',
         'The remote service returned unreadable data.'

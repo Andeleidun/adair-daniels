@@ -1,3 +1,3 @@
-import AppCode from '!!raw-loader!../../App';
+import AppCode from '../../App.tsx?raw';
 
 export default AppCode;

@@ -26,6 +26,14 @@
   margin-bottom: 10px;
 }
 
+.portfolio-display .portfolio-slides {
+  touch-action: pan-y;
+}
+
+.portfolio-display .slide[aria-hidden='true'] {
+  display: none;
+}
+
 .portfolio-display .slide .slide-image {
   width: 100%;
   display: block;

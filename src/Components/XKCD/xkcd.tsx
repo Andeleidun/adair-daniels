@@ -6,11 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './xkcd.css';
 import { reactLogo } from '../../Resources/images/index';
 import CardTemplate from '../Library/Card';
-import {
-  fetchComicBatch,
-  fetchCurrentComic,
-  XkcdSlot,
-} from './xkcdApi';
+import { fetchComicBatch, fetchCurrentComic, XkcdSlot } from './xkcdApi';
 import { RemoteRequestError } from '../../Services/remoteData';
 
 interface PanelProps {
@@ -47,16 +43,17 @@ const XKCD = (): React.ReactElement => {
   const [status, setStatus] = useState<LoadStatus>('loading');
   const [error, setError] = useState('');
   const [retryIndex, setRetryIndex] = useState(1);
-  const controller = useRef<AbortController | null>(null);
-  const requestVersion = useRef(0);
+  const controllerRef = useRef<AbortController | null>(null);
+  const requestVersionRef = useRef(0);
+  const initialRequestRef = useRef<() => void>(() => undefined);
   const finalIndex = Math.max(1, latest - 2);
 
   const beginRequest = () => {
-    controller.current?.abort();
-    requestVersion.current += 1;
+    controllerRef.current?.abort();
+    requestVersionRef.current += 1;
     const nextController = new AbortController();
-    controller.current = nextController;
-    return { version: requestVersion.current, controller: nextController };
+    controllerRef.current = nextController;
+    return { version: requestVersionRef.current, controller: nextController };
   };
 
   const isAborted = (requestError: unknown) =>
@@ -75,7 +72,7 @@ const XKCD = (): React.ReactElement => {
         current.num,
         request.controller.signal
       );
-      if (request.version !== requestVersion.current) {
+      if (request.version !== requestVersionRef.current) {
         return;
       }
       setLatest(current.num);
@@ -85,7 +82,7 @@ const XKCD = (): React.ReactElement => {
       setStatus('success');
     } catch (requestError) {
       if (
-        request.version === requestVersion.current &&
+        request.version === requestVersionRef.current &&
         !isAborted(requestError)
       ) {
         setStatus('error');
@@ -106,7 +103,7 @@ const XKCD = (): React.ReactElement => {
         latest,
         request.controller.signal
       );
-      if (request.version !== requestVersion.current) {
+      if (request.version !== requestVersionRef.current) {
         return;
       }
       setSlots(nextSlots);
@@ -114,7 +111,7 @@ const XKCD = (): React.ReactElement => {
       setStatus('success');
     } catch (requestError) {
       if (
-        request.version === requestVersion.current &&
+        request.version === requestVersionRef.current &&
         !isAborted(requestError)
       ) {
         setStatus('error');
@@ -124,10 +121,20 @@ const XKCD = (): React.ReactElement => {
   };
 
   useEffect(() => {
-    void loadInitial();
+    initialRequestRef.current = () => {
+      void loadInitial();
+    };
+  });
+
+  useEffect(() => {
+    const loadingTimer = window.setTimeout(
+      () => initialRequestRef.current(),
+      0
+    );
     return () => {
-      requestVersion.current += 1;
-      controller.current?.abort();
+      window.clearTimeout(loadingTimer);
+      requestVersionRef.current += 1;
+      controllerRef.current?.abort();
     };
   }, []);
 

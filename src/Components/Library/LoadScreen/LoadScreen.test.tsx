@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { expect, it } from 'vitest';
 import LoadScreen from './LoadScreen';
 
 it('renders an accessible loading image', () => {

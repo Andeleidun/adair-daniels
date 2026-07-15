@@ -2,7 +2,7 @@ import React from 'react';
 import '../Library/CodeView.css';
 import CardTemplate from '../Library/Card';
 import SourceViewer from '../Library/SourceViewer';
-import portfolioCode from '!!raw-loader!./Portfolio';
+import portfolioCode from './Portfolio.tsx?raw';
 
 const PortfolioViewer = (): React.ReactElement => (
   <main className="app-code-viewer">

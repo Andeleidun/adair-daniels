@@ -1,38 +1,43 @@
-import { fetchAllOriginsJson, RemoteRequestError } from '../../Services/remoteData';
+import {
+  fetchAllOriginsJson,
+  RemoteRequestError,
+} from '../../Services/remoteData';
 import { fetchComic, fetchComicBatch, fetchCurrentComic } from './xkcdApi';
 import { xkcdComic } from '../../testUtils/remoteFixtures';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-jest.mock('../../Services/remoteData', () => {
-  const actual = jest.requireActual('../../Services/remoteData');
-  return { ...actual, fetchAllOriginsJson: jest.fn() };
+vi.mock('../../Services/remoteData', async () => {
+  const actual = await vi.importActual<
+    typeof import('../../Services/remoteData')
+  >('../../Services/remoteData');
+  return { ...actual, fetchAllOriginsJson: vi.fn() };
 });
 
-const remote = fetchAllOriginsJson as jest.MockedFunction<
-  typeof fetchAllOriginsJson
->;
+const remote = vi.mocked(fetchAllOriginsJson);
 
 describe('XKCD adapter', () => {
-  beforeEach(() => remote.mockReset());
+  beforeEach(() => {
+    remote.mockReset();
+  });
 
   it('uses HTTPS endpoints and validates current and numbered comics', async () => {
-    remote.mockResolvedValueOnce(xkcdComic(20)).mockResolvedValueOnce(xkcdComic(3));
+    remote
+      .mockResolvedValueOnce(xkcdComic(20))
+      .mockResolvedValueOnce(xkcdComic(3));
     await expect(fetchCurrentComic()).resolves.toMatchObject({ num: 20 });
     await expect(fetchComic(3)).resolves.toMatchObject({ num: 3 });
     expect(remote.mock.calls[0][0]).toBe('https://xkcd.com/info.0.json');
     expect(remote.mock.calls[1][0]).toBe('https://xkcd.com/3/info.0.json');
   });
 
-  it(
-    'loads at most three positions and allows a genuine short final batch',
-    async () => {
-      remote.mockImplementation((url: string) => {
-        const number = Number(url.split('/')[3]);
-        return Promise.resolve(xkcdComic(number));
-      });
-      await expect(fetchComicBatch(4, 6)).resolves.toHaveLength(3);
-      await expect(fetchComicBatch(6, 6)).resolves.toHaveLength(1);
-    }
-  );
+  it('loads at most three positions and allows a genuine short final batch', async () => {
+    remote.mockImplementation((url: string) => {
+      const number = Number(url.split('/')[3]);
+      return Promise.resolve(xkcdComic(number));
+    });
+    await expect(fetchComicBatch(4, 6)).resolves.toHaveLength(3);
+    await expect(fetchComicBatch(6, 6)).resolves.toHaveLength(1);
+  });
 
   it('maps only definitive 404s to unavailable slots', async () => {
     remote.mockRejectedValueOnce(

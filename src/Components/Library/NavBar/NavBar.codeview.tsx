@@ -1,3 +1,3 @@
-import NavBarCode from '!!raw-loader!./NavBar';
+import NavBarCode from './NavBar.tsx?raw';
 
 export default NavBarCode;

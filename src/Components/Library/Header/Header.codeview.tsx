@@ -1,3 +1,3 @@
-import HeaderCode from '!!raw-loader!./Header';
+import HeaderCode from './Header.tsx?raw';
 
 export default HeaderCode;

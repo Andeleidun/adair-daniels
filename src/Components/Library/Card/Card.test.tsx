@@ -1,10 +1,11 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import Card from './Card';
 
 describe('Card', () => {
   it('renders content, media, and correctly typed actions', () => {
-    const onClick = jest.fn();
+    const onClick = vi.fn();
     const { container } = render(
       <Card
         title="Card title"

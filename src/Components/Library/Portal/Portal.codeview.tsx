@@ -2,7 +2,7 @@ import React from 'react';
 import '../CodeView.css';
 import CardTemplate from '../Card';
 import SourceViewer from '../SourceViewer';
-import portalCode from '!!raw-loader!./Portal';
+import portalCode from './Portal.tsx?raw';
 
 const PortalViewer = (): React.ReactElement => (
   <main className="app-code-viewer">

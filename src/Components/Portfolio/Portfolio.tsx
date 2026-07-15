@@ -1,8 +1,6 @@
 /*
-    This page shows the strength available in React's component
-    libraries such as Material UI and React-Swipeable-Views,
-    which carry strong functionality encompassed in a single
-    importable component.
+    This page presents portfolio screenshots in an accessible carousel with
+    bounded autoplay, touch navigation, and reduced-motion support.
 */
 import React from 'react';
 import './Portfolio.css';
@@ -29,12 +27,11 @@ import {
   vanderhall,
 } from '../../Resources/images/index';
 
-import SwipeableViews from 'react-swipeable-views';
-import { autoPlay } from 'react-swipeable-views-utils';
-import MobileStepper from '@material-ui/core/MobileStepper';
-import Button from '@material-ui/core/Button';
+import MobileStepper from '@mui/material/MobileStepper';
+import Button from '@mui/material/Button';
 
-const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+const autoplayInterval = 10000;
+const swipeThreshold = 40;
 
 type PortfolioProps = Record<string, never>;
 
@@ -55,6 +52,9 @@ const prefersReducedMotion = (): boolean =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 class Portfolio extends React.Component<PortfolioProps, State> {
+  private autoplayTimer: number | undefined;
+  private touchStartX: number | null = null;
+
   constructor(props: PortfolioProps) {
     super(props);
     this.state = {
@@ -160,28 +160,74 @@ class Portfolio extends React.Component<PortfolioProps, State> {
     },
   ];
 
+  componentDidMount(): void {
+    this.scheduleAutoplay();
+  }
+
+  componentDidUpdate(
+    _previousProps: PortfolioProps,
+    previousState: State
+  ): void {
+    if (
+      previousState.autoplay !== this.state.autoplay ||
+      previousState.activeSlide !== this.state.activeSlide
+    ) {
+      this.scheduleAutoplay();
+    }
+  }
+
+  componentWillUnmount(): void {
+    this.clearAutoplay();
+  }
+
+  private readonly clearAutoplay = (): void => {
+    if (this.autoplayTimer !== undefined) {
+      window.clearTimeout(this.autoplayTimer);
+      this.autoplayTimer = undefined;
+    }
+  };
+
+  private readonly scheduleAutoplay = (): void => {
+    this.clearAutoplay();
+    if (this.state.autoplay) {
+      this.autoplayTimer = window.setTimeout(
+        () => this.moveBy(1),
+        autoplayInterval
+      );
+    }
+  };
+
+  private readonly moveBy = (offset: number): void => {
+    this.setState((state) => ({
+      activeSlide:
+        (state.activeSlide + offset + this.portfolioSlides.length) %
+        this.portfolioSlides.length,
+    }));
+  };
+
+  private readonly handleTouchStart = (
+    event: React.TouchEvent<HTMLDivElement>
+  ): void => {
+    this.touchStartX = event.touches[0]?.clientX ?? null;
+  };
+
+  private readonly handleTouchEnd = (
+    event: React.TouchEvent<HTMLDivElement>
+  ): void => {
+    const end = event.changedTouches[0]?.clientX;
+    if (this.touchStartX === null || end === undefined) {
+      this.touchStartX = null;
+      return;
+    }
+    const distance = end - this.touchStartX;
+    this.touchStartX = null;
+    if (Math.abs(distance) >= swipeThreshold) {
+      this.moveBy(distance > 0 ? -1 : 1);
+    }
+  };
+
   portfolioDisplay(): React.ReactElement {
     const maxSlides = this.portfolioSlides.length;
-
-    const handleNext = () => {
-      if (this.state.activeSlide === maxSlides - 1) {
-        this.setState({ activeSlide: 0 });
-      } else {
-        this.setState({ activeSlide: this.state.activeSlide + 1 });
-      }
-    };
-
-    const handleBack = () => {
-      if (this.state.activeSlide === 0) {
-        this.setState({ activeSlide: maxSlides - 1 });
-      } else {
-        this.setState({ activeSlide: this.state.activeSlide - 1 });
-      }
-    };
-
-    const handleSlideChange = (slide: number) => {
-      this.setState({ activeSlide: slide });
-    };
 
     const toggleAutoplay = () => {
       this.setState((state) => ({ autoplay: !state.autoplay }));
@@ -213,16 +259,16 @@ class Portfolio extends React.Component<PortfolioProps, State> {
           className="autoplay-button"
           onClick={toggleAutoplay}
           variant="contained"
-          aria-pressed={!this.state.autoplay}
+          aria-pressed={this.state.autoplay}
         >
           {this.state.autoplay ? 'Pause slideshow' : 'Resume slideshow'}
         </Button>
-        <AutoPlaySwipeableViews
-          axis="x"
-          autoplay={this.state.autoplay}
-          index={this.state.activeSlide}
-          onChangeIndex={handleSlideChange}
-          interval={10000}
+        <div
+          className="portfolio-slides"
+          data-autoplay={this.state.autoplay}
+          data-interval={autoplayInterval}
+          onTouchStart={this.handleTouchStart}
+          onTouchEnd={this.handleTouchEnd}
         >
           {this.portfolioSlides.map((slide, index) => (
             <div
@@ -239,14 +285,14 @@ class Portfolio extends React.Component<PortfolioProps, State> {
               {slide.label}
             </div>
           ))}
-        </AutoPlaySwipeableViews>
+        </div>
         <MobileStepper
           steps={maxSlides}
           position="static"
           activeStep={this.state.activeSlide}
           backButton={
             <Button
-              onClick={handleBack}
+              onClick={() => this.moveBy(-1)}
               variant="contained"
               startIcon={previousIcon}
               aria-label="Previous"
@@ -256,7 +302,7 @@ class Portfolio extends React.Component<PortfolioProps, State> {
           }
           nextButton={
             <Button
-              onClick={handleNext}
+              onClick={() => this.moveBy(1)}
               variant="contained"
               endIcon={nextIcon}
               aria-label="Next"

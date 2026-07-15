@@ -54,17 +54,7 @@
   background-color: var(--greyhighlight);
 }
 
-.app-home
-  .highlights-card
-  .MuiList-root
-  .MuiListItem-root.MuiListItem-gutters {
-  display: none;
-}
-
-.app-home
-  .highlights-card
-  .MuiList-root
-  .MuiListItem-root.MuiListItem-gutters.linkset {
+.app-home .highlights-card .linkset {
   display: block;
   text-align: center;
 }

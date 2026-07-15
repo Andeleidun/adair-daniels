@@ -1,24 +1,31 @@
 import {
   fetchAllOriginsJson,
+  isHttpsUrl,
   RemoteRequestError,
 } from './remoteData';
 import { proxyEnvelope } from '../testUtils/remoteFixtures';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-const response = (body: unknown, ok = true, status = 200) =>
-  ({ ok, status, json: jest.fn().mockResolvedValue(body) });
+const response = (body: unknown, ok = true, status = 200): Response => {
+  const value = new Response(null, {
+    status: ok ? status : Math.max(status, 400),
+  });
+  vi.spyOn(value, 'json').mockResolvedValue(body);
+  return value;
+};
 
 describe('fetchAllOriginsJson', () => {
-  const originalFetch = global.fetch;
+  const originalFetch = globalThis.fetch;
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
   });
 
   it('encodes the complete HTTPS target and sends the feature header', async () => {
-    const fetchMock = jest.fn().mockResolvedValue(
-      response(proxyEnvelope({ value: 'safe' }))
-    );
-    global.fetch = fetchMock;
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(response(proxyEnvelope({ value: 'safe' })));
+    globalThis.fetch = fetchMock;
     const target = 'https://example.test/path?a=one two&b=$';
 
     await expect(
@@ -39,25 +46,25 @@ describe('fetchAllOriginsJson', () => {
     ['http', () => response(proxyEnvelope({}, 500))],
     ['http', () => response({ contents: '{}', statusCode: 500 })],
     ['proxy', () => response({ status: { http_code: 200 } })],
-    [
-      'proxy',
-      () => response({ contents: '{}', status: { http_code: '200' } }),
-    ],
+    ['proxy', () => response({ contents: '{}', status: { http_code: '200' } })],
     ['parse', () => response({ contents: '{not json' })],
-  ])('classifies %s failures without exposing bodies', async (category, makeValue) => {
-    global.fetch = jest.fn().mockResolvedValue(makeValue());
-    const promise = fetchAllOriginsJson('https://example.test/secret', {
-      requestName: 'stock-twits-live-feed',
-    });
-    await expect(promise).rejects.toMatchObject({ category });
-    await promise.catch((error: RemoteRequestError) => {
-      expect(error.message).not.toContain('{not json');
-      expect(error.message).not.toContain('secret');
-    });
-  });
+  ])(
+    'classifies %s failures without exposing bodies',
+    async (category, makeValue) => {
+      globalThis.fetch = vi.fn().mockResolvedValue(makeValue());
+      const promise = fetchAllOriginsJson('https://example.test/secret', {
+        requestName: 'stock-twits-live-feed',
+      });
+      await expect(promise).rejects.toMatchObject({ category });
+      await promise.catch((error: RemoteRequestError) => {
+        expect(error.message).not.toContain('{not json');
+        expect(error.message).not.toContain('secret');
+      });
+    }
+  );
 
   it('preserves a definitive upstream 404 status', async () => {
-    global.fetch = jest
+    globalThis.fetch = vi
       .fn()
       .mockResolvedValue(response(proxyEnvelope({ private: 'body' }, 404)));
     await expect(
@@ -68,14 +75,12 @@ describe('fetchAllOriginsJson', () => {
   });
 
   it('classifies malformed proxy JSON and cancellation', async () => {
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue(response({}, true, 200));
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: jest.fn().mockRejectedValue(new Error('bad envelope')),
-    });
+    globalThis.fetch = vi.fn().mockResolvedValue(response({}, true, 200));
+    const malformedEnvelope = response({});
+    vi.spyOn(malformedEnvelope, 'json').mockRejectedValue(
+      new Error('bad envelope')
+    );
+    vi.mocked(globalThis.fetch).mockResolvedValueOnce(malformedEnvelope);
     await expect(
       fetchAllOriginsJson('https://example.test/data', {
         requestName: 'xkcd-slideshow',
@@ -84,7 +89,9 @@ describe('fetchAllOriginsJson', () => {
 
     const controller = new AbortController();
     controller.abort();
-    (global.fetch as jest.Mock).mockRejectedValueOnce({ name: 'AbortError' });
+    const requestAbortError = new Error('Request aborted');
+    requestAbortError.name = 'AbortError';
+    vi.mocked(globalThis.fetch).mockRejectedValueOnce(requestAbortError);
     await expect(
       fetchAllOriginsJson('https://example.test/data', {
         requestName: 'xkcd-slideshow',
@@ -93,14 +100,14 @@ describe('fetchAllOriginsJson', () => {
     ).rejects.toMatchObject({ category: 'aborted' });
 
     const envelopeController = new AbortController();
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: jest.fn().mockImplementation(() => {
-        envelopeController.abort();
-        return Promise.reject({ name: 'AbortError' });
-      }),
+    const cancelledEnvelope = response({});
+    vi.spyOn(cancelledEnvelope, 'json').mockImplementation(() => {
+      envelopeController.abort();
+      const envelopeAbortError = new Error('Response parsing aborted');
+      envelopeAbortError.name = 'AbortError';
+      return Promise.reject(envelopeAbortError);
     });
+    vi.mocked(globalThis.fetch).mockResolvedValueOnce(cancelledEnvelope);
     await expect(
       fetchAllOriginsJson('https://example.test/data', {
         requestName: 'xkcd-slideshow',
@@ -112,24 +119,22 @@ describe('fetchAllOriginsJson', () => {
   it('honors cancellation before a request and after a response resolves', async () => {
     const cancelled = new AbortController();
     cancelled.abort();
-    global.fetch = jest.fn();
+    globalThis.fetch = vi.fn();
     await expect(
       fetchAllOriginsJson('https://example.test/data', {
         requestName: 'xkcd-slideshow',
         signal: cancelled.signal,
       })
     ).rejects.toMatchObject({ category: 'aborted' });
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
 
     const duringResponse = new AbortController();
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: jest.fn().mockImplementation(() => {
-        duringResponse.abort();
-        return Promise.resolve(proxyEnvelope({ value: 'ignored' }));
-      }),
+    const interruptedResponse = response({});
+    vi.spyOn(interruptedResponse, 'json').mockImplementation(() => {
+      duringResponse.abort();
+      return Promise.resolve(proxyEnvelope({ value: 'ignored' }));
     });
+    globalThis.fetch = vi.fn().mockResolvedValue(interruptedResponse);
     await expect(
       fetchAllOriginsJson('https://example.test/data', {
         requestName: 'xkcd-slideshow',
@@ -139,7 +144,7 @@ describe('fetchAllOriginsJson', () => {
   });
 
   it('classifies request rejection as a safe network failure', async () => {
-    global.fetch = jest.fn().mockRejectedValue(new Error('private details'));
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('private details'));
     const request = fetchAllOriginsJson('https://example.test/data', {
       requestName: 'stock-twits-live-feed',
     });
@@ -149,13 +154,20 @@ describe('fetchAllOriginsJson', () => {
     });
   });
 
-  it('rejects non-HTTPS targets before requesting', async () => {
-    global.fetch = jest.fn();
+  it('rejects unsafe targets before requesting', async () => {
+    globalThis.fetch = vi.fn();
     await expect(
       fetchAllOriginsJson('http://example.test/data', {
         requestName: 'xkcd-slideshow',
       })
     ).rejects.toMatchObject({ category: 'schema' });
-    expect(global.fetch).not.toHaveBeenCalled();
+    await expect(
+      fetchAllOriginsJson('https://user:password@example.test/data', {
+        requestName: 'xkcd-slideshow',
+      })
+    ).rejects.toMatchObject({ category: 'schema' });
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(isHttpsUrl('https://example.test/data')).toBe(true);
+    expect(isHttpsUrl('https://user:password@example.test/data')).toBe(false);
   });
 });

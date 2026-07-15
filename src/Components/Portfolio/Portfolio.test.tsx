@@ -1,75 +1,61 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import Portfolio from './Portfolio';
 
-jest.mock('react-swipeable-views', () =>
-  ({ children }: { children: React.ReactNode }) => <div>{children}</div>
-);
-jest.mock('react-swipeable-views-utils', () => ({
-  autoPlay: () => ({
-    children,
-    autoplay,
-    interval,
-    onChangeIndex,
-  }: {
-    children: React.ReactNode;
-    autoplay: boolean;
-    interval: number;
-    onChangeIndex: (index: number) => void;
-  }) => (
-    <div
-      data-testid="autoplay"
-      data-autoplay={autoplay}
-      data-interval={interval}
-    >
-      <button onClick={() => onChangeIndex(1)}>Mock index change</button>
-      {children}
-    </div>
-  ),
-}));
-
 describe('Portfolio', () => {
-  it('preserves controls, autoplay, current slide, and both wrap directions', () => {
-    render(<Portfolio />);
+  it('preserves controls, current slide, swiping, and both wrap directions', () => {
+    const { container } = render(<Portfolio />);
     const carousel = screen.getByRole('region', {
       name: 'Portfolio screenshots',
     });
+    const slides = container.querySelector('.portfolio-slides');
     expect(carousel).toHaveAttribute('aria-roledescription', 'carousel');
     expect(
       screen.getByRole('heading', {
         name: 'Keto Mate - Home, Angular and Ionic App',
       })
     ).toBeVisible();
-    expect(screen.getByTestId('autoplay')).toHaveAttribute(
-      'data-interval',
-      '10000'
-    );
-    expect(screen.getByTestId('autoplay')).toHaveAttribute(
-      'data-autoplay',
-      'true'
-    );
+    expect(slides).toHaveAttribute('data-interval', '10000');
+    expect(slides).toHaveAttribute('data-autoplay', 'true');
 
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Pause slideshow' })
-    );
-    expect(screen.getByTestId('autoplay')).toHaveAttribute(
-      'data-autoplay',
-      'false'
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Pause slideshow' }));
+    expect(slides).toHaveAttribute('data-autoplay', 'false');
     expect(
       screen.getByRole('button', { name: 'Resume slideshow' })
-    ).toHaveAttribute('aria-pressed', 'true');
+    ).toHaveAttribute('aria-pressed', 'false');
 
     fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
-    expect(screen.getByRole('heading', { name: 'MyLifter - eCommerce Site' })).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: 'MyLifter - eCommerce Site' })
+    ).toBeVisible();
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
     expect(
       screen.getByRole('heading', {
         name: 'Keto Mate - Home, Angular and Ionic App',
       })
     ).toBeVisible();
-    fireEvent.click(screen.getByRole('button', { name: 'Mock index change' }));
-    expect(screen.getByRole('heading', { name: 'Keto Mate - Store Listing' })).toBeVisible();
+    expect(slides).not.toBeNull();
+    if (slides) {
+      fireEvent.touchStart(slides, { touches: [{ clientX: 200 }] });
+      fireEvent.touchEnd(slides, { changedTouches: [{ clientX: 100 }] });
+    }
+    expect(
+      screen.getByRole('heading', { name: 'Keto Mate - Store Listing' })
+    ).toBeVisible();
+  });
+
+  it('advances once after the ten-second autoplay interval', () => {
+    vi.useFakeTimers();
+    render(<Portfolio />);
+
+    act(() => {
+      vi.advanceTimersByTime(10000);
+    });
+
+    expect(
+      screen.getByRole('heading', { name: 'Keto Mate - Store Listing' })
+    ).toBeVisible();
   });
 
   it('starts paused when reduced motion is preferred', () => {
@@ -79,12 +65,12 @@ describe('Portfolio', () => {
     );
     Object.defineProperty(window, 'matchMedia', {
       configurable: true,
-      value: jest.fn().mockReturnValue({ matches: true }),
+      value: vi.fn().mockReturnValue({ matches: true }),
     });
 
     try {
       render(<Portfolio />);
-      expect(screen.getByTestId('autoplay')).toHaveAttribute(
+      expect(document.querySelector('.portfolio-slides')).toHaveAttribute(
         'data-autoplay',
         'false'
       );

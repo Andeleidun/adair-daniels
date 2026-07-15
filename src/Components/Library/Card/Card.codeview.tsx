@@ -1,3 +1,3 @@
-import CardCode from '!!raw-loader!./Card';
+import CardCode from './Card.tsx?raw';
 
 export default CardCode;

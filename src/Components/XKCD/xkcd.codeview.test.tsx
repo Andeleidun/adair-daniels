@@ -1,18 +1,17 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { expect, it, vi } from 'vitest';
 import XKCDViewer from './xkcd.codeview';
 
-jest.mock('!!raw-loader!./xkcd', () => 'XKCD COMPONENT SOURCE', {
-  virtual: true,
-});
-jest.mock('!!raw-loader!./xkcdApi', () => 'XKCD ADAPTER SOURCE', {
-  virtual: true,
-});
-jest.mock(
-  '!!raw-loader!../../Services/remoteData',
-  () => 'SHARED TRANSPORT SOURCE',
-  { virtual: true }
-);
+vi.mock('./xkcd.tsx?raw', () => ({
+  default: 'XKCD COMPONENT SOURCE',
+}));
+vi.mock('./xkcdApi.ts?raw', () => ({
+  default: 'XKCD ADAPTER SOURCE',
+}));
+vi.mock('../../Services/remoteData.ts?raw', () => ({
+  default: 'SHARED TRANSPORT SOURCE',
+}));
 
 it('includes the XKCD component, adapter, and shared transport', () => {
   render(<XKCDViewer />);

@@ -6,12 +6,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import './StockTwits.css';
 
 import CardTemplate from '../Library/Card';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Chip from '@material-ui/core/Chip';
-import Badge from '@material-ui/core/Badge';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import Chip from '@mui/material/Chip';
+import Badge from '@mui/material/Badge';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   fetchStockSymbols,
   normalizeSymbols,
@@ -20,12 +20,7 @@ import {
 import { RemoteRequestError } from '../../Services/remoteData';
 
 type ViewStatus =
-  | 'idle'
-  | 'loading'
-  | 'refreshing'
-  | 'success'
-  | 'empty'
-  | 'error';
+  'idle' | 'loading' | 'refreshing' | 'success' | 'empty' | 'error';
 
 const StockTwits = (): React.ReactElement => {
   const [input, setInput] = useState('');
@@ -39,11 +34,11 @@ const StockTwits = (): React.ReactElement => {
   const [warning, setWarning] = useState('');
   const [polling, setPolling] = useState(false);
   const [countdown, setCountdown] = useState(5);
-  const controller = useRef<AbortController | null>(null);
-  const requestVersion = useRef(0);
-  const requestInProgress = useRef(false);
-  const elapsedMinutes = useRef(0);
-  const refreshRequest = useRef<() => void>(() => undefined);
+  const controllerRef = useRef<AbortController | null>(null);
+  const requestVersionRef = useRef(0);
+  const requestInProgressRef = useRef(false);
+  const elapsedMinutesRef = useRef(0);
+  const refreshRequestRef = useRef<() => void>(() => undefined);
 
   const isEmpty = (nextFeeds: ReadonlyArray<StockSymbolFeed>) =>
     nextFeeds.every((feed) => feed.messages.length === 0);
@@ -54,13 +49,13 @@ const StockTwits = (): React.ReactElement => {
       : '';
 
   const runManualSearch = async (symbols: ReadonlyArray<string>) => {
-    controller.current?.abort();
-    requestVersion.current += 1;
-    const version = requestVersion.current;
+    controllerRef.current?.abort();
+    requestVersionRef.current += 1;
+    const version = requestVersionRef.current;
     const nextController = new AbortController();
-    controller.current = nextController;
-    requestInProgress.current = true;
-    elapsedMinutes.current = 0;
+    controllerRef.current = nextController;
+    requestInProgressRef.current = true;
+    elapsedMinutesRef.current = 0;
     setPolling(false);
     setCountdown(5);
     setFeeds([]);
@@ -72,7 +67,7 @@ const StockTwits = (): React.ReactElement => {
 
     try {
       const result = await fetchStockSymbols(symbols, nextController.signal);
-      if (version !== requestVersion.current) {
+      if (version !== requestVersionRef.current) {
         return;
       }
       if (result.feeds.length === 0) {
@@ -86,7 +81,7 @@ const StockTwits = (): React.ReactElement => {
       setPolling(true);
     } catch (requestError) {
       if (
-        version === requestVersion.current &&
+        version === requestVersionRef.current &&
         !(
           requestError instanceof RemoteRequestError &&
           requestError.category === 'aborted'
@@ -96,20 +91,20 @@ const StockTwits = (): React.ReactElement => {
         setError('StockTwits could not complete the search.');
       }
     } finally {
-      if (version === requestVersion.current) {
-        requestInProgress.current = false;
+      if (version === requestVersionRef.current) {
+        requestInProgressRef.current = false;
       }
     }
   };
 
   const refresh = async () => {
-    if (requestInProgress.current || submittedSymbols.length === 0) {
+    if (requestInProgressRef.current || submittedSymbols.length === 0) {
       return;
     }
-    requestInProgress.current = true;
-    const version = requestVersion.current;
+    requestInProgressRef.current = true;
+    const version = requestVersionRef.current;
     const nextController = new AbortController();
-    controller.current = nextController;
+    controllerRef.current = nextController;
     setStatus('refreshing');
     setWarning('');
 
@@ -118,7 +113,7 @@ const StockTwits = (): React.ReactElement => {
         submittedSymbols,
         nextController.signal
       );
-      if (version !== requestVersion.current) {
+      if (version !== requestVersionRef.current) {
         return;
       }
       const refreshed = result.feeds.reduce(
@@ -142,12 +137,12 @@ const StockTwits = (): React.ReactElement => {
       if (result.failedSymbols.length > 0) {
         setPolling(false);
       } else {
-        elapsedMinutes.current = 0;
+        elapsedMinutesRef.current = 0;
         setCountdown(5);
       }
     } catch (requestError) {
       if (
-        version === requestVersion.current &&
+        version === requestVersionRef.current &&
         !(
           requestError instanceof RemoteRequestError &&
           requestError.category === 'aborted'
@@ -160,25 +155,27 @@ const StockTwits = (): React.ReactElement => {
         setPolling(false);
       }
     } finally {
-      if (version === requestVersion.current) {
-        requestInProgress.current = false;
+      if (version === requestVersionRef.current) {
+        requestInProgressRef.current = false;
       }
     }
   };
-  refreshRequest.current = () => {
-    void refresh();
-  };
+  useEffect(() => {
+    refreshRequestRef.current = () => {
+      void refresh();
+    };
+  });
 
   useEffect(() => {
     if (!polling) {
       return undefined;
     }
     const interval = window.setInterval(() => {
-      elapsedMinutes.current += 1;
-      const remaining = Math.max(0, 5 - elapsedMinutes.current);
+      elapsedMinutesRef.current += 1;
+      const remaining = Math.max(0, 5 - elapsedMinutesRef.current);
       setCountdown(remaining);
-      if (elapsedMinutes.current >= 5) {
-        refreshRequest.current();
+      if (elapsedMinutesRef.current >= 5) {
+        refreshRequestRef.current();
       }
     }, 60000);
     return () => window.clearInterval(interval);
@@ -186,8 +183,8 @@ const StockTwits = (): React.ReactElement => {
 
   useEffect(
     () => () => {
-      requestVersion.current += 1;
-      controller.current?.abort();
+      requestVersionRef.current += 1;
+      controllerRef.current?.abort();
     },
     []
   );
@@ -196,10 +193,10 @@ const StockTwits = (): React.ReactElement => {
     event.preventDefault();
     const normalized = normalizeSymbols(input);
     if (!normalized.valid) {
-      controller.current?.abort();
-      controller.current = null;
-      requestVersion.current += 1;
-      requestInProgress.current = false;
+      controllerRef.current?.abort();
+      controllerRef.current = null;
+      requestVersionRef.current += 1;
+      requestInProgressRef.current = false;
       setPolling(false);
       setError(normalized.message);
       setWarning('');
@@ -240,11 +237,13 @@ const StockTwits = (): React.ReactElement => {
             onChange={(event) => setInput(event.target.value)}
             error={status === 'error' && error !== ''}
             helperText={status === 'error' ? error : undefined}
-            FormHelperTextProps={{ role: 'alert' }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
+            slotProps={{
+              formHelperText: { role: 'alert' },
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              },
             }}
           />
           <br />

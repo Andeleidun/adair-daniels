@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 export interface NavigationPage {
   readonly text: string;
@@ -30,12 +31,10 @@ const NavBar = (props: NavBarProps): React.ReactElement => {
   const populatePages = () =>
     props.pages.map((page) => (
       <li key={page.route}>
-        <ListItem
-          button
+        <ListItemButton
           component={Link}
           to={page.route}
           onClick={props.navClick}
-          role="link"
           aria-current={props.activeRoute === page.route ? 'page' : undefined}
         >
           <ListItemIcon>
@@ -44,7 +43,7 @@ const NavBar = (props: NavBarProps): React.ReactElement => {
             </i>
           </ListItemIcon>
           <ListItemText primary={page.text} />
-        </ListItem>
+        </ListItemButton>
       </li>
     ));
 

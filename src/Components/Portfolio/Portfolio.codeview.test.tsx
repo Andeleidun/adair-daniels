@@ -1,12 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { expect, it, vi } from 'vitest';
 import PortfolioViewer from './Portfolio.codeview';
 
-jest.mock(
-  '!!raw-loader!./Portfolio',
-  () => 'CURRENT PORTFOLIO EXECUTABLE SOURCE',
-  { virtual: true }
-);
+vi.mock('./Portfolio.tsx?raw', () => ({
+  default: 'CURRENT PORTFOLIO EXECUTABLE SOURCE',
+}));
 
 it('renders the raw executable Portfolio source', () => {
   render(<PortfolioViewer />);

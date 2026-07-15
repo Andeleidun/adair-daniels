@@ -8,10 +8,7 @@ export const stockMessage = (id = 1, body = 'Synthetic market update') => ({
   },
 });
 
-export const stockFeed = (
-  messages: ReadonlyArray<unknown>,
-  status = 200
-) => ({
+export const stockFeed = (messages: ReadonlyArray<unknown>, status = 200) => ({
   response: { status },
   messages,
 });

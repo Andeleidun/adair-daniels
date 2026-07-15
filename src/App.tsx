@@ -1,29 +1,44 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, {
+  lazy,
+  ReactElement,
+  Suspense,
+  useEffect,
+  useState,
+} from 'react';
 import './App.css';
 import {
   BrowserRouter,
   matchPath,
   Route,
-  Switch,
+  Routes,
   useLocation,
 } from 'react-router-dom';
-import Slide from '@material-ui/core/Slide';
+import Slide from '@mui/material/Slide';
 
 import Header from './Components/Library/Header';
 import NavBar from './Components/Library/NavBar';
 import LoadScreen from './Components/Library/LoadScreen';
 import Home from './Components/Home/Home';
-import HomeViewer from './Components/Home/Home.codeview';
-import StockTwits from './Components/Stocktwits/Stocktwits';
-import StockViewer from './Components/Stocktwits/StockTwits.codeview';
-import XKCD from './Components/XKCD/xkcd';
-import XKCDViewer from './Components/XKCD/xkcd.codeview';
-import Portfolio from './Components/Portfolio/Portfolio';
-import PortfolioViewer from './Components/Portfolio/Portfolio.codeview';
-import Library from './Components/Library/Library';
-import LibraryViewer from './Components/Library/Library.codeview';
 import Portal from './Components/Library/Portal/Portal';
-import PortalViewer from './Components/Library/Portal/Portal.codeview';
+
+const HomeViewer = lazy(() => import('./Components/Home/Home.codeview'));
+const StockTwits = lazy(() => import('./Components/Stocktwits/Stocktwits'));
+const StockViewer = lazy(
+  () => import('./Components/Stocktwits/StockTwits.codeview')
+);
+const XKCD = lazy(() => import('./Components/XKCD/xkcd'));
+const XKCDViewer = lazy(() => import('./Components/XKCD/xkcd.codeview'));
+const Portfolio = lazy(() => import('./Components/Portfolio/Portfolio'));
+const PortfolioViewer = lazy(
+  () => import('./Components/Portfolio/Portfolio.codeview')
+);
+const Library = lazy(() => import('./Components/Library/Library'));
+const LibraryViewer = lazy(
+  () => import('./Components/Library/Library.codeview')
+);
+const PortalViewer = lazy(
+  () => import('./Components/Library/Portal/Portal.codeview')
+);
 
 export type AppRoute =
   | '/'
@@ -113,10 +128,13 @@ export const pages: ReadonlyArray<PageDefinition> = [
 
 const pageForPath = (pathname: string): PageDefinition =>
   pages.find((page) =>
-    matchPath(pathname, {
-      path: page.route,
-      exact: page.exactRoute !== false,
-    })
+    matchPath(
+      {
+        path: page.route,
+        end: page.exactRoute !== false,
+      },
+      pathname
+    )
   ) || pages[0];
 
 export const ApplicationShell = (): ReactElement => {
@@ -127,7 +145,8 @@ export const ApplicationShell = (): ReactElement => {
   const currentPage = pageForPath(location.pathname);
 
   useEffect(() => {
-    setLoading(false);
+    const loadingTimer = window.setTimeout(() => setLoading(false), 0);
+    return () => window.clearTimeout(loadingTimer);
   }, []);
 
   const toggleNav = () => setNavShow((shown) => !shown);
@@ -168,18 +187,23 @@ export const ApplicationShell = (): ReactElement => {
           <LoadScreen />
         ) : (
           <div className="app-content">
-            <Switch>
-              {pages.map((page) => (
+            <Suspense fallback={<LoadScreen />}>
+              <Routes>
+                {pages.map((page) => (
+                  <Route
+                    path={page.route}
+                    key={page.route}
+                    element={
+                      codeView && page.codeView ? page.codeView : page.component
+                    }
+                  />
+                ))}
                 <Route
-                  path={page.route}
-                  exact={page.exactRoute !== false}
-                  key={page.route}
-                >
-                  {codeView && page.codeView ? page.codeView : page.component}
-                </Route>
-              ))}
-              <Route>{codeView ? pages[0].codeView : pages[0].component}</Route>
-            </Switch>
+                  path="*"
+                  element={codeView ? pages[0].codeView : pages[0].component}
+                />
+              </Routes>
+            </Suspense>
           </div>
         )}
       </div>
@@ -188,7 +212,7 @@ export const ApplicationShell = (): ReactElement => {
 };
 
 const App = (): ReactElement => (
-  <BrowserRouter basename={process.env.PUBLIC_URL}>
+  <BrowserRouter basename={import.meta.env.BASE_URL}>
     <ApplicationShell />
   </BrowserRouter>
 );

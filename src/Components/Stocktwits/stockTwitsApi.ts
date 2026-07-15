@@ -38,8 +38,7 @@ export const normalizeSymbols = (input: string): SymbolInputResult => {
     .split(',')
     .map((symbol) => symbol.trim().toUpperCase())
     .filter(
-      (symbol, index, all) =>
-        symbol !== '' && all.indexOf(symbol) === index
+      (symbol, index, all) => symbol !== '' && all.indexOf(symbol) === index
     );
 
   if (symbols.length === 0) {
@@ -48,10 +47,15 @@ export const normalizeSymbols = (input: string): SymbolInputResult => {
   if (symbols.length > 10) {
     return { valid: false, message: 'Enter no more than 10 stock symbols.' };
   }
-  if (symbols.some((symbol) => !/^[A-Z0-9.-]+$/.test(symbol))) {
+  if (
+    symbols.some(
+      (symbol) => !/^[A-Z0-9.-]+$/.test(symbol) || !/[A-Z0-9]/.test(symbol)
+    )
+  ) {
     return {
       valid: false,
-      message: 'Symbols may contain only letters, numbers, periods, and hyphens.',
+      message:
+        'Symbols must include a letter or number and may also contain periods and hyphens.',
     };
   }
   return { valid: true, symbols };
