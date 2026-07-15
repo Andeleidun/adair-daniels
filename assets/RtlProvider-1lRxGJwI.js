@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Bh1tDfsg.js";import{J as t,z as n}from"./Card-CeC5etUB.js";var r=e(t(),1);n();var i=r.createContext(),a=()=>r.useContext(i)??!1;export{a as t};
