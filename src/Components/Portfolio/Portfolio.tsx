@@ -24,7 +24,7 @@ import {
   phoenixstone,
   phoenixstonespeed,
   vanderhall,
-} from '../../Resources/images/index';
+} from '../../Resources/images/portfolio';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -35,7 +35,12 @@ import SiteIcon from '../Library/SiteIcon';
 
 export interface PortfolioImage {
   readonly title: string;
-  readonly img: string;
+  readonly original: string;
+  readonly width: number;
+  readonly height: number;
+  readonly thumbnail: string;
+  readonly thumbnailWidth: number;
+  readonly thumbnailHeight: number;
   readonly alt: string;
 }
 
@@ -57,47 +62,47 @@ export const portfolioProjects: ReadonlyArray<PortfolioProject> = [
     images: [
       {
         title: 'Home, Angular and Ionic App',
-        img: kmhome,
+        ...kmhome,
         alt: "Screenshot of Keto Mate's home screen. Keto Mate is a diet tool built using Angular and Ionic to create a hybrid mobile app with native functionality.",
       },
       {
         title: 'Navigation Menu',
-        img: kmmenu,
+        ...kmmenu,
         alt: "Screenshot of Keto Mate's navigation menu with links to calculators, the FAQ, introductory content, and the user's profile.",
       },
       {
         title: 'Store Listing',
-        img: ketomate10k,
+        ...ketomate10k,
         alt: "Screenshot of Keto Mate's store listing.",
       },
       {
         title: 'Active',
-        img: kmactive,
+        ...kmactive,
         alt: "Screenshot of Keto Mate's activity selection screen.",
       },
       {
         title: 'Results',
-        img: kmresults,
+        ...kmresults,
         alt: "Screenshot of Keto Mate's results screen.",
       },
       {
         title: 'Advanced',
-        img: kmadvanced,
+        ...kmadvanced,
         alt: "Screenshot of Keto Mate's advanced calculator, which can accept values such as IDEE from a doctor.",
       },
       {
         title: 'Body Fat',
-        img: kmbodyfat,
+        ...kmbodyfat,
         alt: "Screenshot of Keto Mate's body fat calculator, which uses the US Navy method.",
       },
       {
         title: 'FAQ',
-        img: kmfaq,
+        ...kmfaq,
         alt: "Screenshot of Keto Mate's FAQ, which answers frequently asked questions about the keto diet.",
       },
       {
         title: 'Intro',
-        img: kmintro,
+        ...kmintro,
         alt: "Screenshot of Keto Mate's intro to the keto diet.",
       },
     ],
@@ -111,27 +116,27 @@ export const portfolioProjects: ReadonlyArray<PortfolioProject> = [
     images: [
       {
         title: 'Age Chart using PowerBI',
-        img: agechart,
+        ...agechart,
         alt: 'PowerBI chart showing the ages of users of Metric Media phone charging kiosks. PowerBI data was retrieved live from an Azure server.',
       },
       {
         title: 'Experience Chart',
-        img: experiencechart,
+        ...experiencechart,
         alt: 'PowerBI chart showing the engagement level of users of Metric Media phone charging kiosks.',
       },
       {
         title: 'Gender Chart',
-        img: genderchart,
+        ...genderchart,
         alt: 'PowerBI chart showing the gender of users of Metric Media phone charging kiosks.',
       },
       {
         title: 'Main Site',
-        img: metricmedia,
+        ...metricmedia,
         alt: 'Main site for Metric Media.',
       },
       {
         title: 'Speed Test',
-        img: metricmediaspeed,
+        ...metricmediaspeed,
         alt: 'Speed test for the Metric Media main site.',
       },
     ],
@@ -145,12 +150,12 @@ export const portfolioProjects: ReadonlyArray<PortfolioProject> = [
     images: [
       {
         title: 'eCommerce Site',
-        img: phoenixstone,
+        ...phoenixstone,
         alt: 'Ecommerce platform for artist Lady Phoenix Stone, using WooCommerce, a custom ordering tool, and an Instagram feed.',
       },
       {
         title: 'Speed Test',
-        img: phoenixstonespeed,
+        ...phoenixstonespeed,
         alt: 'Speed test for the Lady Phoenix Stone ecommerce site.',
       },
     ],
@@ -164,7 +169,7 @@ export const portfolioProjects: ReadonlyArray<PortfolioProject> = [
     images: [
       {
         title: 'eCommerce Site',
-        img: vanderhall,
+        ...vanderhall,
         alt: 'Ecommerce platform for Vanderhall auto maker, hosting an array of subdealer sites and customizable purchase options.',
       },
     ],
@@ -177,7 +182,7 @@ export const portfolioProjects: ReadonlyArray<PortfolioProject> = [
     images: [
       {
         title: 'eCommerce Site',
-        img: mylifter,
+        ...mylifter,
         alt: 'Ecommerce platform for MyLifter garage tools.',
       },
     ],
@@ -228,8 +233,10 @@ const ProjectGallery = ({
           aria-describedby={imageDescriptionId}
         >
           <img
-            src={activeImage.img}
+            src={activeImage.original}
             alt={activeImage.alt}
+            width={activeImage.width}
+            height={activeImage.height}
             loading={project.featured && activeIndex === 0 ? 'eager' : 'lazy'}
             decoding="async"
           />
@@ -274,7 +281,14 @@ const ProjectGallery = ({
                 aria-label={`Show ${image.title}`}
                 aria-pressed={activeIndex === index}
               >
-                <img src={image.img} alt="" loading="lazy" decoding="async" />
+                <img
+                  src={image.thumbnail}
+                  alt=""
+                  width={image.thumbnailWidth}
+                  height={image.thumbnailHeight}
+                  loading="lazy"
+                  decoding="async"
+                />
               </button>
             ))}
           </div>
@@ -306,7 +320,12 @@ const ProjectGallery = ({
           </IconButton>
         </DialogTitle>
         <DialogContent className="portfolio-dialog-content">
-          <img src={activeImage.img} alt={activeImage.alt} />
+          <img
+            src={activeImage.original}
+            alt={activeImage.alt}
+            width={activeImage.width}
+            height={activeImage.height}
+          />
           <p
             className="visually-hidden"
             role="status"

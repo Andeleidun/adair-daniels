@@ -1,6 +1,6 @@
 import {
-  fetchAllOriginsJson,
-  isHttpsUrl,
+  fetchRemoteJson,
+  isAllowedHttpsUrl,
   RemoteRequestError,
 } from '../../Services/remoteData';
 
@@ -34,18 +34,30 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
 export const normalizeSymbols = (input: string): SymbolInputResult => {
-  const symbols = input
-    .split(',')
-    .map((symbol) => symbol.trim().toUpperCase())
-    .filter(
-      (symbol, index, all) => symbol !== '' && all.indexOf(symbol) === index
-    );
+  if (input.length > 200) {
+    return { valid: false, message: 'Enter no more than 200 characters.' };
+  }
+  const seen = new Set<string>();
+  const symbols: string[] = [];
+  for (const part of input.split(',')) {
+    const symbol = part.trim().toUpperCase();
+    if (symbol !== '' && !seen.has(symbol)) {
+      seen.add(symbol);
+      symbols.push(symbol);
+    }
+  }
 
   if (symbols.length === 0) {
     return { valid: false, message: 'Enter at least one stock symbol.' };
   }
   if (symbols.length > 10) {
     return { valid: false, message: 'Enter no more than 10 stock symbols.' };
+  }
+  if (symbols.some((symbol) => symbol.length > 16)) {
+    return {
+      valid: false,
+      message: 'Stock symbols may not exceed 16 characters.',
+    };
   }
   if (
     symbols.some(
@@ -66,18 +78,12 @@ const parseMessage = (value: unknown): StockTwitsMessage => {
     !isRecord(value) ||
     typeof value.id !== 'number' ||
     !Number.isInteger(value.id) ||
-    value.id < 1
-  ) {
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
-  }
-  if (typeof value.body !== 'string' || !isRecord(value.user)) {
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
-  }
-  const user = value.user;
-  if (
-    typeof user.name !== 'string' ||
-    typeof user.username !== 'string' ||
-    !isHttpsUrl(user.avatar_url_ssl)
+    value.id < 1 ||
+    typeof value.body !== 'string' ||
+    !isRecord(value.user) ||
+    typeof value.user.name !== 'string' ||
+    typeof value.user.username !== 'string' ||
+    !isAllowedHttpsUrl(value.user.avatarUrl, 'avatars.stocktwits.com')
   ) {
     throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
   }
@@ -85,9 +91,9 @@ const parseMessage = (value: unknown): StockTwitsMessage => {
     id: value.id,
     body: value.body,
     user: {
-      name: user.name,
-      username: user.username,
-      avatarUrl: user.avatar_url_ssl,
+      name: value.user.name,
+      username: value.user.username,
+      avatarUrl: value.user.avatarUrl,
     },
   };
 };
@@ -96,36 +102,15 @@ export const fetchStockSymbol = async (
   symbol: string,
   signal?: AbortSignal
 ): Promise<StockSymbolFeed> => {
-  const value = await fetchAllOriginsJson(
-    `https://api.stocktwits.com/api/2/streams/symbol/${encodeURIComponent(
-      symbol
-    )}.json`,
-    { signal, requestName: 'stock-twits-live-feed' }
+  const value = await fetchRemoteJson(
+    `/v1/stocktwits/${encodeURIComponent(symbol)}`,
+    { signal }
   );
-  if (!isRecord(value)) {
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
-  }
-  if (value.error !== undefined || value.errors !== undefined) {
-    throw new RemoteRequestError(
-      'http',
-      'StockTwits could not complete the symbol request.'
-    );
-  }
   if (
-    !isRecord(value.response) ||
-    typeof value.response.status !== 'number' ||
-    !Number.isInteger(value.response.status)
+    !isRecord(value) ||
+    value.symbol !== symbol ||
+    !Array.isArray(value.messages)
   ) {
-    throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
-  }
-  if (value.response.status < 200 || value.response.status >= 300) {
-    throw new RemoteRequestError(
-      'http',
-      'StockTwits could not complete the symbol request.',
-      value.response.status
-    );
-  }
-  if (!Array.isArray(value.messages)) {
     throw new RemoteRequestError('schema', 'StockTwits returned invalid data.');
   }
   const messages = value.messages.map(parseMessage);
@@ -139,17 +124,41 @@ export const fetchStockSymbols = async (
   symbols: ReadonlyArray<string>,
   signal?: AbortSignal
 ): Promise<StockSearchResult> => {
-  const feeds: StockSymbolFeed[] = [];
-  const failedSymbols: string[] = [];
-  for (const symbol of symbols) {
-    try {
-      feeds.push(await fetchStockSymbol(symbol, signal));
-    } catch (error) {
-      if (error instanceof RemoteRequestError && error.category === 'aborted') {
-        throw error;
+  const results = Array.from(
+    { length: symbols.length },
+    (): StockSymbolFeed | undefined => undefined
+  );
+  const failed = new Set<number>();
+  let nextIndex = 0;
+
+  const run = async () => {
+    while (nextIndex < symbols.length) {
+      if (signal?.aborted) {
+        throw new RemoteRequestError('aborted', 'The request was cancelled.');
       }
-      failedSymbols.push(symbol);
+      const index = nextIndex;
+      nextIndex += 1;
+      try {
+        results[index] = await fetchStockSymbol(symbols[index], signal);
+      } catch (error) {
+        if (
+          error instanceof RemoteRequestError &&
+          error.category === 'aborted'
+        ) {
+          throw error;
+        }
+        failed.add(index);
+      }
     }
-  }
-  return { feeds, failedSymbols };
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(3, symbols.length) }, () => run())
+  );
+  return {
+    feeds: results.filter(
+      (feed): feed is StockSymbolFeed => feed !== undefined
+    ),
+    failedSymbols: symbols.filter((_symbol, index) => failed.has(index)),
+  };
 };

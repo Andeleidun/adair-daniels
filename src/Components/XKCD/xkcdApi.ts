@@ -1,6 +1,6 @@
 import {
-  fetchAllOriginsJson,
-  isHttpsUrl,
+  fetchRemoteJson,
+  isAllowedHttpsUrl,
   RemoteRequestError,
 } from '../../Services/remoteData';
 
@@ -19,79 +19,83 @@ export interface XkcdUnavailableSlot {
 
 export type XkcdSlot = XkcdComic | XkcdUnavailableSlot;
 
+export interface XkcdInitial {
+  readonly latest: number;
+  readonly slots: ReadonlyArray<XkcdSlot>;
+}
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
-const parseComic = (value: unknown): XkcdComic => {
+const parseSlot = (value: unknown, expected: number): XkcdSlot => {
+  if (!isRecord(value) || value.num !== expected) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  if (value.kind === 'unavailable') {
+    return { kind: 'unavailable', num: expected };
+  }
   if (
-    !isRecord(value) ||
-    typeof value.num !== 'number' ||
-    !Number.isInteger(value.num) ||
-    value.num < 1 ||
+    value.kind !== 'comic' ||
     typeof value.title !== 'string' ||
-    !isHttpsUrl(value.img) ||
+    !isAllowedHttpsUrl(value.img, 'imgs.xkcd.com') ||
     typeof value.alt !== 'string'
   ) {
     throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
   }
   return {
     kind: 'comic',
-    num: value.num,
+    num: expected,
     title: value.title,
     img: value.img,
     alt: value.alt,
   };
 };
 
-export const fetchCurrentComic = async (
-  signal?: AbortSignal
-): Promise<XkcdComic> =>
-  parseComic(
-    await fetchAllOriginsJson('https://xkcd.com/info.0.json', {
-      signal,
-      requestName: 'xkcd-slideshow',
-    })
-  );
-
-export const fetchComic = async (
-  number: number,
-  signal?: AbortSignal
-): Promise<XkcdSlot> => {
-  try {
-    const comic = parseComic(
-      await fetchAllOriginsJson(`https://xkcd.com/${number}/info.0.json`, {
-        signal,
-        requestName: 'xkcd-slideshow',
-      })
-    );
-    if (comic.num !== number) {
-      throw new RemoteRequestError(
-        'schema',
-        'XKCD returned a comic for the wrong position.'
-      );
-    }
-    return comic;
-  } catch (error) {
-    if (
-      error instanceof RemoteRequestError &&
-      error.category === 'http' &&
-      error.status === 404
-    ) {
-      return { kind: 'unavailable', num: number };
-    }
-    throw error;
+const parseSlots = (
+  value: unknown,
+  start: number,
+  count: number
+): ReadonlyArray<XkcdSlot> => {
+  if (!Array.isArray(value) || value.length !== count) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
   }
+  return value.map((slot, index) => parseSlot(slot, start + index));
 };
 
-export const fetchComicBatch = (
+export const fetchInitialComics = async (
+  signal?: AbortSignal
+): Promise<XkcdInitial> => {
+  const value = await fetchRemoteJson('/v1/xkcd/initial', { signal });
+  if (
+    !isRecord(value) ||
+    typeof value.latest !== 'number' ||
+    !Number.isInteger(value.latest) ||
+    value.latest < 1
+  ) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  const count = Math.min(3, value.latest);
+  return {
+    latest: value.latest,
+    slots: parseSlots(value.slots, 1, count),
+  };
+};
+
+export const fetchComicBatch = async (
   start: number,
   latest: number,
   signal?: AbortSignal
 ): Promise<ReadonlyArray<XkcdSlot>> => {
   const count = Math.min(3, latest - start + 1);
-  const numbers = Array.from(
-    { length: count },
-    (_value, index) => start + index
+  if (!Number.isSafeInteger(start) || start < 1 || count < 1) {
+    throw new RemoteRequestError('schema', 'The XKCD range is invalid.');
+  }
+  const value = await fetchRemoteJson(
+    `/v1/xkcd/batch?start=${start}&count=${count}`,
+    { signal }
   );
-  return Promise.all(numbers.map((number) => fetchComic(number, signal)));
+  if (!isRecord(value) || value.start !== start) {
+    throw new RemoteRequestError('schema', 'XKCD returned invalid comic data.');
+  }
+  return parseSlots(value.slots, start, count);
 };

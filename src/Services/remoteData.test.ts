@@ -1,173 +1,150 @@
-import {
-  fetchAllOriginsJson,
-  isHttpsUrl,
-  RemoteRequestError,
-} from './remoteData';
-import { proxyEnvelope } from '../testUtils/remoteFixtures';
+import { fetchRemoteJson, RemoteRequestError } from './remoteData';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-const response = (body: unknown, ok = true, status = 200): Response => {
-  const value = new Response(null, {
-    status: ok ? status : Math.max(status, 400),
+const jsonResponse = (body: unknown, status = 200): Response =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
   });
-  vi.spyOn(value, 'json').mockResolvedValue(body);
-  return value;
-};
 
-describe('fetchAllOriginsJson', () => {
+describe('fetchRemoteJson', () => {
   const originalFetch = globalThis.fetch;
 
   afterEach(() => {
     globalThis.fetch = originalFetch;
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
-  it('encodes the complete HTTPS target and sends the feature header', async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValue(response(proxyEnvelope({ value: 'safe' })));
-    globalThis.fetch = fetchMock;
-    const target = 'https://example.test/path?a=one two&b=$';
-
-    await expect(
-      fetchAllOriginsJson(target, {
-        requestName: 'stock-twits-live-feed',
-      })
-    ).resolves.toEqual({ value: 'safe' });
-    expect(fetchMock).toHaveBeenCalledWith(
-      `https://api.allorigins.win/get?url=${encodeURIComponent(target)}`,
-      expect.objectContaining({
-        headers: { 'X-Requested-With': 'stock-twits-live-feed' },
-      })
+  it('requests only a configured Worker endpoint without custom headers', async () => {
+    let requested: URL | RequestInfo | undefined;
+    let requestOptions: RequestInit | undefined;
+    const fetchMock = vi.fn(
+      (input: URL | RequestInfo, options?: RequestInit) => {
+        requested = input;
+        requestOptions = options;
+        return Promise.resolve(jsonResponse({ safe: true }));
+      }
     );
+    globalThis.fetch = fetchMock;
+
+    await expect(fetchRemoteJson('/v1/xkcd/initial')).resolves.toEqual({
+      safe: true,
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(requestOptions?.signal).toBeInstanceOf(AbortSignal);
+    if (typeof requested !== 'string') {
+      throw new Error('Expected a string request URL.');
+    }
+    expect(new URL(requested).pathname).toBe('/v1/xkcd/initial');
+    expect(requested).not.toContain('allorigins.win');
   });
 
-  it.each([
-    ['proxy', () => response({}, false, 503)],
-    ['http', () => response(proxyEnvelope({}, 500))],
-    ['http', () => response({ contents: '{}', statusCode: 500 })],
-    ['proxy', () => response({ status: { http_code: 200 } })],
-    ['proxy', () => response({ contents: '{}', status: { http_code: '200' } })],
-    ['parse', () => response({ contents: '{not json' })],
-  ])(
-    'classifies %s failures without exposing bodies',
-    async (category, makeValue) => {
-      globalThis.fetch = vi.fn().mockResolvedValue(makeValue());
-      const promise = fetchAllOriginsJson('https://example.test/secret', {
-        requestName: 'stock-twits-live-feed',
+  it.each([400, 429, 502, 504])(
+    'classifies Worker status %s without exposing its body',
+    async (status) => {
+      globalThis.fetch = vi
+        .fn()
+        .mockResolvedValue(jsonResponse({ private: 'details' }, status));
+      const request = fetchRemoteJson('/v1/xkcd/initial');
+      await expect(request).rejects.toMatchObject({
+        category: 'http',
+        status,
       });
-      await expect(promise).rejects.toMatchObject({ category });
-      await promise.catch((error: RemoteRequestError) => {
-        expect(error.message).not.toContain('{not json');
-        expect(error.message).not.toContain('secret');
+      await request.catch((error: RemoteRequestError) => {
+        expect(error.message).not.toContain('details');
       });
     }
   );
 
-  it('preserves a definitive upstream 404 status', async () => {
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValue(response(proxyEnvelope({ private: 'body' }, 404)));
-    await expect(
-      fetchAllOriginsJson('https://example.test/missing', {
-        requestName: 'xkcd-slideshow',
+  it('rejects a response whose declared size exceeds the limit', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue(
+      new Response('x', {
+        headers: { 'Content-Length': String(1024 * 1024 + 1) },
       })
-    ).rejects.toMatchObject({ category: 'http', status: 404 });
-  });
-
-  it('classifies malformed proxy JSON and cancellation', async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(response({}, true, 200));
-    const malformedEnvelope = response({});
-    vi.spyOn(malformedEnvelope, 'json').mockRejectedValue(
-      new Error('bad envelope')
     );
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(malformedEnvelope);
-    await expect(
-      fetchAllOriginsJson('https://example.test/data', {
-        requestName: 'xkcd-slideshow',
-      })
-    ).rejects.toMatchObject({ category: 'parse' });
-
-    const controller = new AbortController();
-    controller.abort();
-    const requestAbortError = new Error('Request aborted');
-    requestAbortError.name = 'AbortError';
-    vi.mocked(globalThis.fetch).mockRejectedValueOnce(requestAbortError);
-    await expect(
-      fetchAllOriginsJson('https://example.test/data', {
-        requestName: 'xkcd-slideshow',
-        signal: controller.signal,
-      })
-    ).rejects.toMatchObject({ category: 'aborted' });
-
-    const envelopeController = new AbortController();
-    const cancelledEnvelope = response({});
-    vi.spyOn(cancelledEnvelope, 'json').mockImplementation(() => {
-      envelopeController.abort();
-      const envelopeAbortError = new Error('Response parsing aborted');
-      envelopeAbortError.name = 'AbortError';
-      return Promise.reject(envelopeAbortError);
+    await expect(fetchRemoteJson('/v1/xkcd/initial')).rejects.toMatchObject({
+      category: 'size',
     });
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(cancelledEnvelope);
-    await expect(
-      fetchAllOriginsJson('https://example.test/data', {
-        requestName: 'xkcd-slideshow',
-        signal: envelopeController.signal,
-      })
-    ).rejects.toMatchObject({ category: 'aborted' });
   });
 
-  it('honors cancellation before a request and after a response resolves', async () => {
-    const cancelled = new AbortController();
-    cancelled.abort();
-    globalThis.fetch = vi.fn();
-    await expect(
-      fetchAllOriginsJson('https://example.test/data', {
-        requestName: 'xkcd-slideshow',
-        signal: cancelled.signal,
-      })
-    ).rejects.toMatchObject({ category: 'aborted' });
-    expect(globalThis.fetch).not.toHaveBeenCalled();
-
-    const duringResponse = new AbortController();
-    const interruptedResponse = response({});
-    vi.spyOn(interruptedResponse, 'json').mockImplementation(() => {
-      duringResponse.abort();
-      return Promise.resolve(proxyEnvelope({ value: 'ignored' }));
+  it('enforces the response limit while streaming without a length header', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue(
+      new Response(
+        new ReadableStream<Uint8Array>({
+          start(controller) {
+            controller.enqueue(new Uint8Array(1024 * 1024));
+            controller.enqueue(new Uint8Array(1));
+            controller.close();
+          },
+        })
+      )
+    );
+    await expect(fetchRemoteJson('/v1/xkcd/initial')).rejects.toMatchObject({
+      category: 'size',
     });
-    globalThis.fetch = vi.fn().mockResolvedValue(interruptedResponse);
-    await expect(
-      fetchAllOriginsJson('https://example.test/data', {
-        requestName: 'xkcd-slideshow',
-        signal: duringResponse.signal,
-      })
-    ).rejects.toMatchObject({ category: 'aborted' });
   });
 
-  it('classifies request rejection as a safe network failure', async () => {
-    globalThis.fetch = vi.fn().mockRejectedValue(new Error('private details'));
-    const request = fetchAllOriginsJson('https://example.test/data', {
-      requestName: 'stock-twits-live-feed',
+  it('distinguishes caller cancellation from the request timeout', async () => {
+    const pendingFetch = vi.fn(
+      (_url: URL | RequestInfo, init?: RequestInit) =>
+        new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => {
+            reject(new DOMException('aborted', 'AbortError'));
+          });
+        })
+    );
+    globalThis.fetch = pendingFetch;
+    const caller = new AbortController();
+    const cancelled = fetchRemoteJson('/v1/xkcd/initial', {
+      signal: caller.signal,
     });
+    caller.abort();
+    await expect(cancelled).rejects.toMatchObject({ category: 'aborted' });
+
+    vi.useFakeTimers();
+    const timedOut = fetchRemoteJson('/v1/xkcd/initial');
+    const timeoutResult = expect(timedOut).rejects.toMatchObject({
+      category: 'timeout',
+    });
+    await vi.advanceTimersByTimeAsync(12000);
+    await timeoutResult;
+  });
+
+  it('cleans up caller listeners and rejects unsafe endpoint input', async () => {
+    const caller = new AbortController();
+    const add = vi.spyOn(caller.signal, 'addEventListener');
+    const remove = vi.spyOn(caller.signal, 'removeEventListener');
+    const clearTimeout = vi.spyOn(window, 'clearTimeout');
+    globalThis.fetch = vi.fn().mockResolvedValue(jsonResponse({ value: 1 }));
+    await fetchRemoteJson('/v1/xkcd/initial', { signal: caller.signal });
+    expect(add).toHaveBeenCalledWith('abort', expect.any(Function), {
+      once: true,
+    });
+    expect(remove).toHaveBeenCalledWith('abort', expect.any(Function));
+    expect(clearTimeout).toHaveBeenCalledTimes(1);
+
+    await expect(
+      fetchRemoteJson('https://example.test/secret')
+    ).rejects.toMatchObject({
+      category: 'configuration',
+    });
+    await expect(fetchRemoteJson('/v1/%2e%2e/private')).rejects.toMatchObject({
+      category: 'configuration',
+    });
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns sanitized parse and network errors', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue(new Response('{private'));
+    await expect(fetchRemoteJson('/v1/xkcd/initial')).rejects.toMatchObject({
+      category: 'parse',
+    });
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('private network'));
+    const request = fetchRemoteJson('/v1/xkcd/initial');
     await expect(request).rejects.toMatchObject({ category: 'network' });
     await request.catch((error: RemoteRequestError) => {
-      expect(error.message).not.toContain('private details');
+      expect(error.message).not.toContain('private');
     });
-  });
-
-  it('rejects unsafe targets before requesting', async () => {
-    globalThis.fetch = vi.fn();
-    await expect(
-      fetchAllOriginsJson('http://example.test/data', {
-        requestName: 'xkcd-slideshow',
-      })
-    ).rejects.toMatchObject({ category: 'schema' });
-    await expect(
-      fetchAllOriginsJson('https://user:password@example.test/data', {
-        requestName: 'xkcd-slideshow',
-      })
-    ).rejects.toMatchObject({ category: 'schema' });
-    expect(globalThis.fetch).not.toHaveBeenCalled();
-    expect(isHttpsUrl('https://example.test/data')).toBe(true);
-    expect(isHttpsUrl('https://user:password@example.test/data')).toBe(false);
   });
 });

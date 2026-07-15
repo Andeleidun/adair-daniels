@@ -2,7 +2,8 @@ import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import StockTwits from './Stocktwits';
 import { fetchStockSymbols, StockSearchResult } from './stockTwitsApi';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { RemoteRequestError } from '../../Services/remoteData';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('./stockTwitsApi', async () => {
   const actual =
@@ -24,7 +25,7 @@ const feed = (symbol: string, id = 1) => ({
       user: {
         name: `${symbol} User`,
         username: `${symbol.toLowerCase()}user`,
-        avatarUrl: `https://example.test/${symbol}.png`,
+        avatarUrl: `https://avatars.stocktwits.com/production/${symbol}.png`,
       },
     },
   ],
@@ -40,6 +41,11 @@ const submit = (value: string) => {
 describe('StockTwits', () => {
   beforeEach(() => {
     fetchSymbols.mockReset();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it('expands from the introduction and restores the standard view', () => {
@@ -133,6 +139,23 @@ describe('StockTwits', () => {
     expect(screen.queryByText('AAPL synthetic update')).toBeNull();
   });
 
+  it.each([400, 429, 502, 504])(
+    'settles a Worker %s failure as a recoverable search error',
+    async (status) => {
+      fetchSymbols.mockRejectedValueOnce(
+        new RemoteRequestError('http', 'Sanitized failure.', status)
+      );
+      render(<StockTwits />);
+      submit('AAPL');
+
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'StockTwits could not complete the search.'
+      );
+      expect(screen.queryByRole('progressbar')).toBeNull();
+      expect(screen.getByRole('button', { name: 'Search' })).toBeEnabled();
+    }
+  );
+
   it('announces an empty result after filtering to a symbol with no messages', async () => {
     fetchSymbols.mockResolvedValue(
       result([{ symbol: 'EMPTY', messages: [] }, feed('AAPL')])
@@ -185,6 +208,40 @@ describe('StockTwits', () => {
       await Promise.resolve();
     });
     expect(fetchSymbols).toHaveBeenCalledTimes(2);
+  });
+
+  it('uses the absolute refresh deadline when timer callbacks are throttled', async () => {
+    vi.useFakeTimers();
+    const startedAt = Date.now();
+    fetchSymbols
+      .mockResolvedValueOnce(result([feed('AAPL')]))
+      .mockResolvedValueOnce(result([feed('AAPL', 2)]));
+    render(<StockTwits />);
+    submit('AAPL');
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    vi.setSystemTime(startedAt + 4.5 * 60000);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(60000);
+    });
+
+    expect(fetchSymbols).toHaveBeenCalledTimes(2);
+  });
+
+  it('clears the polling interval when the feed unmounts', async () => {
+    vi.useFakeTimers();
+    const clearInterval = vi.spyOn(window, 'clearInterval');
+    fetchSymbols.mockResolvedValueOnce(result([feed('AAPL')]));
+    const { unmount } = render(<StockTwits />);
+    submit('AAPL');
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    unmount();
+    expect(clearInterval).toHaveBeenCalledTimes(1);
   });
 
   it('prevents overlapping automatic refresh requests', async () => {

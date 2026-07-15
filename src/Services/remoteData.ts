@@ -1,11 +1,15 @@
 export type RemoteErrorCategory =
-  'network' | 'http' | 'proxy' | 'parse' | 'schema' | 'aborted';
+  | 'network'
+  | 'http'
+  | 'parse'
+  | 'schema'
+  | 'aborted'
+  | 'timeout'
+  | 'size'
+  | 'configuration';
 
-export type RemoteFeatureName = 'stock-twits-live-feed' | 'xkcd-slideshow';
-
-export interface AllOriginsOptions {
+export interface RemoteOptions {
   readonly signal?: AbortSignal;
-  readonly requestName: RemoteFeatureName;
 }
 
 export class RemoteRequestError extends Error {
@@ -21,140 +25,167 @@ export class RemoteRequestError extends Error {
   }
 }
 
+const clientTimeout = 12000;
+const maximumResponseBytes = 1024 * 1024;
+const localWorkerOrigin = 'http://127.0.0.1:8787';
+
+const configuredOrigin = (): string =>
+  import.meta.env.VITE_REMOTE_API_ORIGIN || localWorkerOrigin;
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
-export const isHttpsUrl = (value: unknown): value is string => {
+export const isAllowedHttpsUrl = (
+  value: unknown,
+  hostname: string
+): value is string => {
   if (typeof value !== 'string') {
     return false;
   }
   try {
     const url = new URL(value);
     return (
-      url.protocol === 'https:' && url.username === '' && url.password === ''
+      url.protocol === 'https:' &&
+      url.hostname === hostname &&
+      url.port === '' &&
+      url.username === '' &&
+      url.password === ''
     );
   } catch {
     return false;
   }
 };
 
-const isAbortError = (error: unknown, signal?: AbortSignal): boolean =>
-  signal?.aborted === true || (isRecord(error) && error.name === 'AbortError');
+const requestUrl = (endpoint: string): string => {
+  if (!endpoint.startsWith('/v1/') || endpoint.includes('#')) {
+    throw new RemoteRequestError(
+      'configuration',
+      'The remote endpoint is not configured correctly.'
+    );
+  }
+  try {
+    const origin = new URL(configuredOrigin());
+    const local =
+      origin.protocol === 'http:' &&
+      (origin.hostname === 'localhost' || origin.hostname === '127.0.0.1');
+    if (
+      origin.username !== '' ||
+      origin.password !== '' ||
+      origin.pathname !== '/' ||
+      origin.search !== '' ||
+      origin.hash !== '' ||
+      (!local &&
+        (origin.protocol !== 'https:' ||
+          !origin.hostname.endsWith('.workers.dev')))
+    ) {
+      throw new Error('invalid origin');
+    }
+    const url = new URL(endpoint, origin);
+    if (!url.pathname.startsWith('/v1/')) {
+      throw new RemoteRequestError(
+        'configuration',
+        'The remote endpoint is not configured correctly.'
+      );
+    }
+    return url.toString();
+  } catch (error) {
+    if (error instanceof RemoteRequestError) {
+      throw error;
+    }
+    throw new RemoteRequestError(
+      'configuration',
+      'The remote service is not configured correctly.'
+    );
+  }
+};
 
 const abortedRequest = (): RemoteRequestError =>
   new RemoteRequestError('aborted', 'The request was cancelled.');
 
-const isHttpStatus = (value: unknown): value is number =>
-  typeof value === 'number' &&
-  Number.isInteger(value) &&
-  value >= 100 &&
-  value <= 599;
+const readResponse = async (
+  response: Response,
+  signal: AbortSignal
+): Promise<string> => {
+  const declaredLength = Number(response.headers.get('content-length'));
+  if (
+    Number.isFinite(declaredLength) &&
+    declaredLength > maximumResponseBytes
+  ) {
+    throw new RemoteRequestError(
+      'size',
+      'The remote service returned too much data.'
+    );
+  }
+  if (!response.body) {
+    return '';
+  }
 
-const upstreamStatus = (
-  envelope: Record<string, unknown>
-): number | undefined => {
-  const status = envelope.status;
-  if (status !== undefined) {
-    if (isRecord(status) && isHttpStatus(status.http_code)) {
-      return status.http_code;
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let length = 0;
+  let text = '';
+  try {
+    while (true) {
+      if (signal.aborted) {
+        throw abortedRequest();
+      }
+      const chunk = await reader.read();
+      if (chunk.done) {
+        break;
+      }
+      length += chunk.value.byteLength;
+      if (length > maximumResponseBytes) {
+        void reader.cancel();
+        throw new RemoteRequestError(
+          'size',
+          'The remote service returned too much data.'
+        );
+      }
+      text += decoder.decode(chunk.value, { stream: true });
     }
-    throw new RemoteRequestError(
-      'proxy',
-      'The remote-data proxy returned invalid status metadata.'
-    );
+    return text + decoder.decode();
+  } finally {
+    reader.releaseLock();
   }
-  if (envelope.statusCode !== undefined) {
-    if (isHttpStatus(envelope.statusCode)) {
-      return envelope.statusCode;
-    }
-    throw new RemoteRequestError(
-      'proxy',
-      'The remote-data proxy returned invalid status metadata.'
-    );
-  }
-  return undefined;
 };
 
-export const fetchAllOriginsJson = async (
-  targetUrl: string,
-  options: AllOriginsOptions
+export const fetchRemoteJson = async (
+  endpoint: string,
+  options: RemoteOptions = {}
 ): Promise<unknown> => {
-  if (!isHttpsUrl(targetUrl)) {
-    throw new RemoteRequestError(
-      'schema',
-      'The remote service URL must use HTTPS.'
-    );
-  }
   if (options.signal?.aborted) {
     throw abortedRequest();
   }
 
+  const controller = new AbortController();
+  let timedOut = false;
+  const abortFromCaller = () => controller.abort();
+  options.signal?.addEventListener('abort', abortFromCaller, { once: true });
+  const timer = window.setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, clientTimeout);
+
   try {
-    const response = await fetch(
-      `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`,
-      {
-        signal: options.signal,
-        headers: { 'X-Requested-With': options.requestName },
-      }
-    );
+    const response = await fetch(requestUrl(endpoint), {
+      signal: controller.signal,
+    });
     if (options.signal?.aborted) {
       throw abortedRequest();
     }
-
     if (!response.ok) {
       throw new RemoteRequestError(
-        'proxy',
-        'The remote-data proxy could not complete the request.',
+        'http',
+        'The remote service could not complete the request.',
         response.status
       );
     }
-
-    let envelope: unknown;
-    try {
-      envelope = await response.json();
-    } catch (error) {
-      if (isAbortError(error, options.signal)) {
-        throw abortedRequest();
-      }
-      throw new RemoteRequestError(
-        'parse',
-        'The remote-data proxy returned an unreadable response.'
-      );
-    }
+    const text = await readResponse(response, controller.signal);
     if (options.signal?.aborted) {
       throw abortedRequest();
     }
-
-    if (!isRecord(envelope)) {
-      throw new RemoteRequestError(
-        'proxy',
-        'The remote-data proxy returned an invalid response.'
-      );
-    }
-
-    const status = upstreamStatus(envelope);
-    if (status !== undefined && (status < 200 || status >= 300)) {
-      throw new RemoteRequestError(
-        'http',
-        status === 404
-          ? 'The requested remote resource was not found.'
-          : 'The remote service could not complete the request.',
-        status
-      );
-    }
-
-    if (typeof envelope.contents !== 'string') {
-      throw new RemoteRequestError(
-        'proxy',
-        'The remote-data proxy response was incomplete.'
-      );
-    }
-    if (options.signal?.aborted) {
-      throw abortedRequest();
-    }
-
     try {
-      return JSON.parse(envelope.contents);
+      return JSON.parse(text) as unknown;
     } catch {
       throw new RemoteRequestError(
         'parse',
@@ -163,14 +194,32 @@ export const fetchAllOriginsJson = async (
     }
   } catch (error) {
     if (error instanceof RemoteRequestError) {
+      if (timedOut && error.category === 'aborted') {
+        throw new RemoteRequestError(
+          'timeout',
+          'The remote service took too long to respond.'
+        );
+      }
       throw error;
     }
-    if (isAbortError(error, options.signal)) {
+    if (timedOut) {
+      throw new RemoteRequestError(
+        'timeout',
+        'The remote service took too long to respond.'
+      );
+    }
+    if (options.signal?.aborted || controller.signal.aborted) {
+      throw abortedRequest();
+    }
+    if (isRecord(error) && error.name === 'AbortError') {
       throw abortedRequest();
     }
     throw new RemoteRequestError(
       'network',
       'The remote service could not be reached.'
     );
+  } finally {
+    window.clearTimeout(timer);
+    options.signal?.removeEventListener('abort', abortFromCaller);
   }
 };

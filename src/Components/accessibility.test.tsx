@@ -9,7 +9,7 @@ import Portal from './Library/Portal/Portal';
 import StockTwits from './Stocktwits/Stocktwits';
 import { fetchStockSymbols } from './Stocktwits/stockTwitsApi';
 import XKCD from './XKCD/xkcd';
-import { fetchComicBatch, fetchCurrentComic, XkcdComic } from './XKCD/xkcdApi';
+import { fetchInitialComics, XkcdComic } from './XKCD/xkcdApi';
 import { ApplicationShell } from '../App';
 import { expectNoAccessibilityViolations } from '../testUtils/accessibility';
 
@@ -39,8 +39,7 @@ vi.mock('./XKCD/xkcdApi', async () => {
     await vi.importActual<typeof import('./XKCD/xkcdApi')>('./XKCD/xkcdApi');
   return {
     ...actual,
-    fetchCurrentComic: vi.fn(),
-    fetchComicBatch: vi.fn(),
+    fetchInitialComics: vi.fn(),
   };
 });
 
@@ -119,7 +118,8 @@ describe('representative page accessibility', () => {
               user: {
                 name: 'Synthetic User',
                 username: 'synthetic',
-                avatarUrl: 'https://example.test/avatar.png',
+                avatarUrl:
+                  'https://avatars.stocktwits.com/production/avatar.png',
               },
             },
           ],
@@ -153,11 +153,13 @@ describe('representative page accessibility', () => {
       kind: 'comic',
       num: 1,
       title: 'Synthetic comic',
-      img: 'https://example.test/comic.png',
+      img: 'https://imgs.xkcd.com/comics/comic.png',
       alt: 'Synthetic comic description',
     };
-    vi.mocked(fetchCurrentComic).mockResolvedValue(comic);
-    vi.mocked(fetchComicBatch).mockResolvedValue([comic]);
+    vi.mocked(fetchInitialComics).mockResolvedValue({
+      latest: comic.num,
+      slots: [comic],
+    });
     const { container } = render(
       <main>
         <h1>XKCD Slideshow</h1>

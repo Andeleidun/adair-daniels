@@ -44,7 +44,7 @@ const StockTwits = ({
   const controllerRef = useRef<AbortController | null>(null);
   const requestVersionRef = useRef(0);
   const requestInProgressRef = useRef(false);
-  const elapsedMinutesRef = useRef(0);
+  const refreshDeadlineRef = useRef(0);
   const refreshRequestRef = useRef<() => void>(() => undefined);
   const { isExpanded, setExpanded } = useDemoExpansionState({
     expanded,
@@ -66,7 +66,7 @@ const StockTwits = ({
     const nextController = new AbortController();
     controllerRef.current = nextController;
     requestInProgressRef.current = true;
-    elapsedMinutesRef.current = 0;
+    refreshDeadlineRef.current = 0;
     setPolling(false);
     setCountdown(5);
     setFeeds([]);
@@ -89,6 +89,7 @@ const StockTwits = ({
       setFeeds(result.feeds);
       setWarning(warningFor(result.failedSymbols));
       setStatus(isEmpty(result.feeds) ? 'empty' : 'success');
+      refreshDeadlineRef.current = Date.now() + 5 * 60000;
       setPolling(true);
     } catch (requestError) {
       if (
@@ -148,7 +149,7 @@ const StockTwits = ({
       if (result.failedSymbols.length > 0) {
         setPolling(false);
       } else {
-        elapsedMinutesRef.current = 0;
+        refreshDeadlineRef.current = Date.now() + 5 * 60000;
         setCountdown(5);
       }
     } catch (requestError) {
@@ -182,10 +183,12 @@ const StockTwits = ({
       return undefined;
     }
     const interval = window.setInterval(() => {
-      elapsedMinutesRef.current += 1;
-      const remaining = Math.max(0, 5 - elapsedMinutesRef.current);
+      const remaining = Math.max(
+        0,
+        Math.ceil((refreshDeadlineRef.current - Date.now()) / 60000)
+      );
       setCountdown(remaining);
-      if (elapsedMinutesRef.current >= 5) {
+      if (remaining === 0) {
         refreshRequestRef.current();
       }
     }, 60000);
@@ -249,9 +252,8 @@ const StockTwits = ({
         <div className={isExpanded ? 'visually-hidden' : 'stock-intro-copy'}>
           <h2 id="stock-search-title">Search public symbol feeds</h2>
           <p>
-            Stock symbols are sent through the AllOrigins proxy to StockTwits.
-            Results refresh every five minutes until a refresh fails or the page
-            is closed.
+            Stock symbols are sent through a bounded StockTwits service. Results
+            refresh every five minutes until a refresh fails or the page closes.
           </p>
         </div>
         <DemoExpansionButton

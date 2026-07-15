@@ -114,6 +114,9 @@ const PortalFrame = ({
         <iframe
           src={url}
           loading="lazy"
+          // The hosted demos need scripts and same-origin storage to function.
+          // eslint-disable-next-line @eslint-react/dom-no-unsafe-iframe-sandbox
+          sandbox="allow-scripts allow-same-origin"
           className={`portal${isExpanded ? ' portal-expanded' : ''}`}
           title={title}
           referrerPolicy="no-referrer"

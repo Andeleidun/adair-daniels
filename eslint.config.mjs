@@ -31,6 +31,25 @@ export default defineConfig(
     },
   },
   {
+    files: ['worker/**/*.ts'],
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.serviceworker,
+      },
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
     files: ['scripts/**/*.mjs', 'vite.config.ts'],
     extends: [js.configs.recommended],
     languageOptions: {

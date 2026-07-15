@@ -7,7 +7,7 @@ import './xkcd.css';
 import CardTemplate from '../Library/Card';
 import LoadScreen from '../Library/LoadScreen';
 import Button from '@mui/material/Button';
-import { fetchComicBatch, fetchCurrentComic, XkcdSlot } from './xkcdApi';
+import { fetchComicBatch, fetchInitialComics, XkcdSlot } from './xkcdApi';
 import { RemoteRequestError } from '../../Services/remoteData';
 import DemoExpansionButton, {
   DemoExpansionOptions,
@@ -84,19 +84,14 @@ const XKCD = ({
     setError('');
     setRetryIndex(1);
     try {
-      const current = await fetchCurrentComic(request.controller.signal);
-      const nextSlots = await fetchComicBatch(
-        1,
-        current.num,
-        request.controller.signal
-      );
+      const initial = await fetchInitialComics(request.controller.signal);
       if (request.version !== requestVersionRef.current) {
         return;
       }
-      setLatest(current.num);
+      setLatest(initial.latest);
       setIndex(1);
       setRetryIndex(1);
-      setSlots(nextSlots);
+      setSlots(initial.slots);
       setStatus('success');
     } catch (requestError) {
       if (
@@ -177,8 +172,8 @@ const XKCD = ({
         <div className={isExpanded ? 'visually-hidden' : 'xkcd-intro-copy'}>
           <h2 id="comic-browser-title">Browse XKCD in groups of three</h2>
           <p>
-            Comics are loaded through AllOrigins from XKCD. Navigation requests
-            are cancellable, and unavailable comic positions remain visible.
+            Comics are loaded through a bounded XKCD service. Navigation
+            requests are cancellable, and unavailable positions remain visible.
           </p>
         </div>
         <DemoExpansionButton

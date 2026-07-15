@@ -3,28 +3,29 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import XKCD from './xkcd';
 import {
   fetchComicBatch,
-  fetchCurrentComic,
+  fetchInitialComics,
   XkcdComic,
   XkcdSlot,
 } from './xkcdApi';
+import { RemoteRequestError } from '../../Services/remoteData';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('./xkcdApi', async () => {
   const actual = await vi.importActual<typeof import('./xkcdApi')>('./xkcdApi');
   return {
     ...actual,
-    fetchCurrentComic: vi.fn(),
+    fetchInitialComics: vi.fn(),
     fetchComicBatch: vi.fn(),
   };
 });
 
-const current = vi.mocked(fetchCurrentComic);
+const initial = vi.mocked(fetchInitialComics);
 const batch = vi.mocked(fetchComicBatch);
 const comic = (num: number): XkcdComic => ({
   kind: 'comic',
   num,
   title: `Synthetic Comic ${num}`,
-  img: `https://example.test/${num}.png`,
+  img: `https://imgs.xkcd.com/comics/${num}.png`,
   alt: `Alternative ${num}`,
 });
 const comics = (start: number) => [
@@ -35,9 +36,9 @@ const comics = (start: number) => [
 
 describe('XKCD', () => {
   beforeEach(() => {
-    current.mockReset();
+    initial.mockReset();
     batch.mockReset();
-    current.mockResolvedValue(comic(10));
+    initial.mockResolvedValue({ latest: 10, slots: comics(1) });
     batch.mockResolvedValue(comics(1));
   });
 
@@ -79,9 +80,8 @@ describe('XKCD', () => {
     expect(
       await screen.findByRole('heading', { name: 'Synthetic Comic 1' })
     ).toBeVisible();
-    expect(current.mock.invocationCallOrder[0]).toBeLessThan(
-      batch.mock.invocationCallOrder[0]
-    );
+    expect(initial).toHaveBeenCalledTimes(1);
+    expect(batch).not.toHaveBeenCalled();
     expect(screen.getByRole('img', { name: 'Alternative 1' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'First' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled();
@@ -152,11 +152,10 @@ describe('XKCD', () => {
   });
 
   it('renders definitive missing comics as accessible unavailable slots', async () => {
-    batch.mockResolvedValueOnce([
-      comic(1),
-      { kind: 'unavailable', num: 2 },
-      comic(3),
-    ]);
+    initial.mockResolvedValueOnce({
+      latest: 10,
+      slots: [comic(1), { kind: 'unavailable', num: 2 }, comic(3)],
+    });
     render(<XKCD />);
     expect(await screen.findByText('Comic #2 unavailable')).toHaveAttribute(
       'role',
@@ -164,25 +163,33 @@ describe('XKCD', () => {
     );
   });
 
-  it('shows a retryable initial failure', async () => {
-    current
-      .mockRejectedValueOnce(new Error('offline'))
-      .mockResolvedValueOnce(comic(10));
-    render(<XKCD />);
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      /could not be loaded/
-    );
-    batch.mockResolvedValueOnce(comics(1));
-    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    await screen.findByRole('heading', { name: 'Synthetic Comic 1' });
-  });
+  it.each([400, 429, 502, 504])(
+    'shows a retryable initial failure for Worker status %s',
+    async (status) => {
+      initial
+        .mockRejectedValueOnce(
+          new RemoteRequestError('http', 'Sanitized failure.', status)
+        )
+        .mockResolvedValueOnce({ latest: 10, slots: comics(1) });
+      render(<XKCD />);
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        /could not be loaded/
+      );
+      expect(screen.queryByRole('status')).toBeNull();
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+      await screen.findByRole('heading', { name: 'Synthetic Comic 1' });
+    }
+  );
 
   it('aborts an active batch on unmount and ignores its late completion', async () => {
-    let resolveBatch: (value: XkcdSlot[]) => void = () => undefined;
-    batch.mockImplementationOnce(
+    let resolveInitial: (value: {
+      latest: number;
+      slots: XkcdSlot[];
+    }) => void = () => undefined;
+    initial.mockImplementationOnce(
       () =>
-        new Promise<XkcdSlot[]>((resolve) => {
-          resolveBatch = resolve;
+        new Promise((resolve) => {
+          resolveInitial = resolve;
         })
     );
     const { unmount } = render(<XKCD />);
@@ -190,13 +197,13 @@ describe('XKCD', () => {
       await new Promise((resolve) => window.setTimeout(resolve, 0));
       await Promise.resolve();
     });
-    expect(batch).toHaveBeenCalledTimes(1);
-    const signal = batch.mock.calls[0][2] as AbortSignal;
+    expect(initial).toHaveBeenCalledTimes(1);
+    const signal = initial.mock.calls[0][0] as AbortSignal;
 
     unmount();
     expect(signal.aborted).toBe(true);
     await act(async () => {
-      resolveBatch(comics(1));
+      resolveInitial({ latest: 10, slots: comics(1) });
       await Promise.resolve();
     });
   });

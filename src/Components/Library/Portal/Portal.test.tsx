@@ -22,6 +22,7 @@ it('provides a safe fallback and settles its bounded loading state', async () =>
   );
   expect(frame).toHaveAttribute('loading', 'lazy');
   expect(frame).toHaveAttribute('referrerpolicy', 'no-referrer');
+  expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin');
   const fallback = screen.getByRole('link', {
     name: /Open Robot Battle Arena/,
   });

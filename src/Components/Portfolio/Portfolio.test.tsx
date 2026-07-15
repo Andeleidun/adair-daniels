@@ -11,7 +11,7 @@ import Portfolio, { portfolioProjects } from './Portfolio';
 
 describe('Portfolio', () => {
   it('groups all existing screenshots into manually controlled projects', () => {
-    render(<Portfolio />);
+    const { container } = render(<Portfolio />);
     expect(portfolioProjects).toHaveLength(5);
     expect(
       portfolioProjects.reduce(
@@ -23,6 +23,31 @@ describe('Portfolio', () => {
     expect(screen.getByRole('heading', { name: 'Metric Media' })).toBeVisible();
     expect(screen.queryByText(/Explore project screenshots/)).toBeNull();
     expect(screen.queryByText(/Pause slideshow/i)).toBeNull();
+    expect(
+      portfolioProjects.flatMap((project) =>
+        project.images
+          .filter(
+            (image) =>
+              Math.max(image.thumbnailWidth, image.thumbnailHeight) > 128
+          )
+          .map((image) => image.title)
+      )
+    ).toEqual([]);
+    expect(
+      screen.queryByRole('img', { name: /navigation menu with links/i })
+    ).toBeNull();
+    expect(
+      [
+        ...container.querySelectorAll(
+          '.project-image-button img, .gallery-thumbnails img'
+        ),
+      ]
+        .filter(
+          (image) =>
+            !image.hasAttribute('width') || !image.hasAttribute('height')
+        )
+        .map((image) => image.getAttribute('src'))
+    ).toEqual([]);
 
     const ketoMate = screen
       .getByRole('heading', { name: 'Keto Mate' })
@@ -36,6 +61,21 @@ describe('Portfolio', () => {
       within(ketoMate).getByRole('button', { name: 'Show Navigation Menu' })
     ).toHaveAttribute('aria-pressed', 'true');
     expect(within(ketoMate).getByText('Navigation Menu')).toBeVisible();
+    const active = within(ketoMate).getByRole('img', {
+      name: /navigation menu with links/i,
+    });
+    expect(active).toHaveAttribute('width', '358');
+    expect(active).toHaveAttribute(
+      'src',
+      portfolioProjects[0].images[1].original
+    );
+    const selectedThumbnail = within(ketoMate)
+      .getByRole('button', { name: 'Show Navigation Menu' })
+      .querySelector('img');
+    expect(selectedThumbnail).toHaveAttribute(
+      'src',
+      portfolioProjects[0].images[1].thumbnail
+    );
 
     fireEvent.click(
       within(ketoMate).getByRole('button', {
