@@ -17,6 +17,15 @@
   justify-content: center;
 }
 
+.portfolio-display .portfolio-title {
+  font-size: 1.17em;
+  margin: 1em 0;
+}
+
+.portfolio-display .autoplay-button {
+  margin-bottom: 10px;
+}
+
 .portfolio-display .slide .slide-image {
   width: 100%;
   display: block;

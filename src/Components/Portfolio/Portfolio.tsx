@@ -36,29 +36,34 @@ import Button from '@material-ui/core/Button';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
-type Props = unknown;
+type PortfolioProps = Record<string, never>;
 
 interface State {
   activeSlide: number;
-  loading: boolean;
+  autoplay: boolean;
 }
 
-interface PortfolioSlides {
-  title: string;
-  img: string;
-  label: string;
+interface PortfolioSlide {
+  readonly title: string;
+  readonly img: string;
+  readonly label: string;
 }
 
-class Portfolio extends React.Component<Props, State> {
-  constructor(props: Props) {
+const prefersReducedMotion = (): boolean =>
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+class Portfolio extends React.Component<PortfolioProps, State> {
+  constructor(props: PortfolioProps) {
     super(props);
     this.state = {
       activeSlide: 0,
-      loading: true,
+      autoplay: !prefersReducedMotion(),
     };
   }
 
-  portfolioSlides: PortfolioSlides[] = [
+  readonly portfolioSlides: ReadonlyArray<PortfolioSlide> = [
     {
       title: 'Keto Mate - Home, Angular and Ionic App',
       img: kmhome,
@@ -155,7 +160,7 @@ class Portfolio extends React.Component<Props, State> {
     },
   ];
 
-  portfolioDisplay() {
+  portfolioDisplay(): React.ReactElement {
     const maxSlides = this.portfolioSlides.length;
 
     const handleNext = () => {
@@ -174,27 +179,60 @@ class Portfolio extends React.Component<Props, State> {
       }
     };
 
-    const handleSlideChange = (slide) => {
+    const handleSlideChange = (slide: number) => {
       this.setState({ activeSlide: slide });
     };
 
+    const toggleAutoplay = () => {
+      this.setState((state) => ({ autoplay: !state.autoplay }));
+    };
+
     const previousIcon = (
-      <span className="material-icons">navigate_before</span>
+      <span className="material-icons" aria-hidden="true">
+        navigate_before
+      </span>
     );
 
-    const nextIcon = <span className="material-icons">navigate_next</span>;
+    const nextIcon = (
+      <span className="material-icons" aria-hidden="true">
+        navigate_next
+      </span>
+    );
 
     return (
-      <div className="portfolio-display">
-        <h3>{this.portfolioSlides[this.state.activeSlide].title}</h3>
+      <div
+        className="portfolio-display"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Portfolio screenshots"
+      >
+        <h2 className="portfolio-title" aria-live="polite">
+          {this.portfolioSlides[this.state.activeSlide].title}
+        </h2>
+        <Button
+          className="autoplay-button"
+          onClick={toggleAutoplay}
+          variant="contained"
+          aria-pressed={!this.state.autoplay}
+        >
+          {this.state.autoplay ? 'Pause slideshow' : 'Resume slideshow'}
+        </Button>
         <AutoPlaySwipeableViews
           axis="x"
+          autoplay={this.state.autoplay}
           index={this.state.activeSlide}
           onChangeIndex={handleSlideChange}
           interval={10000}
         >
-          {this.portfolioSlides.map((slide) => (
-            <div key={slide.label} className="slide">
+          {this.portfolioSlides.map((slide, index) => (
+            <div
+              key={slide.label}
+              className="slide"
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${maxSlides}`}
+              aria-hidden={index !== this.state.activeSlide}
+            >
               <div className="slide-image">
                 <img src={slide.img} alt={slide.label} />
               </div>
@@ -211,12 +249,18 @@ class Portfolio extends React.Component<Props, State> {
               onClick={handleBack}
               variant="contained"
               startIcon={previousIcon}
+              aria-label="Previous"
             >
               Previous
             </Button>
           }
           nextButton={
-            <Button onClick={handleNext} variant="contained" endIcon={nextIcon}>
+            <Button
+              onClick={handleNext}
+              variant="contained"
+              endIcon={nextIcon}
+              aria-label="Next"
+            >
               Next
             </Button>
           }
@@ -225,7 +269,7 @@ class Portfolio extends React.Component<Props, State> {
     );
   }
 
-  render() {
+  render(): React.ReactElement {
     return (
       <main className="app-portfolio">
         <CardTemplate

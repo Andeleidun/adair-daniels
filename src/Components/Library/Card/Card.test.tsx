@@ -1,9 +1,34 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import Card from './Card';
 
-describe('Header', () => {
-  it('should render correctly', () => {
-    const component = render(<Card />);
+describe('Card', () => {
+  it('renders content, media, and correctly typed actions', () => {
+    const onClick = jest.fn();
+    const { container } = render(
+      <Card
+        title="Card title"
+        text="Card text"
+        img="image.png"
+        content={<span>Card content</span>}
+        links={[
+          { kind: 'external', text: 'External', url: 'https://example.test' },
+          { kind: 'button', text: 'Action', onClick },
+        ]}
+      />
+    );
+
+    expect(screen.getByRole('heading', { name: 'Card title' })).toBeVisible();
+    expect(screen.getByText('Card text')).toBeVisible();
+    expect(screen.getByText('Card content')).toBeVisible();
+    const media = screen.getByRole('img', { name: 'Card title' });
+    expect(media).toHaveAttribute('title', 'Card title');
+    const external = screen.getByRole('link', { name: 'External' });
+    expect(external).toHaveAttribute('href', 'https://example.test');
+    expect(external).toHaveAttribute('target', '_blank');
+    expect(external).toHaveAttribute('rel', 'noopener noreferrer');
+    fireEvent.click(screen.getByRole('button', { name: 'Action' }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(container.querySelector('a[href=""]')).not.toBeInTheDocument();
   });
 });

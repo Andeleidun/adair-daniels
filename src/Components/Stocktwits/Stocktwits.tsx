@@ -1,270 +1,332 @@
 /*
-  This page is another example of consuming a RESTful API, this time
-  from the StockTwits API. The received information is rendered 
-  using the CardTemplate component from the library, and can be
-  filtered by clicking on the stock symbol chips.
+  This page demonstrates a bounded, refreshable StockTwits symbol feed. Remote
+  responses are validated before they reach the presentation components.
 */
-
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './StockTwits.css';
 
 import CardTemplate from '../Library/Card';
-
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Chip from '@material-ui/core/Chip';
 import Badge from '@material-ui/core/Badge';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+  fetchStockSymbols,
+  normalizeSymbols,
+  StockSymbolFeed,
+} from './stockTwitsApi';
+import { RemoteRequestError } from '../../Services/remoteData';
 
-type Props = unknown;
+type ViewStatus =
+  | 'idle'
+  | 'loading'
+  | 'refreshing'
+  | 'success'
+  | 'empty'
+  | 'error';
 
-interface State {
-  symbols: any[];
-  input: string;
-  error: string;
-  interval: any;
-  currentCount: number;
-  filter: any[];
-  loading: boolean;
-}
+const StockTwits = (): React.ReactElement => {
+  const [input, setInput] = useState('');
+  const [feeds, setFeeds] = useState<ReadonlyArray<StockSymbolFeed>>([]);
+  const [filters, setFilters] = useState<ReadonlyArray<string>>([]);
+  const [submittedSymbols, setSubmittedSymbols] = useState<
+    ReadonlyArray<string>
+  >([]);
+  const [status, setStatus] = useState<ViewStatus>('idle');
+  const [error, setError] = useState('');
+  const [warning, setWarning] = useState('');
+  const [polling, setPolling] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+  const controller = useRef<AbortController | null>(null);
+  const requestVersion = useRef(0);
+  const requestInProgress = useRef(false);
+  const elapsedMinutes = useRef(0);
+  const refreshRequest = useRef<() => void>(() => undefined);
 
-class StockTwits extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      symbols: [],
-      input: '',
-      error: '',
-      interval: undefined,
-      currentCount: 5,
-      filter: [],
-      loading: false,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.timer = this.timer.bind(this);
-  }
+  const isEmpty = (nextFeeds: ReadonlyArray<StockSymbolFeed>) =>
+    nextFeeds.every((feed) => feed.messages.length === 0);
 
-  chips: any[] = [];
-  tweets: any[] = [];
-  content: any;
+  const warningFor = (symbols: ReadonlyArray<string>) =>
+    symbols.length > 0
+      ? `Some symbols could not be loaded: ${symbols.join(', ')}.`
+      : '';
 
-  renderChips(symbols: any[]) {
-    const chips: any[] = [];
-    for (const symbol of symbols) {
-      if (symbol.tweets) {
-        let chipClass = 'chip';
-        if (this.state.filter.includes(symbol.key)) {
-          chipClass = 'chip active-chip';
-        }
-        chips.push(
-          <Badge badgeContent={symbol.tweets.length} className="badge">
-            <Chip
-              label={symbol.label}
-              className={chipClass}
-              key={symbol.key}
-              onClick={() => this.chipClick(symbol)}
-            />
-          </Badge>
-        );
-      }
-      this.chips = chips;
-    }
-  }
+  const runManualSearch = async (symbols: ReadonlyArray<string>) => {
+    controller.current?.abort();
+    requestVersion.current += 1;
+    const version = requestVersion.current;
+    const nextController = new AbortController();
+    controller.current = nextController;
+    requestInProgress.current = true;
+    elapsedMinutes.current = 0;
+    setPolling(false);
+    setCountdown(5);
+    setFeeds([]);
+    setFilters([]);
+    setSubmittedSymbols(symbols);
+    setWarning('');
+    setError('');
+    setStatus('loading');
 
-  setTimer() {
-    const intervalId = setInterval(this.timer, 60000);
-    this.setState({
-      interval: intervalId,
-      currentCount: 5,
-    });
-  }
-
-  timer() {
-    const newCount = this.state.currentCount - 1;
-    if (newCount >= 0) {
-      this.setState({ currentCount: newCount });
-    } else {
-      this.submitRequest();
-      clearInterval(this.state.interval);
-      this.setTimer();
-    }
-  }
-
-  renderTweets(symbols: any[]) {
-    const tweets: any[] = [];
-    let tweetsFound = 0;
-    for (const symbol of symbols) {
-      if (symbol.tweets) {
-        tweetsFound++;
-        for (const [index, tweet] of symbol.tweets.entries()) {
-          const message = (
-            <div key={tweet.user.username + index}>
-              <figure className="picture">
-                <img
-                  src={tweet.user.avatar_url_ssl}
-                  alt={tweet.user.username}
-                />
-              </figure>
-              <p className="namearea">
-                <span className="name">{tweet.user.name}</span>{' '}
-                <span className="username">@ {tweet.user.username}</span>
-              </p>
-              <p className="text">{tweet.body}</p>
-            </div>
-          );
-          tweets.push(
-            <CardTemplate content={message} key={index} classGiven="card" />
-          );
-        }
-      }
-    }
-    if (tweetsFound > 0) {
-      this.setTimer();
-    }
-    this.tweets = tweets;
-  }
-
-  chipClick(symbol: any) {
-    const filter: any[] = this.state.filter;
-    const symbols: any[] = this.state.symbols;
-    const filteredSymbols: any[] = [];
-    if (filter.includes(symbol.key)) {
-      const position = filter.indexOf(symbol.key);
-      filter.splice(position, 1);
-      if (filter.length === 0) {
-        this.setState({ filter });
-        clearInterval(this.state.interval);
-        this.renderTweets(symbols);
-        this.renderChips(symbols);
+    try {
+      const result = await fetchStockSymbols(symbols, nextController.signal);
+      if (version !== requestVersion.current) {
         return;
       }
-    } else {
-      filter.push(symbol.key);
-    }
-    for (const member of filter) {
-      for (const symbol of symbols) {
-        if (symbol.key === member) {
-          filteredSymbols.push(symbol);
-          break;
-        }
+      if (result.feeds.length === 0) {
+        setStatus('error');
+        setError(`StockTwits could not load: ${symbols.join(', ')}.`);
+        return;
+      }
+      setFeeds(result.feeds);
+      setWarning(warningFor(result.failedSymbols));
+      setStatus(isEmpty(result.feeds) ? 'empty' : 'success');
+      setPolling(true);
+    } catch (requestError) {
+      if (
+        version === requestVersion.current &&
+        !(
+          requestError instanceof RemoteRequestError &&
+          requestError.category === 'aborted'
+        )
+      ) {
+        setStatus('error');
+        setError('StockTwits could not complete the search.');
+      }
+    } finally {
+      if (version === requestVersion.current) {
+        requestInProgress.current = false;
       }
     }
-    this.setState({ filter });
-    clearInterval(this.state.interval);
-    this.renderTweets(filteredSymbols);
-    this.renderChips(symbols);
-  }
+  };
 
-  async retrieveTweets(symbols: any[]) {
-    /* Retrieves images from StockTwits using open cors-anywhere proxy */
-    this.setState({ loading: true });
-    const proxyUrl = 'https://api.allorigins.win/get?url=';
-    const urlBase = 'https://api.stocktwits.com/api/2/streams/symbol/';
-    const urlEnd = '.json';
-    const proxiedRequest = (url, options = { headers: {} }) =>
-      fetch(url, {
-        ...options,
-        headers: {
-          ...options.headers,
-          'X-Requested-With': 'stock-twits-live-feed',
-        },
-      })
-        .then((res) => res.json())
-        .catch((error) => this.setState({ error: error }));
-    for (const symbol of symbols) {
-      const useUrl = urlBase.concat(symbol.label).concat(urlEnd);
-      const finalUrl = proxyUrl.concat(useUrl);
-      await proxiedRequest(finalUrl)
-        .then((data) => {
-          const contents = JSON.parse(data.contents);
-          symbol.tweets = contents.messages;
-        })
-        .catch((error) => this.setState({ error: error }));
+  const refresh = async () => {
+    if (requestInProgress.current || submittedSymbols.length === 0) {
+      return;
     }
-    if (!this.state.error && symbols[0].tweets) {
-      this.renderChips(symbols);
-      this.renderTweets(symbols);
-    }
-    this.setState({ loading: false });
-    return symbols;
-  }
+    requestInProgress.current = true;
+    const version = requestVersion.current;
+    const nextController = new AbortController();
+    controller.current = nextController;
+    setStatus('refreshing');
+    setWarning('');
 
-  async submitRequest() {
-    const newSymbols = this.state.input
-      .toUpperCase()
-      .replace(/\s+/g, '')
-      .split(',');
-    let formattedSymbols: any[] = [];
-    let key = 0;
-    for (const symbol of newSymbols) {
-      formattedSymbols.push({ key: key, label: symbol, tweets: null });
-      key++;
-    }
-    formattedSymbols = await this.retrieveTweets(formattedSymbols);
-    this.setState({ symbols: formattedSymbols });
-  }
-
-  handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    this.setState({ input: event.target.value });
-  }
-
-  handleSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    this.submitRequest();
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.interval);
-  }
-
-  render() {
-    if (this.state.loading) {
-      this.content = <CircularProgress />;
-    } else if (this.state.error) {
-      this.content = <p>{this.state.error}</p>;
-    } else if (this.tweets[0]) {
-      this.content = (
-        <section className="content">
-          <section className="chips">{this.chips}</section>
-          <section className="tweets">{this.tweets}</section>
-        </section>
+    try {
+      const result = await fetchStockSymbols(
+        submittedSymbols,
+        nextController.signal
       );
-    } else {
-      this.content = null;
+      if (version !== requestVersion.current) {
+        return;
+      }
+      const refreshed = result.feeds.reduce(
+        (map, feed) => map.set(feed.symbol, feed),
+        new Map<string, StockSymbolFeed>()
+      );
+      const merged = feeds.map((feed) => refreshed.get(feed.symbol) || feed);
+      result.feeds.forEach((feed) => {
+        if (!merged.some((existing) => existing.symbol === feed.symbol)) {
+          merged.push(feed);
+        }
+      });
+      setFeeds(merged);
+      setFilters((selected) =>
+        selected.filter((symbol) =>
+          merged.some((feed) => feed.symbol === symbol)
+        )
+      );
+      setStatus(isEmpty(merged) ? 'empty' : 'success');
+      setWarning(warningFor(result.failedSymbols));
+      if (result.failedSymbols.length > 0) {
+        setPolling(false);
+      } else {
+        elapsedMinutes.current = 0;
+        setCountdown(5);
+      }
+    } catch (requestError) {
+      if (
+        version === requestVersion.current &&
+        !(
+          requestError instanceof RemoteRequestError &&
+          requestError.category === 'aborted'
+        )
+      ) {
+        setStatus(isEmpty(feeds) ? 'empty' : 'success');
+        setWarning(
+          'Automatic refresh stopped because StockTwits was unavailable.'
+        );
+        setPolling(false);
+      }
+    } finally {
+      if (version === requestVersion.current) {
+        requestInProgress.current = false;
+      }
     }
-    return (
-      <main className="app-stocktwits">
-        <section className="search">
-          <form>
-            <TextField
-              className="stock-input"
-              id="stock-symbols"
-              label="Input stock symbols (separate with a comma)"
-              value={this.state.input}
-              onChange={this.handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                ),
-              }}
-            />
-            <br />
-            <Button
-              className="search-button"
-              variant="contained"
-              onClick={this.handleSubmit}
-            >
-              Search
-            </Button>
-          </form>
-        </section>
-        {this.content}
-      </main>
+  };
+  refreshRequest.current = () => {
+    void refresh();
+  };
+
+  useEffect(() => {
+    if (!polling) {
+      return undefined;
+    }
+    const interval = window.setInterval(() => {
+      elapsedMinutes.current += 1;
+      const remaining = Math.max(0, 5 - elapsedMinutes.current);
+      setCountdown(remaining);
+      if (elapsedMinutes.current >= 5) {
+        refreshRequest.current();
+      }
+    }, 60000);
+    return () => window.clearInterval(interval);
+  }, [polling]);
+
+  useEffect(
+    () => () => {
+      requestVersion.current += 1;
+      controller.current?.abort();
+    },
+    []
+  );
+
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const normalized = normalizeSymbols(input);
+    if (!normalized.valid) {
+      controller.current?.abort();
+      controller.current = null;
+      requestVersion.current += 1;
+      requestInProgress.current = false;
+      setPolling(false);
+      setError(normalized.message);
+      setWarning('');
+      setStatus('error');
+      return;
+    }
+    void runManualSearch(normalized.symbols);
+  };
+
+  const toggleFilter = (symbol: string) =>
+    setFilters((selected) =>
+      selected.includes(symbol)
+        ? selected.filter((item) => item !== symbol)
+        : [...selected, symbol]
     );
-  }
-}
+
+  const visibleFeeds =
+    filters.length === 0
+      ? feeds
+      : feeds.filter((feed) => filters.includes(feed.symbol));
+  const noVisibleMessages =
+    feeds.length > 0 &&
+    visibleFeeds.every((feed) => feed.messages.length === 0);
+  const refreshLabel =
+    status === 'refreshing'
+      ? 'Refreshing StockTwits results. Next refresh in 0 minutes.'
+      : `Next refresh in ${countdown} minute${countdown === 1 ? '' : 's'}.`;
+
+  return (
+    <main className="app-stocktwits">
+      <section className="search" aria-label="Stock symbol search">
+        <form onSubmit={submit}>
+          <TextField
+            className="stock-input"
+            id="stock-symbols"
+            label="Input stock symbols (separate with a comma)"
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            error={status === 'error' && error !== ''}
+            helperText={status === 'error' ? error : undefined}
+            FormHelperTextProps={{ role: 'alert' }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
+            }}
+          />
+          <br />
+          <Button className="search-button" variant="contained" type="submit">
+            Search
+          </Button>
+        </form>
+      </section>
+
+      {status === 'loading' ? (
+        <CircularProgress aria-label="Loading StockTwits results" />
+      ) : null}
+      {warning ? <p role="status">{warning}</p> : null}
+      {polling ? (
+        <p className="refresh-status" aria-live="polite">
+          {refreshLabel}
+        </p>
+      ) : null}
+
+      {feeds.length > 0 ? (
+        <section className="content">
+          <section className="chips" aria-label="Filter by symbol">
+            {feeds.map((feed) => {
+              const selected = filters.includes(feed.symbol);
+              return (
+                <Badge
+                  badgeContent={feed.messages.length}
+                  className="badge"
+                  key={feed.symbol}
+                  overlap="rectangular"
+                >
+                  <Chip
+                    label={feed.symbol}
+                    className={selected ? 'chip active-chip' : 'chip'}
+                    onClick={() => toggleFilter(feed.symbol)}
+                    aria-pressed={selected}
+                  />
+                </Badge>
+              );
+            })}
+          </section>
+          {noVisibleMessages ? (
+            <p role="status">
+              {filters.length > 0
+                ? 'No messages were found for the selected symbols.'
+                : 'No messages were found for these symbols.'}
+            </p>
+          ) : null}
+          <section className="tweets" aria-label="StockTwits messages">
+            {visibleFeeds.reduce<React.ReactElement[]>((messages, feed) => {
+              feed.messages.forEach((message) => {
+                messages.push(
+                  <CardTemplate
+                    key={`${feed.symbol}-${message.id}`}
+                    classGiven="card"
+                    content={
+                      <article>
+                        <figure className="picture">
+                          <img
+                            src={message.user.avatarUrl}
+                            alt={`${message.user.name}'s avatar`}
+                          />
+                        </figure>
+                        <p className="namearea">
+                          <span className="name">{message.user.name}</span>{' '}
+                          <span className="username">
+                            @{message.user.username}
+                          </span>
+                        </p>
+                        <p className="text">{message.body}</p>
+                      </article>
+                    }
+                  />
+                );
+              });
+              return messages;
+            }, [])}
+          </section>
+        </section>
+      ) : null}
+    </main>
+  );
+};
 
 export default StockTwits;

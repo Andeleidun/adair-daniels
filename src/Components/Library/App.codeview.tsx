@@ -1,4 +1,3 @@
-/* eslint-disable-next-line */
-const AppCode = require('!!raw-loader!../../App').default;
+import AppCode from '!!raw-loader!../../App';
 
 export default AppCode;

@@ -1,4 +1,3 @@
-/* eslint-disable-next-line */
-const CardCode = require('!!raw-loader!./Card').default;
+import CardCode from '!!raw-loader!./Card';
 
 export default CardCode;

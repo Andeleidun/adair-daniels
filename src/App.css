@@ -144,10 +144,6 @@ p {
   display: grid;
 }
 
-.card div {
-  animation: fade-in 0.5s linear;
-}
-
 h2,
 h3,
 .card .card-button,
@@ -201,6 +197,10 @@ h3,
 @media (prefers-reduced-motion: no-preference) {
   .loading-logo {
     animation: loading-logo-spin infinite 20s linear;
+  }
+
+  .card div {
+    animation: fade-in 0.5s linear;
   }
 }
 

@@ -1,16 +1,11 @@
-/* eslint-disable no-console */
 /*
-  This page demonstrates React's strong capacity for generating content from provided data. 
-  Aside from a singular primary 'main' component, no static content exists on this page.
-  Instead, all content is generated based upon the information in Home.json.
-  I used this strategy at HP, combined with retriving said data from an API (demonstrated in the XKCD page),
-  to progressively load and submit information for their B2B Printer Sales Contract System.
-  The kind of strong typing displayed in this page is extremely important for an enterprise platform.
+  This page demonstrates React's capacity for generating content from provided
+  data. All public resume content remains owned by Home.json.
 */
-import React, { useState, useEffect, ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import './Home.css';
 
-import CardTemplate from '../Library/Card';
+import CardTemplate, { CardAction } from '../Library/Card';
 import {
   headshot,
   ketomate,
@@ -26,225 +21,190 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
-import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
 
-interface Links {
-  url: string;
-  text: string;
+interface ExternalLink {
+  readonly url: string;
+  readonly text: string;
 }
 
 interface LinkSet {
-  url: string;
-  title: string;
-  img: string;
-  text: string;
+  readonly url: string;
+  readonly title: string;
+  readonly img: string;
+  readonly text: string;
 }
 
-interface SkillSet {
-  title: string;
-  value: number;
-  text: string;
+interface TechnicalSkillGroup {
+  readonly title: string;
+  readonly skills: ReadonlyArray<string>;
 }
 
-interface Group {
-  classes?: string;
-  title?: string;
-  dates?: string;
-  description?: string;
-  jobTitle?: string;
-  text?: string;
-  skills?: string[];
-}
+type GroupItem =
+  | { readonly classes: string }
+  | { readonly title: string }
+  | { readonly dates: string }
+  | { readonly description: string }
+  | { readonly jobTitle: string }
+  | { readonly text: string }
+  | { readonly skills: ReadonlyArray<string> };
 
 interface GroupSet {
-  group: Group[];
+  readonly group: ReadonlyArray<GroupItem>;
 }
 
-interface Content {
-  text?: string;
-  linkset?: LinkSet;
-  skillset?: SkillSet;
-  groupSet?: GroupSet[];
-  title?: string;
-}
+type ContentItem =
+  | { readonly text: string }
+  | { readonly linkset: LinkSet }
+  | { readonly skillGroup: TechnicalSkillGroup }
+  | { readonly groupSet: ReadonlyArray<GroupSet> };
 
 interface CardContent {
-  title: string;
-  media: string;
-  content: Content[];
-  links?: string | Links[];
-  classes: string;
+  readonly title: string;
+  readonly media: string;
+  readonly content: ReadonlyArray<ContentItem>;
+  readonly links?: ReadonlyArray<ExternalLink>;
+  readonly classes: string;
 }
 
-/* 
-  This interface is the combination of all types above, checking for specifically
-  known data to be present, as well as requring that any unknown data follow
-  the CardContent format.
-*/
-interface DataSet {
-  career: CardContent;
-  highlights: CardContent;
-  skills: CardContent;
-  experience: CardContent;
-  education: CardContent;
-  [paramName: string]: CardContent;
+interface HomeDataSet {
+  readonly career: CardContent;
+  readonly highlights: CardContent;
+  readonly skills: CardContent;
+  readonly experience: CardContent;
+  readonly education: CardContent;
 }
 
-const Home = () => {
+const homeData: HomeDataSet = HomeData.homeData;
+const homeCardKeys: ReadonlyArray<keyof HomeDataSet> = [
+  'career',
+  'highlights',
+  'skills',
+  'experience',
+  'education',
+];
+const contentImages = { ketomate, hp, nike, aws };
+type ImageKey = keyof typeof contentImages;
+
+const isImageKey = (key: string): key is ImageKey => key in contentImages;
+const imageForKey = (key: string): string | undefined =>
+  isImageKey(key) ? contentImages[key] : undefined;
+
+const Home = (): ReactElement => {
   const [experienceIndex, setExperienceIndex] = useState(0);
   const [educationIndex, setEducationIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
 
-  const homeData: DataSet = HomeData.homeData;
-  let experienceLength = 0;
-  let educationLength = 0;
-
-  useEffect(() => {
-    if (loading) {
-      setLoading(false);
-    }
-  }, [loading]);
-
-  /* 
-      This function demonstrates handling multiple navigable elements for a single
-      view with a single function.
-    */
-
-  const navigate = (input: string, title: string) => {
-    const step = 1;
-    const baseIndex = 0;
-    let newState = 1;
-    const operation = input + title;
-
-    switch (operation) {
-      case 'previousExperience':
-        newState = experienceIndex - step;
-        if (newState < baseIndex) {
-          newState = experienceLength;
-        }
-        setExperienceIndex(newState);
-        break;
-      case 'previousEducation':
-        newState = educationIndex - step;
-        if (newState < baseIndex) {
-          newState = educationLength;
-        }
-        setEducationIndex(newState);
-        break;
-      case 'nextExperience':
-        newState = experienceIndex + step;
-        if (newState > experienceLength) {
-          newState = baseIndex;
-        }
-        setExperienceIndex(newState);
-        break;
-      case 'nextEducation':
-        newState = educationIndex + step;
-        if (newState > educationLength) {
-          newState = baseIndex;
-        }
-        setEducationIndex(newState);
-        break;
-      default:
-        console.error('Navigation error.');
-    }
-  };
-
-  /* 
-      This function generates content for specifically an array of type GroupSet.
-      This is a good example of factoring out a function for a specific task.
-    */
-
-  const generateGroupSet = (groupSet: GroupSet[]) => {
-    const groupSetContent: ReactElement[] = [];
-    for (const group of groupSet) {
-      const groupContent: ReactElement[] = [];
+  const generateGroupSet = (groupSet: ReadonlyArray<GroupSet>) =>
+    groupSet.map((group, groupIndex) => {
       let groupClass = '';
-      for (const item of group.group) {
-        if (item.title) {
+      const groupContent: ReactElement[] = [];
+
+      group.group.forEach((item, itemIndex) => {
+        const itemKey = `${groupIndex}-${itemIndex}`;
+        if ('classes' in item) {
+          groupClass = item.classes;
+        }
+        if ('title' in item) {
           groupContent.push(
-            <div className="title">
+            <div className="title" key={`${itemKey}-title`}>
               <h3>{item.title}</h3>
             </div>
           );
         }
-        if (item.dates) {
+        if ('dates' in item) {
           groupContent.push(
-            <ListItem key={item.dates} className="dates">
+            <ListItem
+              component="div"
+              key={`${itemKey}-dates`}
+              className="dates"
+            >
               <ListItemText primary={item.dates} />
             </ListItem>
           );
         }
-        if (item.classes) {
-          groupClass = item.classes;
-        }
-        if (item.description) {
+        if ('description' in item) {
           groupContent.push(
-            <ListItem key={item.description} className="description">
+            <ListItem
+              component="div"
+              key={`${itemKey}-description`}
+              className="description"
+            >
               <ListItemText primary={item.description} />
             </ListItem>
           );
         }
-        if (item.jobTitle) {
+        if ('jobTitle' in item) {
           groupContent.push(
-            <ListItem key={item.jobTitle} className="job-title">
+            <ListItem
+              component="div"
+              key={`${itemKey}-job`}
+              className="job-title"
+            >
               <ListItemText primary={item.jobTitle} />
             </ListItem>
           );
         }
-        if (item.text) {
+        if ('text' in item) {
           groupContent.push(
-            <ListItem key={item.text} className="group-text">
+            <ListItem
+              component="div"
+              key={`${itemKey}-text`}
+              className="group-text"
+            >
               <ListItemIcon>
-                <span className="material-icons">layers</span>
+                <span className="material-icons" aria-hidden="true">
+                  layers
+                </span>
               </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>
           );
         }
-        if (item.skills) {
-          const skills: ReactElement[] = [];
-          for (const skill of item.skills) {
-            skills.push(<Chip size="small" label={skill} className="skill" />);
-          }
-          groupContent.push(<div className="skills">{skills}</div>);
+        if ('skills' in item) {
+          groupContent.push(
+            <div className="skills" key={`${itemKey}-skills`}>
+              {item.skills.map((skill) => (
+                <Chip
+                  size="small"
+                  label={skill}
+                  className="skill"
+                  key={`${groupIndex}-${skill}`}
+                />
+              ))}
+            </div>
+          );
         }
-      }
-      groupSetContent.push(<div className={groupClass}>{groupContent}</div>);
-    }
-    return groupSetContent;
-  };
+      });
 
-  /* 
-      This function handles specifically the generation of content for the inside
-      of the cards within the page.
-    */
-  const formatContent = (contentSet: CardContent) => {
+      return (
+        <div className={groupClass} key={`${groupClass}-${groupIndex}`}>
+          {groupContent}
+        </div>
+      );
+    });
+
+  const formatContent = (contentSet: CardContent): ReactElement => {
     const formattedContent: ReactElement[] = [];
-    const title: string = contentSet.title;
-    const contentGroup: Content[] = contentSet.content;
-    for (const content of contentGroup) {
-      if (content.title) {
-        formattedContent.push(<h3>{title}</h3>);
-      }
-      if (content.linkset) {
-        const imageSet = {
-          ketomate,
-          hp,
-          nike,
-          aws,
-        };
-        const image = imageSet[content.linkset.img];
+    const title = contentSet.title;
+
+    contentSet.content.forEach((content, index) => {
+      const contentKey = `${title}-${index}`;
+      if ('linkset' in content) {
         formattedContent.push(
-          <ListItem key={content.linkset.title} className="linkset">
+          <ListItem
+            component="div"
+            key={`${contentKey}-link`}
+            className="linkset"
+          >
             <a
               href={content.linkset.url}
               target="_blank"
               rel="noopener noreferrer"
             >
               <div>
-                <img src={image} alt={content.linkset.title} />
+                <img
+                  src={imageForKey(content.linkset.img)}
+                  alt={content.linkset.title}
+                />
                 <h3>{content.linkset.title}</h3>
               </div>
             </a>
@@ -252,40 +212,64 @@ const Home = () => {
           </ListItem>
         );
       }
-      if (content.skillset) {
+      if ('skillGroup' in content) {
+        const headingId = `technical-skill-${content.skillGroup.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')}`;
         formattedContent.push(
-          <Box component="fieldset" mb={3} borderColor="transparent">
-            <h3>{content.skillset.title}</h3>
-            <Rating name="read-only" value={content.skillset.value} readOnly />
-            <p>{content.skillset.text}</p>
-          </Box>
+          <ListItem
+            component="section"
+            className="technical-skill-group"
+            key={`${contentKey}-skill`}
+            aria-labelledby={headingId}
+          >
+            <h3 id={headingId}>{content.skillGroup.title}</h3>
+            <ul
+              className="technical-skill-list"
+              aria-label={`${content.skillGroup.title} skills`}
+            >
+              {content.skillGroup.skills.map((skill) => (
+                <li key={skill}>
+                  <Chip
+                    size="small"
+                    label={skill}
+                    className="technical-skill"
+                  />
+                </li>
+              ))}
+            </ul>
+          </ListItem>
         );
       }
-      if (content.groupSet) {
-        let groupSetLength = 0;
-        let groupSetContent: ReactElement;
-        const previousIcon = (
-          <span className="material-icons">navigate_before</span>
-        );
-        const nextIcon = <span className="material-icons">navigate_next</span>;
-        const generatedGroupSet = generateGroupSet(content.groupSet);
-        groupSetLength = generatedGroupSet.length;
-        if (title === 'Experience') {
-          experienceLength = groupSetLength - 1;
-          groupSetContent = generatedGroupSet[experienceIndex];
-        } else {
-          educationLength = groupSetLength - 1;
-          groupSetContent = generatedGroupSet[educationIndex];
-        }
+      if ('groupSet' in content) {
+        const generatedGroups = generateGroupSet(content.groupSet);
+        const isExperience = title === 'Experience';
+        const activeIndex = isExperience ? experienceIndex : educationIndex;
+        const setIndex = isExperience
+          ? setExperienceIndex
+          : setEducationIndex;
+        const lastIndex = generatedGroups.length - 1;
+        const previous = () =>
+          setIndex(activeIndex === 0 ? lastIndex : activeIndex - 1);
+        const next = () =>
+          setIndex(activeIndex === lastIndex ? 0 : activeIndex + 1);
+
         formattedContent.push(
-          <div className="group-set">
-            <div className="group-set-content">{groupSetContent}</div>
+          <div className="group-set" key={`${contentKey}-groups`}>
+            <div className="group-set-content">
+              {generatedGroups[activeIndex]}
+            </div>
             <div className="group-set-nav">
               <div>
                 <Button
                   variant="contained"
-                  startIcon={previousIcon}
-                  onClick={() => navigate('previous', title)}
+                  startIcon={
+                    <span className="material-icons" aria-hidden="true">
+                      navigate_before
+                    </span>
+                  }
+                  onClick={previous}
+                  aria-label={`Previous ${title}`}
                 >
                   Previous
                 </Button>
@@ -293,8 +277,13 @@ const Home = () => {
               <div>
                 <Button
                   variant="contained"
-                  endIcon={nextIcon}
-                  onClick={() => navigate('next', title)}
+                  endIcon={
+                    <span className="material-icons" aria-hidden="true">
+                      navigate_next
+                    </span>
+                  }
+                  onClick={next}
+                  aria-label={`Next ${title}`}
                 >
                   Next
                 </Button>
@@ -303,53 +292,37 @@ const Home = () => {
           </div>
         );
       }
-      if (content.text) {
+      if ('text' in content) {
         formattedContent.push(
-          <ListItem key={content.text}>
+          <ListItem component="div" key={`${contentKey}-text`}>
             <ListItemText primary={content.text} />
           </ListItem>
         );
       }
-    }
-    return <List>{formattedContent}</List>;
+    });
+
+    return <List component="div">{formattedContent}</List>;
   };
 
-  /* 
-    This function handles the generation of cards on this page, as well as
-    through factored out functions the generation of all content inside
-    the cards, leaving it the sole function called to create content
-    on an otherwise empty page.
-  */
-  const generateContent = () => {
-    const cardContentArray: CardContent[] = [];
-    const formattedArray: ReactElement[] = [];
-    for (const value of Object.values(homeData)) {
-      cardContentArray.push(value);
-    }
-    for (const content of cardContentArray) {
-      let media: string | null;
-      switch (content.media) {
-        case 'headshot':
-          media = headshot;
-          break;
-        default:
-          media = null;
-          break;
-      }
-      formattedArray.push(
-        <CardTemplate
-          title={content.title}
-          img={media}
-          content={formatContent(content)}
-          classGiven={content.classes}
-          links={content.links}
-        />
-      );
-    }
-    return formattedArray;
-  };
+  const cards = homeCardKeys.map((key) => {
+    const content = homeData[key];
+    const links: ReadonlyArray<CardAction> | undefined = content.links
+      ? content.links.map((link) => ({ kind: 'external', ...link }))
+      : undefined;
 
-  return <main className="app-home">{generateContent()}</main>;
+    return (
+      <CardTemplate
+        title={content.title}
+        img={content.media === 'headshot' ? headshot : null}
+        content={formatContent(content)}
+        classGiven={content.classes}
+        links={links}
+        key={key}
+      />
+    );
+  });
+
+  return <main className="app-home">{cards}</main>;
 };
 
 export default Home;

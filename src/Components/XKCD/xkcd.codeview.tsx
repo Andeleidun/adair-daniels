@@ -1,37 +1,26 @@
 import React from 'react';
-
-import Viewer from 'react-code-viewer';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-markup';
 import '../Library/CodeView.css';
-
 import CardTemplate from '../Library/Card';
+import SourceViewer from '../Library/SourceViewer';
+import componentCode from '!!raw-loader!./xkcd';
+import adapterCode from '!!raw-loader!./xkcdApi';
+import transportCode from '!!raw-loader!../../Services/remoteData';
 
-require('prismjs/components/prism-jsx');
+const source = [
+  '// XKCD component',
+  componentCode,
+  '',
+  '// XKCD adapter',
+  adapterCode,
+  '',
+  '// Shared remote transport',
+  transportCode,
+].join('\n');
 
-/* eslint-disable-next-line */
-const XKCDCode = require('!!raw-loader!./xkcd').default;
-
-const viewer = (
-  <Viewer
-    value={XKCDCode}
-    highlight={(code) => highlight(code, languages.js)}
-    padding={10}
-    style={{
-      fontFamily: '"Fira code", "Fira Mono", monospace',
-      fontSize: 12,
-    }}
-  />
+const XKCDViewer = (): React.ReactElement => (
+  <main className="app-code-viewer">
+    <CardTemplate content={<SourceViewer value={source} />} classGiven="card" />
+  </main>
 );
-
-function XKCDViewer() {
-  return (
-    <main className="app-code-viewer">
-      <CardTemplate content={viewer} classGiven="card" />
-    </main>
-  );
-}
 
 export default XKCDViewer;

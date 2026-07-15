@@ -1,191 +1,200 @@
 /*
-  This page demonstrates React's ability to consume RESTful APIs in real time.
-  Of particular use and note, is that the react page loads, and then sends a 
-  request for content that is able to be live loaded into the page without
-  a refresh. It is also a good example of abstraction in React, where multiple
-  components are defined within this component, segmented by function.
+  This page demonstrates live API content with bounded parallel requests,
+  cancellation, validation, and recoverable navigation failures.
 */
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './xkcd.css';
 import { reactLogo } from '../../Resources/images/index';
-
 import CardTemplate from '../Library/Card';
+import {
+  fetchComicBatch,
+  fetchCurrentComic,
+  XkcdSlot,
+} from './xkcdApi';
+import { RemoteRequestError } from '../../Services/remoteData';
 
-interface Props {
-  img?: any;
-  onClick?: any;
-  className?: any;
+interface PanelProps {
+  readonly slot: XkcdSlot;
 }
 
-interface State {
-  images?: any;
-  index: number;
-  initialIndex: number;
-  finalIndex: number;
-  loading: boolean;
-}
-
-class Panel extends React.Component<Props> {
-  panelTitle = this.props.img.title;
-  panelSrc = this.props.img.img;
-  panelAlt = this.props.img.alt;
-  panelFigure = (
-    <figure>
-      <img src={this.panelSrc} alt={this.panelAlt} />
-    </figure>
+export const Panel = ({ slot }: PanelProps): React.ReactElement => {
+  if (slot.kind === 'unavailable') {
+    return (
+      <div className="unavailable-comic" role="status">
+        Comic #{slot.num} unavailable
+      </div>
+    );
+  }
+  return (
+    <CardTemplate
+      title={slot.title}
+      content={
+        <figure>
+          <img src={slot.img} alt={slot.alt} />
+        </figure>
+      }
+      classGiven="card panel-card"
+    />
   );
+};
 
-  render() {
-    return (
-      <div>
-        <CardTemplate
-          title={this.panelTitle}
-          content={this.panelFigure}
-          classGiven="card panel-card"
-        />
-      </div>
-    );
-  }
-}
+type LoadStatus = 'loading' | 'success' | 'error';
 
-class NavBar extends React.Component<Props> {
-  render() {
-    return (
-      <nav>
-        <button onClick={() => this.props.onClick('first')}>First</button>
-        <button onClick={() => this.props.onClick('previous')}>Previous</button>
-        <button onClick={() => this.props.onClick('next')}>Next</button>
-        <button onClick={() => this.props.onClick('last')}>Last</button>
-      </nav>
-    );
-  }
-}
+const XKCD = (): React.ReactElement => {
+  const [slots, setSlots] = useState<ReadonlyArray<XkcdSlot>>([]);
+  const [index, setIndex] = useState(1);
+  const [latest, setLatest] = useState(0);
+  const [status, setStatus] = useState<LoadStatus>('loading');
+  const [error, setError] = useState('');
+  const [retryIndex, setRetryIndex] = useState(1);
+  const controller = useRef<AbortController | null>(null);
+  const requestVersion = useRef(0);
+  const finalIndex = Math.max(1, latest - 2);
 
-class XKCD extends React.Component<Props, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      images: Array(3).fill(''),
-      index: 1,
-      initialIndex: 1,
-      finalIndex: 0,
-      loading: true,
+  const beginRequest = () => {
+    controller.current?.abort();
+    requestVersion.current += 1;
+    const nextController = new AbortController();
+    controller.current = nextController;
+    return { version: requestVersion.current, controller: nextController };
+  };
+
+  const isAborted = (requestError: unknown) =>
+    requestError instanceof RemoteRequestError &&
+    requestError.category === 'aborted';
+
+  const loadInitial = async () => {
+    const request = beginRequest();
+    setStatus('loading');
+    setError('');
+    setRetryIndex(1);
+    try {
+      const current = await fetchCurrentComic(request.controller.signal);
+      const nextSlots = await fetchComicBatch(
+        1,
+        current.num,
+        request.controller.signal
+      );
+      if (request.version !== requestVersion.current) {
+        return;
+      }
+      setLatest(current.num);
+      setIndex(1);
+      setRetryIndex(1);
+      setSlots(nextSlots);
+      setStatus('success');
+    } catch (requestError) {
+      if (
+        request.version === requestVersion.current &&
+        !isAborted(requestError)
+      ) {
+        setStatus('error');
+        setError('XKCD comics could not be loaded.');
+      }
+    }
+  };
+
+  const loadBatch = async (target: number) => {
+    const clamped = Math.max(1, Math.min(target, finalIndex));
+    const request = beginRequest();
+    setStatus('loading');
+    setError('');
+    setRetryIndex(clamped);
+    try {
+      const nextSlots = await fetchComicBatch(
+        clamped,
+        latest,
+        request.controller.signal
+      );
+      if (request.version !== requestVersion.current) {
+        return;
+      }
+      setSlots(nextSlots);
+      setIndex(clamped);
+      setStatus('success');
+    } catch (requestError) {
+      if (
+        request.version === requestVersion.current &&
+        !isAborted(requestError)
+      ) {
+        setStatus('error');
+        setError('That XKCD batch could not be loaded.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    void loadInitial();
+    return () => {
+      requestVersion.current += 1;
+      controller.current?.abort();
     };
-  }
+  }, []);
 
-  async retrieveImages(index: any) {
-    /* Retrieves images from XKCD using open cors-anywhere proxy */
-    this.setState({ loading: true });
-    this.setState({ images: Array(3).fill(null) });
-    const proxyUrl = 'https://api.allorigins.win/get?url=';
-    const urlBase = 'http://xkcd.com/';
-    const urlEnd = '/info.0.json';
-    const currentUrl = 'http://xkcd.com/info.0.json';
-    let currentIndex = index;
-    const urlArray: any[] = [];
-    for (let i = 0; i < 3; i++) {
-      const createUrl = urlBase.concat(currentIndex).concat(urlEnd);
-      urlArray.push(createUrl);
-      currentIndex++;
+  const loading = status === 'loading';
+  const retry = () => {
+    if (latest === 0) {
+      void loadInitial();
+    } else {
+      void loadBatch(retryIndex);
     }
-    const proxiedRequest = (url: string, options = { headers: {} }) =>
-      fetch(url, {
-        ...options,
-        headers: {
-          ...options.headers,
-          'X-Requested-With': 'xkcd-slideshow',
-        },
-      })
-        .then((res) => res.json())
-        .catch((error) => console.error(error));
-    if (this.state.finalIndex === 0) {
-      const finalUrl = proxyUrl.concat(currentUrl);
-      await proxiedRequest(finalUrl)
-        .then((data) => {
-          const contents = JSON.parse(data.contents);
-          const finalPlaceholder = contents.num - 2;
-          this.setState({ finalIndex: finalPlaceholder });
-        })
-        .catch((error) => console.error(error));
-    }
-    const dataArray: any[] = [];
-    for (const useUrl of urlArray) {
-      const finalUrl = proxyUrl.concat(useUrl);
-      await proxiedRequest(finalUrl)
-        .then((data: any) => {
-          const contents = JSON.parse(data.contents);
-          dataArray.push(contents);
-        })
-        .catch((error) => console.error(error));
-    }
-    this.setState({ images: dataArray });
-    this.setState({ loading: false });
-  }
+  };
 
-  renderPanels(i: number) {
-    return <Panel img={this.state.images[i]} className="panel" />;
-  }
-
-  navigate(input: string) {
-    const step = 3;
-    let newState = 1;
-    switch (input) {
-      case 'first':
-        newState = this.state.initialIndex;
-        break;
-      case 'previous':
-        newState = this.state.index - step;
-        if (newState < this.state.initialIndex) {
-          newState = this.state.initialIndex;
-        }
-        break;
-      case 'next':
-        newState = this.state.index + step;
-        if (newState > this.state.finalIndex) {
-          newState = this.state.finalIndex;
-        }
-        break;
-      case 'last':
-        newState = this.state.finalIndex;
-        break;
-      default:
-        console.log('Navigation error.');
-    }
-    this.retrieveImages(newState);
-    this.setState({ index: newState });
-  }
-
-  componentDidMount() {
-    this.retrieveImages(this.state.index);
-  }
-
-  render() {
-    return (
-      <div className="xkcd">
-        {this.state.loading ? (
-          <img src={reactLogo} className="loading-logo" alt="logo" />
-        ) : this.state.images[0] ? (
-          <main className="slideshow">
-            {this.renderPanels(0)}
-            {this.renderPanels(1)}
-            {this.renderPanels(2)}
-          </main>
-        ) : (
-          <p>Loading error</p>
-        )}
-        <footer className="xkcd-footer">
-          <NavBar onClick={(i: string) => this.navigate(i)} />
-          <section className="credit">
-            <p>
-              Sincere thanks to{' '}
-              <a href="https://xkcd.com">Randlal Munroe over at XKCD</a> for
-              making such an awesome webcomic.
-            </p>
-          </section>
-        </footer>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="xkcd" aria-busy={loading}>
+      {slots.length === 0 && loading ? (
+        <img src={reactLogo} className="loading-logo" alt="Loading comics" />
+      ) : null}
+      {slots.length > 0 ? (
+        <main className="slideshow" aria-live="polite">
+          {slots.map((slot) => (
+            <Panel slot={slot} key={slot.num} />
+          ))}
+        </main>
+      ) : null}
+      {error ? (
+        <section className="xkcd-error" role="alert">
+          <p>{error}</p>
+          <button onClick={retry}>Retry</button>
+        </section>
+      ) : null}
+      <footer className="xkcd-footer">
+        <nav aria-label="Comic navigation">
+          <button
+            onClick={() => void loadBatch(1)}
+            disabled={loading || latest === 0 || index === 1}
+          >
+            First
+          </button>
+          <button
+            onClick={() => void loadBatch(index - 3)}
+            disabled={loading || latest === 0 || index === 1}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => void loadBatch(index + 3)}
+            disabled={loading || latest === 0 || index === finalIndex}
+          >
+            Next
+          </button>
+          <button
+            onClick={() => void loadBatch(finalIndex)}
+            disabled={loading || latest === 0 || index === finalIndex}
+          >
+            Last
+          </button>
+        </nav>
+        <section className="credit">
+          <p>
+            Sincere thanks to{' '}
+            <a href="https://xkcd.com">Randall Munroe over at XKCD</a> for
+            making such an awesome webcomic.
+          </p>
+        </section>
+      </footer>
+    </div>
+  );
+};
 
 export default XKCD;

@@ -40,25 +40,31 @@
   grid-area: highlights;
 }
 
-.app-home .highlights-card ul {
+.app-home .highlights-card .MuiList-root {
   display: grid;
   grid-template-columns: 33% 33% 33%;
 }
 
-.app-home .highlights-card ul a {
+.app-home .highlights-card .MuiList-root a {
   text-decoration: none;
   display: list-item;
 }
 
-.app-home .highlights-card ul a:hover {
+.app-home .highlights-card .MuiList-root a:hover {
   background-color: var(--greyhighlight);
 }
 
-.app-home .highlights-card ul .MuiListItem-root.MuiListItem-gutters {
+.app-home
+  .highlights-card
+  .MuiList-root
+  .MuiListItem-root.MuiListItem-gutters {
   display: none;
 }
 
-.app-home .highlights-card ul .MuiListItem-root.MuiListItem-gutters.linkset {
+.app-home
+  .highlights-card
+  .MuiList-root
+  .MuiListItem-root.MuiListItem-gutters.linkset {
   display: block;
   text-align: center;
 }
@@ -75,13 +81,42 @@
   grid-area: skills;
 }
 
-.app-home .skills-card ul {
+.app-home .skills-card .MuiList-root {
   display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  text-align: left;
 }
 
 .app-home .skills-card h3 {
-  padding-bottom: 15px;
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+.app-home .skills-card .technical-skill-group {
+  border-left: 4px solid var(--primary);
+  border-radius: 4px;
+  display: block;
+  padding: 12px;
+}
+
+.app-home .skills-card .technical-skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-home .skills-card .technical-skill-list li {
+  display: flex;
+}
+
+.app-home .skills-card .technical-skill {
+  background-color: white;
+  border: 1px solid var(--primary);
+  color: var(--primary);
 }
 
 .app-home .experience-card {
@@ -93,14 +128,14 @@
   text-align: left;
 }
 
-.app-home .experience-card li,
-.app-home .education-card li {
+.app-home .experience-card .MuiListItem-root,
+.app-home .education-card .MuiListItem-root {
   padding-top: 2px;
   padding-bottom: 2px;
 }
 
-.app-home .experience-card li span,
-.app-home .education-card li span {
+.app-home .experience-card .MuiListItem-root span,
+.app-home .education-card .MuiListItem-root span {
   line-height: 1.4;
 }
 
@@ -199,10 +234,6 @@
     grid-template-columns: 100%;
   }
 
-  .app-home .skills-card ul {
-    grid-template-columns: 50% 50%;
-  }
-
   .app-home .experience-card .group .skills {
     grid-column-start: 1;
     grid-column-end: 4;
@@ -229,11 +260,11 @@
 }
 
 @media only screen and (max-width: 450px) {
-  .app-home .highlights-card ul {
+  .app-home .highlights-card .MuiList-root {
     grid-template-columns: 100%;
   }
 
-  .app-home .skills-card ul fieldset {
-    padding: 0;
+  .app-home .skills-card .MuiList-root {
+    grid-template-columns: 100%;
   }
 }

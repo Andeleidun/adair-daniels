@@ -1,20 +1,23 @@
 {
   "homeData": {
     "career": {
-      "title": "Lead UI Developer",
+      "title": "Senior Frontend Engineer",
       "media": "headshot",
       "content": [
         {
-          "text": "Senior Frontend Engineer with 9+ years of experience specializing in the design and development of accessible user interfaces for complex software applications."
+          "text": "Senior Frontend Engineer with over 10 years of experience developing accessible user interfaces for complex cloud-integrated software applications."
         },
         {
-          "text": "Experienced leader and mentor with a successful track record of bringing applications to market, coaching junior developers, and collaborating with cross-functional teams."
+          "text": "Expert in React, TypeScript, JavaScript, Redux, Next.js, Angular, Ionic, Vue, Node.js, and Java, with a strong track record building enterprise-level applications connected to APIs, data services, and cloud infrastructure."
         },
         {
-          "text": "Expertise in developing full-stack enterprise-level applications, integrating with APIs, and deploying to cloud environments in AWS and Azure."
+          "text": "Experienced technical leader who has launched production applications, led accessibility initiatives, coached junior developers, performed code reviews, and coordinated across design, product, backend, DevOps, and engineering teams."
         },
         {
-          "text": "Strong understanding of UX principles, user stories, and workflows, with experience in prototyping, wireframing, and mockup creation using Figma, Axure, and Photoshop."
+          "text": "Highly knowledgeable in cloud, web, and client/server applications, including analysis, design, coding, testing, implementation, deployment, and operational support across AWS and Azure environments."
+        },
+        {
+          "text": "Cross trained in UX design, user stories, and workflows. Experienced in developing prototypes, wireframes, and mockups via Figma, Axure, MockFlow, and Photoshop."
         }
       ],
       "links": [
@@ -38,7 +41,7 @@
             "url": "https://aws.amazon.com/",
             "title": "Amazon / AWS",
             "img": "aws",
-            "text": "Senior Software Engineer at Amazon / Former Senior Frontend Engineer at AWS"
+            "text": "Former Senior Software Engineer at Amazon / Former Senior Frontend Engineer at AWS"
           }
         },
         {
@@ -46,7 +49,7 @@
             "url": "https://www.nike.com/launch",
             "title": "Nike",
             "img": "nike",
-            "text": "Former Lead Frontend Developer at Nike"
+            "text": "Former Senior Frontend Developer at Nike"
           }
         },
         {
@@ -58,43 +61,72 @@
           }
         }
       ],
-      "links": "",
       "classes": "card home-card highlights-card"
     },
     "skills": {
-      "title": "Top Skills",
+      "title": "Technical Skills",
       "media": "",
       "content": [
         {
-          "skillset": {
-            "title": "React",
-            "value": 5,
-            "text": "Expert"
+          "skillGroup": {
+            "title": "Languages & Frameworks",
+            "skills": [
+              "React",
+              "TypeScript",
+              "JavaScript",
+              "Redux",
+              "Next.js",
+              "Angular",
+              "Ionic",
+              "Vue",
+              "Node.js",
+              "Java",
+              "HTML",
+              "CSS"
+            ]
           }
         },
         {
-          "skillset": {
-            "title": "JavaScript/TypeScript",
-            "value": 5,
-            "text": "Expert"
+          "skillGroup": {
+            "title": "Cloud",
+            "skills": [
+              "AWS CloudFront",
+              "CDK",
+              "CloudFormation",
+              "Route53",
+              "S3",
+              "Azure",
+              "CI/CD"
+            ]
           }
         },
         {
-          "skillset": {
+          "skillGroup": {
             "title": "Accessibility",
-            "value": 5,
-            "text": "Expert"
+            "skills": [
+              "WCAG 2.2 AA",
+              "axe",
+              "NVDA",
+              "pa11y",
+              "JAWS",
+              "Screen Reader Support",
+              "Keyboard Navigation"
+            ]
           }
         },
         {
-          "skillset": {
-            "title": "User Experience",
-            "value": 5,
-            "text": "Expert"
+          "skillGroup": {
+            "title": "Tools",
+            "skills": ["Git", "GitHub Actions", "Figma", "Storybook", "Jira"]
+          }
+        },
+        {
+          "skillGroup": {
+            "title": "Methodologies",
+            "skills": ["Agile", "CI/CD", "Automated Testing"]
           }
         }
       ],
-      "links": "",
       "classes": "card home-card skills-card"
     },
     "experience": {
@@ -106,72 +138,22 @@
             {
               "group": [
                 {
-                  "classes": "group amazon-group"
-                },
-                {
-                  "title": "Amazon"
-                },
-                {
-                  "dates": "September 2024 - Present"
-                },
-                {
-                  "description": "Amazon is a top 10 member of the Fortune 500, and is considered to be one of the Big Five American technology companies, along with Alphabet, Apple, Meta and Microsoft. Collabera is a talent agency."
-                },
-                {
-                  "jobTitle": "Senior Software Engineer"
-                },
-                {
-                  "text": "Lead the design and implementation of a global content delivery network using CloudFront, alongside a transition to video streaming. Achieving 79% improvement in P90 loading speed and 84% reduction in variance for video streams across North America, Europe, and Asia."
-                },
-                {
-                  "text": "Engineer a TypeScript CDK stack for dynamic provisioning of CloudFront infrastructure, enabling rapid deployment and scaling across multiple stages and regions."
-                },
-                {
-                  "text": "Develop interactive UI components and views in React 18 with TypeScript to compare ergonomic assessments and highlight areas for improvement, facilitating workplace safety and employee well-being."
-                },
-                {
-                  "text": "Successfully migrate the backend application from JDK 11 to 17, addressing deprecated code patterns and ensuring seamless integration across the CI/CD pipeline."
-                },
-                {
-                  "text": "Develop and deploy a Java-based file signing service for time-limited access to CloudFront downloads, enhancing security and user experience."
-                },
-                {
-                  "skills": [
-                    "React",
-                    "TypeScript",
-                    "Java",
-                    "React Testing Library",
-                    "JavaScript",
-                    "CDK",
-                    "JDK",
-                    "AWS CloudFront",
-                    "AWS CloudFormation",
-                    "AWS Route 53",
-                    "AWS S3",
-                    "Git",
-                    "Figma",
-                    "HTML",
-                    "CSS"
-                  ]
-                }
-              ]
-            },
-            {
-              "group": [
-                {
                   "classes": "group adair-futures-group"
                 },
                 {
                   "title": "Adair Futures"
                 },
                 {
-                  "dates": "June 2015 - Present"
+                  "dates": "June 2015 – Present"
                 },
                 {
-                  "description": "Adair Futures is a business consulting firm founded by Adair to provide high quality UI development, expert technical guidance, and futures forecasts to various clients including Intuit, SDG&E, and T-Mobile; and to function as the umbrella for independent projects by Adair."
+                  "description": "Adair Futures is a consulting firm focused on providing high-quality UI development, expert technical guidance, and strategic insights to clients like Intuit, SDG&E, and T-Mobile."
                 },
                 {
                   "jobTitle": "Lead Developer"
+                },
+                {
+                  "text": "Consult on seven projects at top AI research labs (via Mercor Intelligence), helping drive forward AI code generation standards by evaluating, reviewing, grading, and shaping over 1000 instances of AI generated code created in assistance with myself or other consultants."
                 },
                 {
                   "text": "Lead accessibility initiatives for client projects, ensuring compliance with WCAG 2.1 AA standards using tools such as axe, NVDA, and pa11y."
@@ -183,42 +165,38 @@
                   "text": "Developed data fetching, management, and pagination features for a live project tracker in React 18, allowing Intuit project managers to search, filter, edit, and view detailed information for all projects."
                 },
                 {
-                  "text": "Developed data fetching, management, and pagination for live project tracker for Intuit project managers to search, filter, edit, and view detailed information for all Intuit projects in React 18 data table, as well as development of data management and pagination components."
+                  "text": "Develop and launch the full-stack Keto Mate suite of apps using Angular, Ionic, and NodeJS, which has attracted over 20k users and maintains a 4* rating on Google Play."
+                }
+              ]
+            },
+            {
+              "group": [
+                {
+                  "classes": "group amazon-group"
                 },
                 {
-                  "text": "Consult with clients to ensure that frontend technologies and design align with modern UX and accessibility standards, guiding teams in best practices and trend analysis."
+                  "title": "Amazon / Collabera"
                 },
                 {
-                  "text": "Develop and launch the full-stack Keto Mate suite of apps using Angular, Ionic, and Node.js, which has attracted over 20k users and maintains a 4* rating on Google Play."
+                  "dates": "Sep 2024 – May 2025"
                 },
                 {
-                  "text": "Deliver prototypes, mockups, and futures forecasts to demonstrate future tech trends and user experience advancements, integrating insights into development roadmaps."
+                  "jobTitle": "Senior Software Engineer"
                 },
                 {
-                  "skills": [
-                    "React",
-                    "JavaScript",
-                    "TypeScript",
-                    "axe",
-                    "NVDA",
-                    "pa11y",
-                    "Angular",
-                    "Ionic",
-                    "Mocha",
-                    "Chai",
-                    "Jest",
-                    "AWS",
-                    "EC2",
-                    "CSS3",
-                    "SASS",
-                    "Redux",
-                    "Axure",
-                    "GIT",
-                    "Photoshop",
-                    "Qualitative Futures Squares",
-                    "LaTeX",
-                    "HTML5"
-                  ]
+                  "text": "Led the design and implementation of a global content delivery network using CloudFront, alongside a transition to video streaming. Achieving 79% improvement in P90 loading speed and 84% reduction in variance for video streams across North America, Europe, and Asia."
+                },
+                {
+                  "text": "Engineered a TypeScript CDK stack for dynamic provisioning of CloudFront infrastructure, enabling rapid deployment and scaling across multiple stages and regions, reducing infrastructure provisioning time from days to hours."
+                },
+                {
+                  "text": "Overhauled critical UI elements and developed new interactive components and views in React 18 with TypeScript, significantly improving UX by streamlining workflows, enhancing clarity in ergonomic assessment comparisons, and better facilitating workplace safety initiatives."
+                },
+                {
+                  "text": "Successfully migrated the backend application from JDK 11 to 21, addressing deprecated code patterns and ensuring seamless integration and improved stability across the CI/CD pipeline."
+                },
+                {
+                  "text": "Developed and deployed a Java-based file signing service for time-limited access to CloudFront downloads, enhancing security and user experience, enhancing security by eliminating unauthorized downloads and significantly improving auditability and compliance."
                 }
               ]
             },
@@ -228,48 +206,62 @@
                   "classes": "group aws-group"
                 },
                 {
-                  "title": "Amazon Web Services"
+                  "title": "Amazon Web Services / Collabera"
                 },
                 {
-                  "dates": "September 2023 - March 2024"
-                },
-                {
-                  "description": "Amazon is a top 10 member of the Fortune 500, and is considered to be one of the Big Five American technology companies, along with Alphabet, Apple, Meta and Microsoft. Collabera is a talent agency."
+                  "dates": "Sep 2023 – Mar 2024"
                 },
                 {
                   "jobTitle": "Senior Frontend Engineer"
                 },
                 {
-                  "text": "Developed key features, including a live screen reader status system, roaming highlights, and enhanced focus management (React 17, TypeScript, ES6), enabling AWS QuickSight to achieve accessibility certification and reducing identified accessibility issues by 97%."
+                  "text": "Developed key features for AWS QuickSight accessibility certification effort, including live screen reader status system for reactive searches and roaming highlights, and focus management for global tab navigation and panel rendering, using React 17, TypeScript, and ES6."
                 },
                 {
                   "text": "Created new and accessibility updated components for AWS Vega component library, including programmatic determination of aria-label and other accessibility attributes, and visual updates for color contrast, hover, and focus states using Storybook and Material UI Theming."
                 },
                 {
-                  "text": "Investigated, documented, and ticketed over 50 complex accessibility issues across AWS Quicksight involving the use of data filters and themes across different types of sheets, charts, and tables. Maintained accessibility, code quality, and data integrity through testing (React Testing Library, axe, Sinon, Enzyme), bug fixes, user stories, and code reviews."
+                  "text": "Investigated, documented, and ticketed complex accessibility issues across AWS Quicksight involving the use of data filters and themes across different types of sheets, charts, and tables."
+                },
+                {
+                  "text": "Maintained accessibility, code quality, and data integrity through testing (React Testing Library, axe, Sinon, Enzyme), bug fixes, user stories, and code reviews."
                 },
                 {
                   "text": "Collaborated with cross team designers and engineers to ensure accessibility updates are synchronized with new features and designs using Figma, Slack, Chime, and AWS cloud developer environments."
+                }
+              ]
+            },
+            {
+              "group": [
+                {
+                  "classes": "group security-journey-group"
                 },
                 {
-                  "skills": [
-                    "React",
-                    "TypeScript",
-                    "ES6",
-                    "React Testing Library",
-                    "Jest",
-                    "Sinon",
-                    "Enzyme",
-                    "JavaScript",
-                    "Storybook",
-                    "Material UI",
-                    "Figma",
-                    "GIT",
-                    "AWS",
-                    "Mocha",
-                    "HTML",
-                    "CSS"
-                  ]
+                  "title": "Security Journey"
+                },
+                {
+                  "dates": "Nov 2022 – July 2023"
+                },
+                {
+                  "jobTitle": "Senior Frontend Engineer"
+                },
+                {
+                  "text": "Created key features for cybersecurity education platform including a React 18 micro-frontend portal to paired HackEDU app, using postMessage to safely send user and lesson status."
+                },
+                {
+                  "text": "Developed new and updated components for internal component library with focus on user experience and accessibility, using React, Storybook, JavaScript, and TypeScript."
+                },
+                {
+                  "text": "Engineered new features for interacting with video, audio, and questions across SJ learning platform using React, Next.js, ES6, and Typescript."
+                },
+                {
+                  "text": "Setup CI/CD accessibility testing with Github Actions for ongoing compliance, monitoring fresh builds for accessibility issues via full page testing, using pa11y CI, JAWS, and axe."
+                },
+                {
+                  "text": "Investigated, ticketed, and addressed accessibility issues on the SJ learning platform, enhancing keyboard navigation, screen reader support, roaming map highlights, and user leaderboards."
+                },
+                {
+                  "text": "Collaborated with and coached junior frontend developers, setting up weekly 1:1s, performing gaps assessments, code reviews, and helped create and follow through on learning plans."
                 }
               ]
             },
@@ -279,54 +271,25 @@
                   "classes": "group nike-group"
                 },
                 {
-                  "title": "Nike"
+                  "title": "Nike / IGNW"
                 },
                 {
-                  "dates": "March 2022 - December 2022"
+                  "dates": "Mar 2022 – Dec 2022"
                 },
                 {
-                  "description": "Nike is a consistent member of the Fortune 500, founded under its original name Blue Ribbon Sports in 1964. Nike is the world’s largest supplier of athletic shoes and apparel. IGNW is a talent agency."
+                  "jobTitle": "Senior Frontend Developer"
                 },
                 {
-                  "jobTitle": "Lead Frontend Developer"
+                  "text": "Designed and implemented key frontend UI components for the $2Bn Korean market launch of the Nike SNKRS Launch global e-commerce platform, integrating Korean payment services (Fiserv and KakaoPay) and building a stateless API-connected address autocomplete using React 18, Redux, Next.js, Docker, ES6, and AWS."
                 },
                 {
-                  "text": "Created key pieces of the frontend user interface for rollout of the Korean global launch for the Nike SNKRS Launch enterprise ecommerce platform including integrations for Korean payment services such as Fiserv and KakaoPay and a stateless API connected address suggestion component using React Hooks, Redux, Next.js, Docker, ES6, and AWS."
+                  "text": "Developed analytics, tests, and remote component integration for dual micro frontends using JavaScript, New Relic, SSR, REST APIs, and Mocha, improving performance monitoring and testing reliability."
                 },
                 {
-                  "text": "Developed the analytics, tests, and remote component integration for dual micro frontends utilizing in house tools, JavaScript, New Relic, REST APIs, and Mocha."
+                  "text": "Expanded functionality and innovated new features for the v3 global launch of the SNKRS Launch checkout micro-frontend, aligning with modern UX principles and contributing to an enhanced user experience."
                 },
                 {
-                  "text": "Expanded functionality and innovating new features for the v3 global launch of the SNKRS Launch checkout micro-frontend in line with modern UX principles."
-                },
-                {
-                  "text": "Ensured code quality and data integrity through type testing, bug fixes, unit testing, user stories, and other QA techniques. "
-                },
-                {
-                  "text": "Collaborated with team members globally to keep projects moving on time through GIT, JIRA, Confluence, and Zoom."
-                },
-                {
-                  "text": "Conducted regular code reviews of code developed by team members."
-                },
-                {
-                  "skills": [
-                    "React",
-                    "Redux",
-                    "Docker",
-                    "Hooks",
-                    "ES6",
-                    "AWS",
-                    "Mocha",
-                    "New Relic",
-                    "HTML5",
-                    "JavaScript",
-                    "CSS3",
-                    "GIT",
-                    "JIRA",
-                    "Confluence",
-                    "Zoom",
-                    "Rest"
-                  ]
+                  "text": "Collaborated globally with cross-functional teams, ensuring project progress through agile methodologies (Git, Jira, Confluence, Zoom), while maintaining code quality and data integrity through rigorous testing (unit, integration, type), bug fixes, and code reviews."
                 }
               ]
             },
@@ -339,54 +302,28 @@
                   "title": "Alluma"
                 },
                 {
-                  "dates": "October 2020 - March 2022"
+                  "dates": "Oct 2020 – Mar 2022"
                 },
                 {
-                  "description": "Alluma is a non-profit entity that specializes in providing technological solutions to state, local, and county governments, and community organizations that have been used to connect clients to services from Medicaid and SNAP to EITC to locally-based programs."
+                  "description": "Alluma is a non-profit specializing in technological solutions to state and local governments, and community organizations to connect clients to services from Medicaid and SNAP to EITC."
                 },
                 {
                   "jobTitle": "Lead UI Developer"
                 },
                 {
-                  "text": "Architected and led the development of the Carousel Solution Engine, a frontend app engine that utilizes live loaded JSON configuration files to generate data driven frontend applications that are WCAG 2.1 AA validated, have multilingual support, and are unit tested out of the box, with test case applications being built alongside for assessing benefit eligibility in California and Tennessee, using React Hooks and Context."
+                  "text": "Architected and led the development of the Solution Engine, a frontend app engine that utilizes live loaded JSON configuration files to generate data driven frontend applications that are WCAG 2.1 AA validated, have multilingual support, and are unit tested out of the box, with test case applications being built alongside for assessing benefit eligibility in California and Tennessee, using React 17 Hooks and Context."
                 },
                 {
-                  "text": "Led the development of the React frontend of the One-x-Connection healthcare application system, successfully converting from a class based component system to a React Hooks system, through a successful first launch and first set of post launch features."
+                  "text": "Created an accessible 100+ element UI library with React Hooks, CSS Variables, and Grid, published as a private npm package in collaboration with the Lead UX Researcher."
                 },
                 {
-                  "text": "Created a new UI Element library, with over 100 elements designed to be highly functional and styled out of the box, as well as the publication and maintenance of a private scoped npm package, with the Lead UX Researcher, using React Hooks and both reactive styling through React and modern CSS architecture such as CSS Variables and Grid."
+                  "text": "Led React frontend development for the One-x-Connection healthcare app, transitioning from class-based components to React Hooks, achieving a successful launch and post-launch features."
                 },
                 {
-                  "text": "Developed new features, providers, views, and components using React Hooks, Redux, ES6, JavaScript, lodash, CSS, REST APIs, UX principles and accessibility standards."
-                },
-                {
-                  "text": "Oversaw, coached, and performed code reviews for the frontend team, including senior and junior developers. Advocated for and began weekly check in and coaching sessions with team members."
-                },
-                {
-                  "text": "Managed code base quality and data integrity using Azure DevOps, unit and integration testing, Git feature branch management, user story management, bug fixes, and coordination with the QA team."
+                  "text": "Oversaw, coached, and performed code reviews for the frontend team, including senior and junior developers. Advocated for and began weekly check in and coaching sessions."
                 },
                 {
                   "text": "Coordinated with other team leads remotely to keep projects moving on time with design sessions, backlog grooming, sprint planning and retrospectives."
-                },
-                {
-                  "skills": [
-                    "React",
-                    "React Hooks",
-                    "ES6",
-                    "JavaScript",
-                    "Azure",
-                    "Redux",
-                    "CSS",
-                    "GIT",
-                    "lodash",
-                    "REST",
-                    "Leadership",
-                    "Coaching",
-                    "Unit testing",
-                    "Integration testing",
-                    "Microsoft SQL Server",
-                    "Cypress"
-                  ]
                 }
               ]
             },
@@ -396,52 +333,25 @@
                   "classes": "group hp-group"
                 },
                 {
-                  "title": "HP"
+                  "title": "HP / Softtek"
                 },
                 {
-                  "dates": "February 2019 - September 2019"
+                  "dates": "Feb 2019 – Sept 2019"
                 },
                 {
-                  "description": "HP is a consistent member of the top 100 of the Fortune 500, founded under its original name Hewlett-Packard in 1939. HP manages the personal computer and printer divisions of the former Hewlett-Packard Company. Softtek is a talent agency."
+                  "jobTitle": "Senior Frontend Developer"
                 },
                 {
-                  "jobTitle": "Sr. Frontend Developer"
+                  "text": "Overhauled frontend UI for internal B2B printer sales contract system, with new dashboard layout implementing task queue navigation. Led to 43% reduction in time spent navigating tasks."
                 },
                 {
-                  "text": "Created the client building and floor layout levels of data management with reusable components, frontend views and services for the Transition Management Center (TMC) internal tool using Angular, TypeScript, CSS3, and HTML5."
+                  "text": "Created the client building and floor layout levels of data management with reusable components, frontend views and services using Angular 8 and TypeScript."
                 },
                 {
-                  "text": "Developed backend services, API endpoints, setup database queries, and managed database schema for TMC using Javascript, Sequelize, NodeJS, and PostgreSQL."
-                },
-                {
-                  "text": "Optimized frontend workflow using UX principles, updated technologies, and experimented with new technologies to increase speed of user tasks."
-                },
-                {
-                  "text": "Ensured quality of codebase and integrity of data through bug fixes, typing, user stories, and other QA techniques."
+                  "text": "Developed backend services, API endpoints, setup database queries, and managed database schema using Javascript, Sequelize, NodeJS, and PostgreSQL."
                 },
                 {
                   "text": "Coordinated with other team members across the globe to keep projects moving on time through JIRA, team GIT repositories, Scrum meetings, Skype, and Zoom."
-                },
-                {
-                  "text": "Conducted code reviews every sprint of code developed by team members."
-                },
-                {
-                  "skills": [
-                    "Angular",
-                    "Sequelize",
-                    "PostgreSQL",
-                    "GraphQL",
-                    "NodeJS",
-                    "JavaScript",
-                    "TypeScript",
-                    "GIT",
-                    "HTML5",
-                    "CSS3",
-                    "SASS",
-                    "AWS",
-                    "Agile",
-                    "JIRA"
-                  ]
                 }
               ]
             },
@@ -454,47 +364,19 @@
                   "title": "Hall Labs"
                 },
                 {
-                  "dates": "May 2017 - February 2019"
-                },
-                {
-                  "description": "Tracy Hall LLC is a modern Edison Labs whose mission is to spin off successful companies and create great jobs for great people. Tracy Hall LLC is built on the legacy of H.Tracy Hall consulting that was founded February 15 of 1955."
+                  "dates": "May 2017 – Feb 2019"
                 },
                 {
                   "jobTitle": "UX Developer"
                 },
                 {
-                  "text": "Developed PayZoom payroll Android app using NodeJS, Angular, and Ionic, leading a team of 4 developers/designers."
+                  "text": "Developed PayZoom payroll Android app using NodeJS, Angular 7, and Ionic, leading a team of 4 developers/designers."
                 },
                 {
                   "text": "Created real-time data charts that pulled live information from Azure hosted databases using PowerBI to present to client business owners."
                 },
                 {
-                  "text": "Established EC2 templates and launched new instances for eCommerce platforms and web presences for client businesses using AWS, WordPress, WooCommerce, HTML5, and CSS3."
-                },
-                {
-                  "text": "Reported team progress on development in Agile/Scrum meetings, worked together with the Chief Technical Officer (CTO) to ensure satisfactory progress and results."
-                },
-                {
                   "text": "Performed code reviews of code developed by team members, helped manage team GIT repository."
-                },
-                {
-                  "skills": [
-                    "NodeJS",
-                    "Angular",
-                    "Ionic",
-                    "JavaScript",
-                    "Typescript",
-                    "GIT",
-                    "HTML5",
-                    "CSS3",
-                    "SASS",
-                    "Agile",
-                    "PowerBI",
-                    "WordPress",
-                    "Azure",
-                    "AWS",
-                    "Android Studio"
-                  ]
                 }
               ]
             },
@@ -507,10 +389,10 @@
                   "title": "Server Sky"
                 },
                 {
-                  "dates": "September 2015 - June 2016"
+                  "dates": "Sept 2015 – June 2016"
                 },
                 {
-                  "description": "Server Sky is a small space firm looking to develop the research necessary to, and then implement a space based swam cloud server capable of providing datacenter level computing across the globe."
+                  "description": "Server Sky is a small space firm looking to develop the research necessary to, and then implement a space based swarm cloud server capable of providing datacenter level computing across the globe."
                 },
                 {
                   "jobTitle": "Physics Researcher"
@@ -523,53 +405,12 @@
                 },
                 {
                   "text": "Delivered talks about research at academic and industry conferences."
-                },
-                {
-                  "skills": [
-                    "Differential Equations",
-                    "Calculus",
-                    "Relativistic Physics",
-                    "LaTeX",
-                    "TeX"
-                  ]
-                }
-              ]
-            },
-            {
-              "group": [
-                {
-                  "classes": "group mt-hood-work-group"
-                },
-                {
-                  "title": "Mount Hood Community College"
-                },
-                {
-                  "dates": "October 2013 - June 2016"
-                },
-                {
-                  "description": "Mount Hood Community College is a school aiming to help create the next generation of leaders for tomorrow."
-                },
-                {
-                  "jobTitle": "Lab Assistant/Web Support"
-                },
-                {
-                  "text": "Collaborated with Lab Coordinators to prepare and setup labs."
-                },
-                {
-                  "text": "Provided IT support for professors and instructors."
-                },
-                {
-                  "text": "Developed college web presences for classes and extracurriculars."
-                },
-                {
-                  "skills": ["HTML", "CSS", "JavaScript", "WordPress"]
                 }
               ]
             }
           ]
         }
       ],
-      "links": "",
       "classes": "card home-card experience-card"
     },
     "education": {
@@ -696,7 +537,6 @@
           ]
         }
       ],
-      "links": "",
       "classes": "card home-card education-card"
     }
   }

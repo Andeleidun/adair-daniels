@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import List from '@material-ui/core/List';
@@ -8,52 +8,63 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
-const NavBar = (props) => {
+export interface NavigationPage {
+  readonly text: string;
+  readonly route: string;
+  readonly icon: string;
+}
+
+interface NavBarProps {
+  readonly pages: ReadonlyArray<NavigationPage>;
+  readonly activeRoute: string;
+  readonly navClick: () => void;
+  readonly codeView: boolean;
+  readonly toggleCodeView: () => void;
+}
+
+const NavBar = (props: NavBarProps): React.ReactElement => {
   const handleChange = () => {
     props.toggleCodeView();
   };
 
-  const populatePages = () => {
-    const populatedPages: ReactElement[] = [];
-    for (const page of props.pages) {
-      populatedPages.push(
-        <Link
+  const populatePages = () =>
+    props.pages.map((page) => (
+      <li key={page.route}>
+        <ListItem
+          button
+          component={Link}
           to={page.route}
-          onClick={() => props.navClick(page)}
-          key={page.text}
+          onClick={props.navClick}
+          role="link"
+          aria-current={props.activeRoute === page.route ? 'page' : undefined}
         >
-          <ListItem button>
-            <ListItemIcon>
-              <i className="material-icons">{page.icon}</i>
-            </ListItemIcon>
-            <ListItemText primary={page.text} />
-          </ListItem>
-        </Link>
-      );
-    }
-    return populatedPages;
-  };
+          <ListItemIcon>
+            <i className="material-icons" aria-hidden="true">
+              {page.icon}
+            </i>
+          </ListItemIcon>
+          <ListItemText primary={page.text} />
+        </ListItem>
+      </li>
+    ));
 
-  const populateOptions = () => {
-    const options: ReactElement[] = [
-      <ListItem className="code-view-bar">
-        <FormControlLabel
-          control={
-            <Switch
-              checked={props.codeView}
-              onChange={handleChange}
-              name="codeView"
-            />
-          }
-          label="Code View"
-        />
-      </ListItem>,
-    ];
-    return options;
-  };
+  const populateOptions = () => (
+    <ListItem className="code-view-bar">
+      <FormControlLabel
+        control={
+          <Switch
+            checked={props.codeView}
+            onChange={handleChange}
+            name="codeView"
+          />
+        }
+        label="Code View"
+      />
+    </ListItem>
+  );
 
   return (
-    <nav className="app-nav">
+    <nav className="app-nav" id="app-navigation" aria-label="Main navigation">
       <List>
         {populatePages()}
         {populateOptions()}

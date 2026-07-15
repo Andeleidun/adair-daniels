@@ -1,3 +1,7 @@
+.xkcd {
+  --xkcd-action: #59677f;
+}
+
 .xkcd .loading-logo {
   height: 70vh;
 }
@@ -14,6 +18,24 @@
   height: 70vh;
 }
 
+.unavailable-comic {
+  align-items: center;
+  display: flex;
+  font-size: 20px;
+  height: 70vh;
+  justify-content: center;
+}
+
+.xkcd-error button {
+  background-color: var(--xkcd-action);
+  border: 0;
+  border-radius: 7px;
+  color: white;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 10px 20px;
+}
+
 .slideshow img {
   max-width: 100%;
   max-height: 50vh;
@@ -28,17 +50,24 @@
 .xkcd-footer nav button {
   width: 30%;
   margin: 0 auto;
-  text-align: center; 
+  text-align: center;
   padding: 10px 0;
   font-size: 17px;
   font-weight: bold;
-  background-color: #6E7B91;
+  background-color: var(--xkcd-action);
   color: white;
   cursor: pointer;
-  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
   border-radius: 7px;
   border: 0;
   font-variant: small-caps;
+}
+
+.xkcd-footer nav button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .credit {
@@ -62,7 +91,7 @@
   }
 
   .xkcd-footer nav button {
-    width: 50%; 
+    width: 50%;
     margin: 10px auto;
   }
 }

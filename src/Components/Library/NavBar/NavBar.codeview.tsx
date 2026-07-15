@@ -1,4 +1,3 @@
-/* eslint-disable-next-line */
-const NavBarCode = require('!!raw-loader!./NavBar').default;
+import NavBarCode from '!!raw-loader!./NavBar';
 
 export default NavBarCode;

@@ -10,11 +10,11 @@ import React from 'react';
 import './Portal.css';
 
 interface Props {
-  url: string;
-  title: string;
+  readonly url: string;
+  readonly title: string;
 }
 
-const Portal = ({ url, title }: Props) => {
+const Portal = ({ url, title }: Props): React.ReactElement => {
   return <iframe src={url} loading="lazy" className="portal" title={title} />;
 };
 

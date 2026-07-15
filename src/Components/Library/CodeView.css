@@ -64,6 +64,17 @@
   margin: 0 auto;
 }
 
+.source-viewer {
+  box-sizing: border-box;
+  font-family: 'Fira code', 'Fira Mono', monospace;
+  font-size: 12px;
+  margin: 0;
+  overflow: auto;
+  padding: 10px;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
 @media only screen and (max-width: 960px) {
   .app-code-viewer {
     width: 80%;
