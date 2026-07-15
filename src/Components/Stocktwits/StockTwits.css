@@ -20,7 +20,15 @@
 }
 
 .stock-intro {
+  align-items: center;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
   text-align: left;
+}
+
+.stock-intro-copy {
+  min-width: 0;
 }
 
 .stock-intro h2 {
@@ -133,7 +141,32 @@
   margin: 0;
 }
 
+.app-stocktwits-expanded {
+  align-content: start;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: calc(44px + clamp(1.5rem, 4vw, 2.5rem)) clamp(1rem, 3vw, 2.5rem)
+    clamp(1rem, 3vw, 2.5rem);
+}
+
+.app-stocktwits .stock-intro-expanded {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  width: 0;
+}
+
+.app-stocktwits-expanded .search,
+.app-stocktwits-expanded .content {
+  width: min(100%, 1200px);
+}
+
 @media only screen and (max-width: 600px) {
+  .stock-intro {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .app-stocktwits .search form {
     align-items: stretch;
     flex-direction: column;

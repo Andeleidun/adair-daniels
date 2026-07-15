@@ -9,6 +9,10 @@ import LoadScreen from '../Library/LoadScreen';
 import Button from '@mui/material/Button';
 import { fetchComicBatch, fetchCurrentComic, XkcdSlot } from './xkcdApi';
 import { RemoteRequestError } from '../../Services/remoteData';
+import DemoExpansionButton, {
+  DemoExpansionOptions,
+  useDemoExpansionState,
+} from '../Library/DemoExpansionButton';
 
 interface PanelProps {
   readonly slot: XkcdSlot;
@@ -43,7 +47,10 @@ export const Panel = ({ slot }: PanelProps): React.ReactElement => {
 
 type LoadStatus = 'loading' | 'success' | 'error';
 
-const XKCD = (): React.ReactElement => {
+const XKCD = ({
+  expanded,
+  onExpandedChange,
+}: DemoExpansionOptions): React.ReactElement => {
   const [slots, setSlots] = useState<ReadonlyArray<XkcdSlot>>([]);
   const [index, setIndex] = useState(1);
   const [latest, setLatest] = useState(0);
@@ -54,6 +61,10 @@ const XKCD = (): React.ReactElement => {
   const requestVersionRef = useRef(0);
   const initialRequestRef = useRef<() => void>(() => undefined);
   const finalIndex = latest > 0 ? Math.floor((latest - 1) / 3) * 3 + 1 : 1;
+  const { isExpanded, setExpanded } = useDemoExpansionState({
+    expanded,
+    onExpandedChange,
+  });
 
   const beginRequest = () => {
     controllerRef.current?.abort();
@@ -155,13 +166,26 @@ const XKCD = (): React.ReactElement => {
   };
 
   return (
-    <div className="xkcd" aria-busy={loading}>
-      <section className="xkcd-intro" aria-labelledby="comic-browser-title">
-        <h2 id="comic-browser-title">Browse XKCD in groups of three</h2>
-        <p>
-          Comics are loaded through AllOrigins from XKCD. Navigation requests
-          are cancellable, and unavailable comic positions remain visible.
-        </p>
+    <div
+      className={`xkcd${isExpanded ? ' demo-expanded-view xkcd-expanded' : ''}`}
+      aria-busy={loading}
+    >
+      <section
+        className={`xkcd-intro${isExpanded ? ' xkcd-intro-expanded' : ''}`}
+        aria-labelledby="comic-browser-title"
+      >
+        <div className={isExpanded ? 'visually-hidden' : 'xkcd-intro-copy'}>
+          <h2 id="comic-browser-title">Browse XKCD in groups of three</h2>
+          <p>
+            Comics are loaded through AllOrigins from XKCD. Navigation requests
+            are cancellable, and unavailable comic positions remain visible.
+          </p>
+        </div>
+        <DemoExpansionButton
+          title="XKCD Slideshow"
+          expanded={isExpanded}
+          onExpandedChange={setExpanded}
+        />
       </section>
       {slots.length === 0 && loading ? <LoadScreen /> : null}
       {slots.length > 0 ? (

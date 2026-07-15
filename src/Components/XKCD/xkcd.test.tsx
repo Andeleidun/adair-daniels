@@ -41,6 +41,38 @@ describe('XKCD', () => {
     batch.mockResolvedValue(comics(1));
   });
 
+  it('expands from the introduction and restores the standard view', () => {
+    const { container } = render(<XKCD />);
+    const expand = screen.getByRole('button', {
+      name: 'Expand XKCD Slideshow demonstration',
+    });
+    expect(expand.closest('.xkcd-intro')).toBeInTheDocument();
+
+    fireEvent.click(expand);
+    expect(container.querySelector('.xkcd')).toHaveClass(
+      'demo-expanded-view',
+      'xkcd-expanded'
+    );
+    expect(container.querySelector('.xkcd-intro')).toHaveClass(
+      'xkcd-intro-expanded'
+    );
+    expect(
+      screen.getByRole('button', {
+        name: 'Collapse XKCD Slideshow demonstration',
+      })
+    ).toHaveFocus();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(container.querySelector('.xkcd')).not.toHaveClass(
+      'demo-expanded-view'
+    );
+    expect(
+      screen.getByRole('button', {
+        name: 'Expand XKCD Slideshow demonstration',
+      })
+    ).toHaveFocus();
+  });
+
   it('loads metadata first and navigates in page-aligned batches', async () => {
     render(<XKCD />);
     expect(screen.getByRole('status')).toHaveTextContent('Loading content');

@@ -5,6 +5,7 @@
   --secondary-dark: #005f31;
   --tertiary: #5616d9;
   --xkcd: #96a8c8;
+  --page-background: #f4f7f6;
   --surface: #ffffff;
   --text: #17231d;
   --text-muted: #4c5c54;
@@ -201,6 +202,10 @@ p {
   margin-left: var(--drawer-width);
 }
 
+.app-main-demo-expanded {
+  margin-left: 0;
+}
+
 .app-content {
   flex: 1 0 auto;
   margin: 0 auto;
@@ -210,6 +215,31 @@ p {
     var(--header-height) + env(safe-area-inset-top) + 1rem
   );
   width: 100%;
+}
+
+.app-content-demo-expanded {
+  max-width: none;
+  padding: 0;
+}
+
+.app-content-demo-expanded .app-screen {
+  animation: none;
+  transform: none;
+}
+
+html.demo-expanded,
+body.demo-expanded {
+  overflow: hidden;
+}
+
+.demo-expanded-view {
+  background: var(--page-background);
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: calc(var(--header-height) + env(safe-area-inset-top));
+  z-index: 1199;
 }
 
 .app-screen {

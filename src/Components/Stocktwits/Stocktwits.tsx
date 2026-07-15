@@ -18,11 +18,18 @@ import {
   StockSymbolFeed,
 } from './stockTwitsApi';
 import { RemoteRequestError } from '../../Services/remoteData';
+import DemoExpansionButton, {
+  DemoExpansionOptions,
+  useDemoExpansionState,
+} from '../Library/DemoExpansionButton';
 
 type ViewStatus =
   'idle' | 'loading' | 'refreshing' | 'success' | 'empty' | 'error';
 
-const StockTwits = (): React.ReactElement => {
+const StockTwits = ({
+  expanded,
+  onExpandedChange,
+}: DemoExpansionOptions): React.ReactElement => {
   const [input, setInput] = useState('');
   const [feeds, setFeeds] = useState<ReadonlyArray<StockSymbolFeed>>([]);
   const [filters, setFilters] = useState<ReadonlyArray<string>>([]);
@@ -39,6 +46,10 @@ const StockTwits = (): React.ReactElement => {
   const requestInProgressRef = useRef(false);
   const elapsedMinutesRef = useRef(0);
   const refreshRequestRef = useRef<() => void>(() => undefined);
+  const { isExpanded, setExpanded } = useDemoExpansionState({
+    expanded,
+    onExpandedChange,
+  });
 
   const isEmpty = (nextFeeds: ReadonlyArray<StockSymbolFeed>) =>
     nextFeeds.every((feed) => feed.messages.length === 0);
@@ -226,14 +237,28 @@ const StockTwits = (): React.ReactElement => {
       : `Next refresh in ${countdown} minute${countdown === 1 ? '' : 's'}.`;
 
   return (
-    <div className="app-stocktwits">
-      <section className="stock-intro" aria-labelledby="stock-search-title">
-        <h2 id="stock-search-title">Search public symbol feeds</h2>
-        <p>
-          Stock symbols are sent through the AllOrigins proxy to StockTwits.
-          Results refresh every five minutes until a refresh fails or the page
-          is closed.
-        </p>
+    <div
+      className={`app-stocktwits${
+        isExpanded ? ' demo-expanded-view app-stocktwits-expanded' : ''
+      }`}
+    >
+      <section
+        className={`stock-intro${isExpanded ? ' stock-intro-expanded' : ''}`}
+        aria-labelledby="stock-search-title"
+      >
+        <div className={isExpanded ? 'visually-hidden' : 'stock-intro-copy'}>
+          <h2 id="stock-search-title">Search public symbol feeds</h2>
+          <p>
+            Stock symbols are sent through the AllOrigins proxy to StockTwits.
+            Results refresh every five minutes until a refresh fails or the page
+            is closed.
+          </p>
+        </div>
+        <DemoExpansionButton
+          title="StockTwits Feed"
+          expanded={isExpanded}
+          onExpandedChange={setExpanded}
+        />
       </section>
       <section className="search" aria-label="Stock symbol search">
         <form onSubmit={submit}>

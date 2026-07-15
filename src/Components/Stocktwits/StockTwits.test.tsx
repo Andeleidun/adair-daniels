@@ -42,6 +42,38 @@ describe('StockTwits', () => {
     fetchSymbols.mockReset();
   });
 
+  it('expands from the introduction and restores the standard view', () => {
+    const { container } = render(<StockTwits />);
+    const expand = screen.getByRole('button', {
+      name: 'Expand StockTwits Feed demonstration',
+    });
+    expect(expand.closest('.stock-intro')).toBeInTheDocument();
+
+    fireEvent.click(expand);
+    expect(container.querySelector('.app-stocktwits')).toHaveClass(
+      'demo-expanded-view',
+      'app-stocktwits-expanded'
+    );
+    expect(container.querySelector('.stock-intro')).toHaveClass(
+      'stock-intro-expanded'
+    );
+    expect(
+      screen.getByRole('button', {
+        name: 'Collapse StockTwits Feed demonstration',
+      })
+    ).toHaveFocus();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(container.querySelector('.app-stocktwits')).not.toHaveClass(
+      'demo-expanded-view'
+    );
+    expect(
+      screen.getByRole('button', {
+        name: 'Expand StockTwits Feed demonstration',
+      })
+    ).toHaveFocus();
+  });
+
   it('submits normalized input by button and renders stable, filterable results', async () => {
     fetchSymbols.mockResolvedValue(result([feed('AAPL'), feed('MSFT', 2)]));
     render(<StockTwits />);

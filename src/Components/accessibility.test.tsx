@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import Home from './Home/Home';
 import Portfolio from './Portfolio/Portfolio';
 import Library from './Library/Library';
@@ -87,6 +87,26 @@ describe('representative page accessibility', () => {
     await expectNoAccessibilityViolations(container);
   });
 
+  it('has no automated violations in an expanded engineering demo', async () => {
+    const { container } = render(
+      <MemoryRouter initialEntries={['/poketable']}>
+        <ApplicationShell />
+      </MemoryRouter>
+    );
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Expand PokeTable demonstration',
+      })
+    );
+    expect(
+      screen.getByRole('button', {
+        name: 'Collapse PokeTable demonstration',
+      })
+    ).toHaveFocus();
+
+    await expectNoAccessibilityViolations(container);
+  });
+
   it('has no automated violations in populated StockTwits results', async () => {
     vi.mocked(fetchStockSymbols).mockResolvedValue({
       feeds: [
@@ -120,6 +140,12 @@ describe('representative page accessibility', () => {
     await screen.findByText('Synthetic market update');
 
     await expectNoAccessibilityViolations(container);
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Expand StockTwits Feed demonstration',
+      })
+    );
+    await expectNoAccessibilityViolations(container);
   });
 
   it('has no automated violations in populated XKCD results', async () => {
@@ -140,6 +166,12 @@ describe('representative page accessibility', () => {
     );
     await screen.findByRole('heading', { name: 'Synthetic comic' });
 
+    await expectNoAccessibilityViolations(container);
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Expand XKCD Slideshow demonstration',
+      })
+    );
     await expectNoAccessibilityViolations(container);
   });
 });

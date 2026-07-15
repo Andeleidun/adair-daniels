@@ -5,6 +5,9 @@ import Library from './Library';
 
 vi.mock('./App.codeview', () => ({ default: 'ApplicationShell source' }));
 vi.mock('./Card/Card.codeview', () => ({ default: 'CardAction source' }));
+vi.mock('./DemoExpansionButton/DemoExpansionButton.codeview', () => ({
+  default: 'DemoExpansionButton source',
+}));
 vi.mock('./Header/Header.codeview', () => ({ default: 'HeaderProps source' }));
 vi.mock('./NavBar/NavBar.codeview', () => ({ default: 'NavBarProps source' }));
 vi.mock('./SiteIcon/SiteIcon.codeview', () => ({
@@ -35,6 +38,10 @@ describe('Library', () => {
     expect(screen.getByLabelText('Card source code')).toHaveTextContent(
       'CardAction'
     );
+    fireEvent.click(screen.getByRole('tab', { name: 'Demo expansion' }));
+    expect(
+      screen.getByLabelText('Demo expansion source code')
+    ).toHaveTextContent('DemoExpansionButton');
     fireEvent.click(screen.getByRole('tab', { name: 'Header' }));
     expect(screen.getByLabelText('Header source code')).toHaveTextContent(
       'HeaderProps'
@@ -49,7 +56,7 @@ describe('Library', () => {
     );
     expect(screen.getByRole('tabpanel')).toHaveAttribute(
       'aria-labelledby',
-      'component-tab-4'
+      'component-tab-5'
     );
   });
 });

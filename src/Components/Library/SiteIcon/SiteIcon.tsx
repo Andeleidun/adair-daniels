@@ -3,7 +3,9 @@ import SvgIcon from '@mui/material/SvgIcon';
 
 export type SiteIconName =
   | 'code'
+  | 'collapse'
   | 'close'
+  | 'expand'
   | 'external'
   | 'home'
   | 'library'
@@ -16,8 +18,12 @@ export type SiteIconName =
 
 const paths: Readonly<Record<SiteIconName, string>> = {
   code: 'M8.7 16.6 4.1 12l4.6-4.6L7.3 6 1.3 12l6 6 1.4-1.4zm6.6 0 4.6-4.6-4.6-4.6L16.7 6l6 6-6 6-1.4-1.4z',
+  collapse:
+    'M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z',
   close:
     'M18.3 5.7 16.9 4.3 12 9.2 7.1 4.3 5.7 5.7l4.9 4.9-4.9 4.9 1.4 1.4 4.9-4.9 4.9 4.9 1.4-1.4-4.9-4.9 4.9-4.9z',
+  expand:
+    'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z',
   external:
     'M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.6l-9.8 9.8 1.4 1.4L19 6.4V10h2V3h-7z',
   home: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z',

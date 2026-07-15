@@ -8,6 +8,7 @@ import SourceViewer from './SourceViewer';
 
 import AppCode from './App.codeview';
 import CardCode from './Card/Card.codeview';
+import DemoExpansionButtonCode from './DemoExpansionButton/DemoExpansionButton.codeview';
 import HeaderCode from './Header/Header.codeview';
 import NavBarCode from './NavBar/NavBar.codeview';
 import SiteIconCode from './SiteIcon/SiteIcon.codeview';
@@ -20,6 +21,7 @@ interface LibraryComponent {
 const components: ReadonlyArray<LibraryComponent> = [
   { title: 'App shell', code: AppCode },
   { title: 'Card', code: CardCode },
+  { title: 'Demo expansion', code: DemoExpansionButtonCode },
   { title: 'Header', code: HeaderCode },
   { title: 'Navigation', code: NavBarCode },
   { title: 'Site icon', code: SiteIconCode },

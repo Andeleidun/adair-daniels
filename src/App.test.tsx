@@ -17,13 +17,39 @@ vi.mock('./Components/Home/Home.codeview', () => ({
   default: () => <div>Home source code</div>,
 }));
 vi.mock('./Components/Stocktwits/Stocktwits', () => ({
-  default: () => <div>StockTwits content</div>,
+  default: ({
+    expanded,
+    onExpandedChange,
+  }: {
+    expanded: boolean;
+    onExpandedChange: (expanded: boolean) => void;
+  }) => (
+    <div>
+      <div>StockTwits content</div>
+      <button onClick={() => onExpandedChange(!expanded)}>
+        {expanded ? 'Collapse' : 'Expand'} StockTwits Feed demonstration
+      </button>
+    </div>
+  ),
 }));
 vi.mock('./Components/Stocktwits/StockTwits.codeview', () => ({
   default: () => <div>StockTwits source code</div>,
 }));
 vi.mock('./Components/XKCD/xkcd', () => ({
-  default: () => <div>XKCD content</div>,
+  default: ({
+    expanded,
+    onExpandedChange,
+  }: {
+    expanded: boolean;
+    onExpandedChange: (expanded: boolean) => void;
+  }) => (
+    <div>
+      <div>XKCD content</div>
+      <button onClick={() => onExpandedChange(!expanded)}>
+        {expanded ? 'Collapse' : 'Expand'} XKCD Slideshow demonstration
+      </button>
+    </div>
+  ),
 }));
 vi.mock('./Components/XKCD/xkcd.codeview', () => ({
   default: () => <div>XKCD source code</div>,
@@ -41,7 +67,33 @@ vi.mock('./Components/Library/Library.codeview', () => ({
   default: () => <div>Library source code</div>,
 }));
 vi.mock('./Components/Library/Portal/Portal', () => ({
-  default: ({ title }: { title: string }) => <div>{title} content</div>,
+  default: ({
+    title,
+    expanded,
+    onExpandedChange,
+  }: {
+    title: string;
+    expanded: boolean;
+    onExpandedChange: (expanded: boolean) => void;
+  }) => (
+    <section
+      className={`portal-card${expanded ? ' portal-card-expanded' : ''}`}
+    >
+      {expanded ? (
+        <button onClick={() => onExpandedChange(false)}>
+          Collapse {title} demonstration
+        </button>
+      ) : (
+        <>
+          <h2>Interactive demonstration</h2>
+          <button onClick={() => onExpandedChange(true)}>
+            Expand {title} demonstration
+          </button>
+        </>
+      )}
+      <div>{title} content</div>
+    </section>
+  ),
 }));
 vi.mock('./Components/Library/Portal/Portal.codeview', () => ({
   default: () => <div>Portal source code</div>,
@@ -216,6 +268,142 @@ describe('Application shell', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'Selected Work' })
     ).toHaveFocus();
+  });
+
+  it('gives hosted demonstrations an immersive view below the header', () => {
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockReturnValue({
+        matches: true,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+      })
+    );
+    const { container } = render(
+      <MemoryRouter initialEntries={['/poketable']}>
+        <ApplicationShell />
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'PokeTable' })
+    ).toBeVisible();
+    expect(container.querySelector('.site-footer')).toBeInTheDocument();
+    expect(
+      screen.getByRole('switch', { name: 'Code View' })
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Expand PokeTable demonstration',
+      })
+    );
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Collapse PokeTable demonstration',
+      })
+    ).toBeVisible();
+    expect(container.querySelector('.page-heading')).toBeNull();
+    expect(container.querySelector('.portal-card')).toHaveClass(
+      'portal-card-expanded'
+    );
+    expect(container.querySelector('.app-content')).toHaveClass(
+      'app-content-demo-expanded'
+    );
+    expect(container.querySelector('.site-footer')).toBeNull();
+    expect(screen.queryByRole('switch', { name: 'Code View' })).toBeNull();
+    expect(document.documentElement).toHaveClass('demo-expanded');
+    expect(document.body).toHaveClass('demo-expanded');
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Collapse PokeTable demonstration',
+      })
+    );
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'PokeTable' })
+    ).toBeVisible();
+    expect(container.querySelector('.site-footer')).toBeInTheDocument();
+    expect(document.documentElement).not.toHaveClass('demo-expanded');
+    expect(document.body).not.toHaveClass('demo-expanded');
+  });
+
+  it('returns history navigation to the standard demonstration view', async () => {
+    render(
+      <MemoryRouter initialEntries={['/poketable']}>
+        <HistoryControls />
+        <ApplicationShell />
+      </MemoryRouter>
+    );
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Expand PokeTable demonstration',
+      })
+    );
+    expect(document.documentElement).toHaveClass('demo-expanded');
+
+    fireEvent.click(
+      within(openNavigation()).getByRole('link', { name: 'Selected Work' })
+    );
+    expect(await screen.findByText('Portfolio content')).toBeVisible();
+    expect(document.documentElement).not.toHaveClass('demo-expanded');
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Browser Back', hidden: true })
+    );
+    expect(await screen.findByText('PokeTable content')).toBeVisible();
+    expect(
+      await screen.findByRole('button', {
+        name: 'Expand PokeTable demonstration',
+      })
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('button', {
+        name: 'Collapse PokeTable demonstration',
+      })
+    ).toBeNull();
+  });
+
+  it.each([
+    ['/stock', 'StockTwits Feed'],
+    ['/xkcd', 'XKCD Slideshow'],
+  ])('expands the %s demonstration through the shared shell', (path, title) => {
+    const { container } = render(
+      <MemoryRouter initialEntries={[path]}>
+        <ApplicationShell />
+      </MemoryRouter>
+    );
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: `Expand ${title} demonstration`,
+      })
+    );
+
+    expect(
+      screen.getByRole('button', {
+        name: `Collapse ${title} demonstration`,
+      })
+    ).toBeVisible();
+    expect(container.querySelector('.page-heading')).toBeNull();
+    expect(container.querySelector('.app-content')).toHaveClass(
+      'app-content-demo-expanded'
+    );
+    expect(container.querySelector('.site-footer')).toBeNull();
+    expect(document.documentElement).toHaveClass('demo-expanded');
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: `Collapse ${title} demonstration`,
+      })
+    );
+    expect(
+      screen.getByRole('heading', { level: 1, name: title })
+    ).toBeVisible();
+    expect(container.querySelector('.site-footer')).toBeInTheDocument();
   });
 
   it('keeps a single Code View control when the desktop drawer is open', () => {

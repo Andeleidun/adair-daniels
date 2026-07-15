@@ -5,7 +5,9 @@ import SiteIcon, { SiteIconName } from './SiteIcon';
 
 const iconNames: ReadonlyArray<SiteIconName> = [
   'code',
+  'collapse',
   'close',
+  'expand',
   'external',
   'home',
   'library',

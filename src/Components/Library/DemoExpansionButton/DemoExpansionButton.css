@@ -1,0 +1,20 @@
+.demo-expansion-button.MuiButton-root {
+  flex: 0 0 auto;
+  min-height: 44px;
+}
+
+.demo-expansion-button-expanded.MuiButton-root {
+  box-shadow: 0 8px 24px rgba(16, 41, 29, 0.28);
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  top: calc(
+    var(--header-height) + env(safe-area-inset-top) + clamp(0.75rem, 2vw, 1rem)
+  );
+  z-index: 1200;
+}
+
+@media only screen and (max-width: 450px) {
+  .demo-expansion-button-expanded.MuiButton-root {
+    right: max(0.75rem, env(safe-area-inset-right));
+  }
+}

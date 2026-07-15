@@ -10,6 +10,7 @@ import './App.css';
 import {
   BrowserRouter,
   Link,
+  type Location,
   matchPath,
   Route,
   Routes,
@@ -62,9 +63,14 @@ export interface PageDefinition {
   readonly route: AppRoute;
   readonly icon: SiteIconName;
   readonly navGroup: NavigationGroup;
-  readonly component: ReactElement;
+  readonly component: (options: PageRenderOptions) => ReactElement;
   readonly codeView?: ReactElement;
   readonly exactRoute?: boolean;
+}
+
+interface PageRenderOptions {
+  readonly demoExpanded: boolean;
+  readonly onDemoExpandedChange: (expanded: boolean) => void;
 }
 
 export const pages: ReadonlyArray<PageDefinition> = [
@@ -77,7 +83,7 @@ export const pages: ReadonlyArray<PageDefinition> = [
     route: '/',
     icon: 'home',
     navGroup: 'profile',
-    component: <Home />,
+    component: () => <Home />,
     codeView: <HomeViewer />,
     exactRoute: true,
   },
@@ -89,7 +95,7 @@ export const pages: ReadonlyArray<PageDefinition> = [
     route: '/portfolio',
     icon: 'portfolio',
     navGroup: 'profile',
-    component: <Portfolio />,
+    component: () => <Portfolio />,
     codeView: <PortfolioViewer />,
   },
   {
@@ -100,7 +106,7 @@ export const pages: ReadonlyArray<PageDefinition> = [
     route: '/library',
     icon: 'library',
     navGroup: 'profile',
-    component: <Library />,
+    component: () => <Library />,
     codeView: <LibraryViewer />,
   },
   {
@@ -111,8 +117,13 @@ export const pages: ReadonlyArray<PageDefinition> = [
     route: '/poketable',
     icon: 'table',
     navGroup: 'demos',
-    component: (
-      <Portal url="https://andeleidun.github.io/pokeTable/" title="PokeTable" />
+    component: ({ demoExpanded, onDemoExpandedChange }) => (
+      <Portal
+        url="https://andeleidun.github.io/pokeTable/"
+        title="PokeTable"
+        expanded={demoExpanded}
+        onExpandedChange={onDemoExpandedChange}
+      />
     ),
     codeView: <PortalViewer />,
   },
@@ -124,10 +135,12 @@ export const pages: ReadonlyArray<PageDefinition> = [
     route: '/robotBattle',
     icon: 'robot',
     navGroup: 'demos',
-    component: (
+    component: ({ demoExpanded, onDemoExpandedChange }) => (
       <Portal
         url="https://andeleidun.github.io/robot-arena/"
         title="Robot Battle Arena"
+        expanded={demoExpanded}
+        onExpandedChange={onDemoExpandedChange}
       />
     ),
     codeView: <PortalViewer />,
@@ -140,7 +153,12 @@ export const pages: ReadonlyArray<PageDefinition> = [
     route: '/stock',
     icon: 'stock',
     navGroup: 'demos',
-    component: <StockTwits />,
+    component: ({ demoExpanded, onDemoExpandedChange }) => (
+      <StockTwits
+        expanded={demoExpanded}
+        onExpandedChange={onDemoExpandedChange}
+      />
+    ),
     codeView: <StockViewer />,
   },
   {
@@ -151,7 +169,9 @@ export const pages: ReadonlyArray<PageDefinition> = [
     route: '/xkcd',
     icon: 'xkcd',
     navGroup: 'demos',
-    component: <XKCD />,
+    component: ({ demoExpanded, onDemoExpandedChange }) => (
+      <XKCD expanded={demoExpanded} onExpandedChange={onDemoExpandedChange} />
+    ),
     codeView: <XKCDViewer />,
   },
 ];
@@ -211,12 +231,15 @@ export const ApplicationShell = (): ReactElement => {
   const previousPathnameRef = useRef(location.pathname);
   const [navShow, setNavShow] = useState(false);
   const [codeView, setCodeView] = useState(false);
+  const [expandedDemoLocation, setExpandedDemoLocation] =
+    useState<Location | null>(null);
   const currentPage = pageForPath(location.pathname);
   const sourceViewActive = codeView && Boolean(currentPage?.codeView);
+  const demoExpanded = !sourceViewActive && expandedDemoLocation === location;
   const pageTitle = currentPage?.title ?? 'Page not found';
   const pageDescription =
     currentPage?.description ?? 'The requested portfolio page was not found.';
-  const showPageHeading = currentPage?.route !== '/';
+  const showPageHeading = currentPage?.route !== '/' && !demoExpanded;
   const pageKicker = currentPage
     ? currentPage.route === '/'
       ? undefined
@@ -271,14 +294,39 @@ export const ApplicationShell = (): ReactElement => {
     return () => window.clearTimeout(focusTimer);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!demoExpanded) {
+      return undefined;
+    }
+    document.documentElement.classList.add('demo-expanded');
+    document.body.classList.add('demo-expanded');
+    return () => {
+      document.documentElement.classList.remove('demo-expanded');
+      document.body.classList.remove('demo-expanded');
+    };
+  }, [demoExpanded]);
+
   const toggleNav = () => setNavShow((shown) => !shown);
   const closeNav = () => {
     setNavShow(false);
     window.setTimeout(() => menuButtonRef.current?.focus(), 0);
   };
-  const toggleCodeView = () => setCodeView((shown) => !shown);
-  const contentClass =
-    desktop && navShow ? 'app-main app-main-with-menu' : 'app-main';
+  const toggleCodeView = () => {
+    setExpandedDemoLocation(null);
+    setCodeView((shown) => !shown);
+  };
+  const handleDemoExpandedChange = (expanded: boolean) => {
+    setNavShow(false);
+    setExpandedDemoLocation(expanded ? location : null);
+  };
+  const contentClass = demoExpanded
+    ? 'app-main app-main-demo-expanded'
+    : desktop && navShow
+      ? 'app-main app-main-with-menu'
+      : 'app-main';
+  const appContentClass = demoExpanded
+    ? 'app-content app-content-demo-expanded'
+    : 'app-content';
 
   return (
     <div className="app">
@@ -286,7 +334,9 @@ export const ApplicationShell = (): ReactElement => {
         Skip to main content
       </a>
       <Header
-        codeViewAvailable={desktop && Boolean(currentPage?.codeView)}
+        codeViewAvailable={
+          desktop && !demoExpanded && Boolean(currentPage?.codeView)
+        }
         onClick={toggleNav}
         codeView={codeView}
         menuOpen={navShow}
@@ -306,12 +356,14 @@ export const ApplicationShell = (): ReactElement => {
           activeRoute={currentPage?.route ?? ''}
           navClick={closeNav}
           codeView={codeView}
-          codeViewAvailable={!desktop && Boolean(currentPage?.codeView)}
+          codeViewAvailable={
+            !desktop && !demoExpanded && Boolean(currentPage?.codeView)
+          }
           toggleCodeView={toggleCodeView}
         />
       </Drawer>
       <div className={contentClass}>
-        <main id="main-content" className="app-content" tabIndex={-1}>
+        <main id="main-content" className={appContentClass} tabIndex={-1}>
           <div
             className="app-screen"
             key={`${location.pathname}-${sourceViewActive ? 'source' : 'live'}`}
@@ -350,7 +402,11 @@ export const ApplicationShell = (): ReactElement => {
                     element={
                       sourceViewActive && page.codeView
                         ? page.codeView
-                        : page.component
+                        : page.component({
+                            demoExpanded:
+                              demoExpanded && page.route === currentPage?.route,
+                            onDemoExpandedChange: handleDemoExpandedChange,
+                          })
                     }
                   />
                 ))}
@@ -359,7 +415,7 @@ export const ApplicationShell = (): ReactElement => {
             </Suspense>
           </div>
         </main>
-        <AppFooter />
+        {demoExpanded ? null : <AppFooter />}
       </div>
     </div>
   );
