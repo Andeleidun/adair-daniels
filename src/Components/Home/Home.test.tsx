@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import Home from './Home';
@@ -30,7 +30,18 @@ describe('Home', () => {
       container.querySelectorAll('.skill-group .MuiChip-outlined')
     ).toHaveLength(0);
     expect(screen.getByRole('heading', { name: 'Amazon / AWS' })).toBeVisible();
-    const linkedIn = screen.getByRole('link', { name: /LinkedIn/ });
+    const professionalProfile = screen.getByRole('region', {
+      name: 'Senior Frontend Engineer',
+    });
+    const profileLinks = within(professionalProfile).getAllByRole('link');
+    expect(profileLinks).toHaveLength(2);
+    expect(profileLinks.map((link) => link.textContent)).toEqual([
+      'LinkedIn (opens in a new tab)',
+      'GitHub (opens in a new tab)',
+    ]);
+    const linkedIn = within(professionalProfile).getByRole('link', {
+      name: /LinkedIn/,
+    });
     expect(linkedIn).toHaveAttribute(
       'href',
       'https://www.linkedin.com/in/adairdaniels/'
@@ -38,11 +49,8 @@ describe('Home', () => {
     expect(linkedIn).toHaveAttribute('target', '_blank');
     expect(linkedIn).toHaveAttribute('rel', 'noopener noreferrer');
     expect(
-      screen.getByRole('link', { name: /208\.801\.9666/ })
-    ).toHaveAttribute('href', 'tel:+12088019666');
-    expect(
-      screen.getByRole('link', { name: /adairdaniels@gmail\.com/ })
-    ).toHaveAttribute('href', 'mailto:adairdaniels@gmail.com');
+      within(professionalProfile).getByRole('link', { name: /GitHub/ })
+    ).toHaveAttribute('href', 'https://github.com/andeleidun');
     expect(
       container.querySelectorAll('.experience-timeline details')
     ).toHaveLength(10);
