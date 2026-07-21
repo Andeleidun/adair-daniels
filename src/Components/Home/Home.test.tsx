@@ -38,9 +38,17 @@ describe('Home', () => {
     expect(linkedIn).toHaveAttribute('target', '_blank');
     expect(linkedIn).toHaveAttribute('rel', 'noopener noreferrer');
     expect(
+      screen.getByRole('link', { name: /208\.801\.9666/ })
+    ).toHaveAttribute('href', 'tel:+12088019666');
+    expect(
+      screen.getByRole('link', { name: /adairdaniels@gmail\.com/ })
+    ).toHaveAttribute('href', 'mailto:adairdaniels@gmail.com');
+    expect(
       container.querySelectorAll('.experience-timeline details')
-    ).toHaveLength(9);
+    ).toHaveLength(10);
     expect(container.querySelectorAll('.education-card')).toHaveLength(3);
+    expect(screen.getByText('Mercor Intelligence')).toBeVisible();
+    expect(screen.getByText('AI Code Evaluation Consultant')).toBeVisible();
     expect(screen.getAllByText('Adair Futures').length).toBeGreaterThan(0);
     expect(
       screen.queryByText('Consulting and technical leadership')
@@ -62,7 +70,7 @@ describe('Home', () => {
     );
     expect(container.querySelectorAll('details[open]')).toHaveLength(3);
     fireEvent.click(screen.getByRole('button', { name: 'Expand all' }));
-    expect(container.querySelectorAll('details[open]')).toHaveLength(9);
+    expect(container.querySelectorAll('details[open]')).toHaveLength(10);
     fireEvent.click(screen.getByRole('button', { name: 'Collapse all' }));
     expect(container.querySelectorAll('details[open]')).toHaveLength(0);
   });

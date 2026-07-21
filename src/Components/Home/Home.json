@@ -22,6 +22,18 @@
       ],
       "links": [
         {
+          "url": "tel:+12088019666",
+          "text": "208.801.9666"
+        },
+        {
+          "url": "mailto:adairdaniels@gmail.com",
+          "text": "adairdaniels@gmail.com"
+        },
+        {
+          "url": "https://adairdaniels.com",
+          "text": "adairdaniels.com"
+        },
+        {
           "url": "https://www.linkedin.com/in/adairdaniels/",
           "text": "LinkedIn"
         },
@@ -117,7 +129,14 @@
         {
           "skillGroup": {
             "title": "Tools",
-            "skills": ["Git", "GitHub Actions", "Figma", "Storybook", "Jira"]
+            "skills": [
+              "Git",
+              "GitHub Actions",
+              "AI",
+              "Figma",
+              "Storybook",
+              "Jira"
+            ]
           }
         },
         {
@@ -138,34 +157,31 @@
             {
               "group": [
                 {
-                  "classes": "group adair-futures-group"
+                  "classes": "group mercor-group"
                 },
                 {
-                  "title": "Adair Futures"
+                  "title": "Mercor Intelligence"
                 },
                 {
-                  "dates": "June 2015 – Present"
+                  "dates": "January 2025 – Present"
                 },
                 {
-                  "description": "Adair Futures is a consulting firm focused on providing high-quality UI development, expert technical guidance, and strategic insights to clients like Intuit, SDG&E, and T-Mobile."
+                  "description": "Via Adair Futures"
                 },
                 {
-                  "jobTitle": "Lead Developer"
+                  "jobTitle": "AI Code Evaluation Consultant"
                 },
                 {
-                  "text": "Consult on eighteen projects at top AI research labs (via Mercor Intelligence), helping drive forward AI code generation standards by evaluating, reviewing, grading, and shaping over 1000 collections of AI generated code created by myself or other consultants."
+                  "text": "Consult across 18 projects supporting leading AI research labs, evaluating frontier-model performance in code generation and technical document creation."
                 },
                 {
-                  "text": "Lead accessibility initiatives for client projects, ensuring compliance with WCAG 2.1 AA standards using tools such as axe, NVDA, and pa11y."
+                  "text": "Evaluate, review, grade, and shape 1,000+ AI-generated code submissions for correctness, completeness, code quality, and adherence to project-specific requirements."
                 },
                 {
-                  "text": "Created data tables, views, and components for the SDG&E Builder Services Portal to enable users to view and download CSVs for service meters and permit data using React 18 with Hooks and Context."
+                  "text": "Establish gold-standard examples, evaluation rubrics, and technical specifications for frontier-model code generation and project documentation."
                 },
                 {
-                  "text": "Developed data fetching, management, and pagination features for a live project tracker in React 18, allowing Intuit project managers to search, filter, edit, and view detailed information for all projects."
-                },
-                {
-                  "text": "Develop and launch the full-stack Keto Mate suite of apps using Angular, Ionic, and NodeJS, which has attracted over 20k users and maintains a 4* rating on Google Play."
+                  "text": "Define foundational workflows, standards, rubrics, and specifications for the next generation of AI personal assistants."
                 }
               ]
             },
@@ -197,6 +213,40 @@
                 },
                 {
                   "text": "Developed and deployed a Java-based file signing service for time-limited access to CloudFront downloads, enhancing security and user experience, enhancing security by eliminating unauthorized downloads and significantly improving auditability and compliance."
+                }
+              ]
+            },
+            {
+              "group": [
+                {
+                  "classes": "group adair-futures-group"
+                },
+                {
+                  "title": "Adair Futures"
+                },
+                {
+                  "dates": "June 2015 – Present"
+                },
+                {
+                  "description": "Adair Futures is a consulting firm focused on providing high-quality UI development, expert technical guidance, and strategic insights to clients like Intuit, SDG&E, and T-Mobile."
+                },
+                {
+                  "jobTitle": "Lead Developer"
+                },
+                {
+                  "text": "Lead accessibility initiatives for client projects, ensuring compliance with WCAG 2.2 AA standards using tools such as axe, NVDA, and pa11y."
+                },
+                {
+                  "text": "Created data tables, views, and components for the SDG&E Builder Services Portal to enable users to view and download CSVs for service meters and permit data using React 18 with Hooks and Context."
+                },
+                {
+                  "text": "Developed data fetching, management, and pagination features for a live project tracker in React 18, allowing Intuit project managers to search, filter, edit, and view detailed information for all projects."
+                },
+                {
+                  "text": "Develop and launch the full-stack Keto Mate suite of apps using Angular, Ionic, and NodeJS, which has attracted over 20k users and maintains a 4* rating on Google Play."
+                },
+                {
+                  "text": "Consult on AI and frontend technologies for web apps, guiding on design direction, adherence to UX and accessibility standards, and establishing unit testing."
                 }
               ]
             },
