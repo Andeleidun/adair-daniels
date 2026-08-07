@@ -5,19 +5,13 @@
       "media": "headshot",
       "content": [
         {
-          "text": "Senior Frontend Engineer with over 10 years of experience developing accessible user interfaces for complex cloud-integrated software applications."
+          "text": "Senior Frontend Engineer with over 10 years of experience developing accessible, cloud-integrated software applications, with expertise in React, TypeScript, JavaScript, frontend architecture, web accessibility (WCAG), and Node.js."
         },
         {
-          "text": "Expert in React, TypeScript, JavaScript, Redux, Next.js, Angular, Ionic, Vue, Node.js, and Java, with a strong track record building enterprise-level applications connected to APIs, data services, and cloud infrastructure."
+          "text": "Experienced technical leader who has launched enterprise applications, led accessibility and architecture initiatives, coached developers, performed code reviews, and worked across product, design, backend, DevOps, AWS, and Azure environments."
         },
         {
-          "text": "Experienced technical leader who has launched production applications, led accessibility initiatives, coached junior developers, performed code reviews, and coordinated across design, product, backend, DevOps, and engineering teams."
-        },
-        {
-          "text": "Highly knowledgeable in cloud, web, and client/server applications, including analysis, design, coding, testing, implementation, deployment, and operational support across AWS and Azure environments."
-        },
-        {
-          "text": "Cross trained in UX design, user stories, and workflows. Experienced in developing prototypes, wireframes, and mockups via Figma, Axure, MockFlow, and Photoshop."
+          "text": "Skilled in artificial intelligence evaluation and AI-assisted software development, including assessing ChatGPT, Codex, and Claude coding workflows, analyzing generated code quality and reliability, identifying recurring failure modes, and providing technical feedback on AI-generated applications."
         }
       ],
       "links": [
@@ -76,27 +70,35 @@
               "JavaScript",
               "Redux",
               "Next.js",
-              "Angular",
-              "Ionic",
-              "Vue",
               "Node.js",
-              "Java",
-              "HTML",
-              "CSS"
+              "Java"
             ]
           }
         },
         {
           "skillGroup": {
-            "title": "Cloud",
+            "title": "Frontend Architecture & Engineering",
             "skills": [
-              "AWS CloudFront",
-              "CDK",
-              "CloudFormation",
-              "Route53",
-              "S3",
-              "Azure",
-              "CI/CD"
+              "Frontend architecture",
+              "design systems",
+              "component libraries",
+              "responsive design",
+              "state management",
+              "API integration",
+              "performance optimization"
+            ]
+          }
+        },
+        {
+          "skillGroup": {
+            "title": "Artificial Intelligence",
+            "skills": [
+              "ChatGPT",
+              "Codex",
+              "Claude",
+              "AI-assisted software development",
+              "AI workflow evaluation",
+              "AI-generated code evaluation"
             ]
           }
         },
@@ -105,32 +107,76 @@
             "title": "Accessibility",
             "skills": [
               "WCAG 2.2 AA",
+              "accessible application architecture",
               "axe",
               "NVDA",
-              "pa11y",
               "JAWS",
-              "Screen Reader Support",
-              "Keyboard Navigation"
+              "pa11y",
+              "keyboard navigation",
+              "focus management",
+              "ARIA"
             ]
           }
         },
         {
           "skillGroup": {
-            "title": "Tools",
+            "title": "Cloud & DevOps",
             "skills": [
-              "Git",
-              "GitHub Actions",
-              "AI",
-              "Figma",
-              "Storybook",
-              "Jira"
+              "AWS CloudFront",
+              "CDK",
+              "CloudFormation",
+              "Route 53",
+              "S3",
+              "Azure",
+              "CI/CD",
+              "GitHub Actions"
             ]
           }
         },
         {
           "skillGroup": {
-            "title": "Methodologies",
-            "skills": ["Agile", "CI/CD", "Automated Testing"]
+            "title": "Testing & Quality",
+            "skills": [
+              "Automated testing",
+              "React Testing Library",
+              "Jest",
+              "Mocha",
+              "Storybook",
+              "accessibility testing",
+              "code review"
+            ]
+          }
+        },
+        {
+          "skillGroup": {
+            "title": "UX & Design",
+            "skills": [
+              "Figma",
+              "Axure",
+              "MockFlow",
+              "Photoshop",
+              "prototyping",
+              "wireframing",
+              "user stories",
+              "UX workflows"
+            ]
+          }
+        },
+        {
+          "skillGroup": {
+            "title": "Engineering Leadership",
+            "skills": [
+              "Technical leadership",
+              "architecture direction",
+              "developer coaching",
+              "cross-functional collaboration"
+            ]
+          }
+        },
+        {
+          "skillGroup": {
+            "title": "Tools & Methodologies",
+            "skills": ["Git", "Jira", "Agile"]
           }
         }
       ],
@@ -167,6 +213,9 @@
                 },
                 {
                   "text": "Establish gold-standard examples, evaluation rubrics, and technical specifications for frontier-model code generation and project documentation."
+                },
+                {
+                  "text": "Conduct comparative evaluations of ChatGPT, Codex, and Claude for AI-assisted software development, differentiating deliverable quality, technical correctness, reliability, and recurring defects."
                 },
                 {
                   "text": "Define foundational workflows, standards, rubrics, and specifications for the next generation of AI personal assistants."
@@ -234,7 +283,7 @@
                   "text": "Develop and launch the full-stack Keto Mate suite of apps using Angular, Ionic, and NodeJS, which has attracted over 20k users and maintains a 4* rating on Google Play."
                 },
                 {
-                  "text": "Consult on AI and frontend technologies for web apps, guiding on design direction, adherence to UX and accessibility standards, and establishing unit testing."
+                  "text": "Consult on AI and frontend technologies for web apps, guiding on design direction, tool selection, adherence to UX and accessibility standards, and establishing unit testing."
                 }
               ]
             },
@@ -250,7 +299,7 @@
                   "dates": "Sep 2023 – Mar 2024"
                 },
                 {
-                  "jobTitle": "Senior Frontend Engineer"
+                  "jobTitle": "Senior Frontend Engineer - Accessibility"
                 },
                 {
                   "text": "Developed key features for AWS QuickSight accessibility certification effort, including live screen reader status system for reactive searches and roaming highlights, and focus management for global tab navigation and panel rendering, using React 17, TypeScript, and ES6."
@@ -460,6 +509,28 @@
             {
               "group": [
                 {
+                  "classes": "group western-governor-group"
+                },
+                {
+                  "title": "Western Governor's University"
+                },
+                {
+                  "dates": "Dec 2025 - Dec 2027 [Expected]"
+                },
+                {
+                  "text": "In Progress"
+                },
+                {
+                  "text": "Major: Software Engineering"
+                },
+                {
+                  "skills": ["Java", "Python", "Data Structures", "Algorithms"]
+                }
+              ]
+            },
+            {
+              "group": [
+                {
                   "classes": "group portland-state-group"
                 },
                 {
@@ -555,6 +626,7 @@
                     "WCAG Accessibility Guidelines",
                     "JavaScript",
                     "Typescript",
+                    "Artificial Intelligence",
                     "GIT",
                     "HTML5",
                     "CSS3",

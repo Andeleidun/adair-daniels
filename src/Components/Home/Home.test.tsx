@@ -22,7 +22,10 @@ describe('Home', () => {
     expect(
       screen.getByRole('list', { name: 'Languages & Frameworks skills' })
     ).toBeVisible();
-    expect(container.querySelectorAll('.skill-group')).toHaveLength(5);
+    expect(
+      screen.getByRole('list', { name: 'Artificial Intelligence skills' })
+    ).toBeVisible();
+    expect(container.querySelectorAll('.skill-group')).toHaveLength(9);
     expect(
       container.querySelectorAll('.skill-group .MuiChip-filled').length
     ).toBeGreaterThan(0);
@@ -54,7 +57,7 @@ describe('Home', () => {
     expect(
       container.querySelectorAll('.experience-timeline details')
     ).toHaveLength(10);
-    expect(container.querySelectorAll('.education-card')).toHaveLength(3);
+    expect(container.querySelectorAll('.education-card')).toHaveLength(4);
     expect(screen.getByText('Mercor Intelligence')).toBeVisible();
     expect(screen.getByText('AI Code Evaluation Consultant')).toBeVisible();
     expect(screen.getAllByText('Adair Futures').length).toBeGreaterThan(0);
