@@ -54,6 +54,33 @@ describe('Home', () => {
     expect(
       within(professionalProfile).getByRole('link', { name: /GitHub/ })
     ).toHaveAttribute('href', 'https://github.com/andeleidun');
+
+    expect(
+      screen.getByRole('heading', { name: 'Selected engineering work' })
+    ).toBeVisible();
+    expect(container.querySelectorAll('.selected-work-card')).toHaveLength(3);
+    expect(
+      screen.getByRole('heading', { name: 'Valgaron World Codex' })
+    ).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: 'Screen Reader Status Message' })
+    ).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: 'Keto Mate React Native' })
+    ).toBeVisible();
+    expect(
+      screen.getByRole('link', { name: /View Valgaron on GitHub/ })
+    ).toHaveAttribute('href', 'https://github.com/Andeleidun/valgaron');
+    expect(
+      screen.getByRole('link', { name: /View statusMessage on GitHub/ })
+    ).toHaveAttribute('href', 'https://github.com/Andeleidun/statusMessage');
+    expect(
+      screen.getByText(/Private product repository; technical scope is shared/)
+    ).toBeVisible();
+    expect(
+      screen.queryByRole('link', { name: /Keto Mate.*source/i })
+    ).toBeNull();
+
     expect(
       container.querySelectorAll('.experience-timeline details')
     ).toHaveLength(10);
