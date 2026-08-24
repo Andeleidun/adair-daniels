@@ -4,6 +4,7 @@
 */
 import React, { ReactElement, useMemo, useState } from 'react';
 import './Home.css';
+import './SelectedWork.css';
 
 import { headshot, hp, nike, aws } from '../../Resources/images/index';
 import HomeData from './Home.json';
