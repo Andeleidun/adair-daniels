@@ -243,11 +243,7 @@ const Home = (): ReactElement => {
                 ))}
               </ul>
               {item.href && item.linkLabel ? (
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={item.href} target="_blank" rel="noopener noreferrer">
                   {item.linkLabel}
                   <ExternalNotice />
                 </a>
