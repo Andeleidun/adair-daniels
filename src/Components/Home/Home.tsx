@@ -7,6 +7,7 @@ import './Home.css';
 
 import { headshot, hp, nike, aws } from '../../Resources/images/index';
 import HomeData from './Home.json';
+import { selectedWork } from './SelectedWork';
 
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -209,6 +210,52 @@ const Home = (): ReactElement => {
                 Visit {highlight.title}
                 <ExternalNotice />
               </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="home-section" aria-labelledby="selected-work-title">
+        <div className="section-heading">
+          <p className="section-kicker">Current engineering evidence</p>
+          <h2 id="selected-work-title">Selected engineering work</h2>
+          <p className="section-intro">
+            Current projects and reusable abstractions that show how I approach
+            architecture, accessibility, reliability, and cross-platform
+            development.
+          </p>
+        </div>
+        <div className="selected-work-grid">
+          {selectedWork.map((item) => (
+            <article className="selected-work-card" key={item.title}>
+              <p className="selected-work-eyebrow">{item.eyebrow}</p>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <ul
+                className="selected-work-technologies"
+                aria-label={`${item.title} technologies`}
+              >
+                {item.technologies.map((technology) => (
+                  <li key={technology}>
+                    <Chip size="small" label={technology} />
+                  </li>
+                ))}
+              </ul>
+              {item.href && item.linkLabel ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {item.linkLabel}
+                  <ExternalNotice />
+                </a>
+              ) : (
+                <p className="selected-work-private">
+                  Private product repository; technical scope is shared without
+                  exposing source.
+                </p>
+              )}
             </article>
           ))}
         </div>
