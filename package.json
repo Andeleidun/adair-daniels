@@ -14,7 +14,7 @@
     "prismjs": "^1.30.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.2"
   },
   "scripts": {
     "start": "vite",
@@ -54,6 +54,6 @@
     "typescript-eslint": "^8.64.0",
     "vite": "^8.1.0",
     "vitest": "^4.1.0",
-    "wrangler": "4.114.0"
+    "wrangler": "4.125.0"
   }
 }
